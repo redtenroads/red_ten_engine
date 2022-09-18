@@ -1,0 +1,149 @@
+#include "componentText.h"
+#include <math.h>
+#include "glew.h"
+#include "SDL_ttf.h"
+#include "SDL.h"
+
+ComponentText::ComponentText()
+{
+    a.setIdentity();
+    setAnchor(0.5f, 0.5f);
+}
+
+void ComponentText::render(Matrix4 &vpMatrix, Transformation *tf)
+{
+    if (isStringDirty)
+        rebuildString();
+
+    if (textureID)
+    {
+        Matrix4 model, out;
+        model.setIdentity();
+        model.multiply(*transform.getModelMatrix());
+        model.multiply(*tf->getModelMatrix());
+
+        out.setIdentity();
+        out.multiply(a);
+        out.multiply(model);
+
+        auto spShader = shadersManager->getSpriteShader();
+        shadersManager->switchShader(spShader);
+
+        glUniformMatrix4fv(spShader->mViewProjectionLoc, 1, GL_FALSE, vpMatrix.values);
+        glUniformMatrix4fv(spShader->mTransformLoc, 1, GL_FALSE, out.values);
+        glUniform1f(spShader->fOpacityLoc, opacity);
+
+        glBindTexture(GL_TEXTURE_2D, textureID);
+        glBindVertexArray(spShader->vao);
+        glDrawArrays(GL_QUADS, 0, 4);
+    }
+}
+
+void ComponentText::destroy()
+{
+    if (textureID != 0)
+    {
+        glDeleteTextures(1, &textureID);
+    }
+}
+
+void ComponentText::setOpacity(float opacity)
+{
+    this->opacity = fmaxf(fminf(opacity, 1.0f), 0.0f);
+}
+
+float ComponentText::getOpacity()
+{
+    return opacity;
+}
+
+void ComponentText::setAnchor(float x, float y)
+{
+    a.setIdentity();
+    a.setTranslation(-x, -y, 0.0f);
+}
+
+void ComponentText::setAnchor(Vector2 &anchor)
+{
+    a.setIdentity();
+    a.setTranslation(-anchor.x, -anchor.y, 0.0f);
+}
+
+void ComponentText::setFont(Font *font)
+{
+    if (this->font != font)
+    {
+        this->font = font;
+        isStringDirty = true;
+    }
+}
+
+void ComponentText::setColor(unsigned char r, unsigned char g, unsigned char b)
+{
+    if (this->r != r || this->g != g || this->b != b)
+    {
+        this->r = r;
+        this->g = g;
+        this->b = b;
+        isStringDirty = true;
+    }
+}
+
+void ComponentText::setText(std::string string)
+{
+    if (this->string != string)
+    {
+        this->string = string;
+        isStringDirty = true;
+    }
+}
+
+std::string ComponentText::getText()
+{
+    return string;
+}
+
+void ComponentText::rebuildString()
+{
+    isStringDirty = false;
+    if (textureID != 0)
+        glDeleteTextures(1, &textureID);
+    textureID = 0;
+
+    if (font && font->getFont() && string.length() > 0)
+    {
+        SDL_Color color = {r, g, b};
+        SDL_Surface *surface = TTF_RenderUTF8_Blended((TTF_Font *)font->getFont(), string.c_str(), color);
+
+        if (!surface)
+        {
+            printf("no surface\n");
+        }
+
+        transform.setScale(surface->w, surface->h);
+
+        glGenTextures(1, &textureID);
+        glBindTexture(GL_TEXTURE_2D, textureID);
+
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST_MIPMAP_NEAREST);
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+
+        glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, surface->w, surface->h, 0, GL_RGBA, GL_UNSIGNED_BYTE, surface->pixels);
+        glGenerateMipmap(GL_TEXTURE_2D);
+
+        SDL_FreeSurface(surface);
+    }
+}
+
+Matrix4 ComponentText::getLocalspaceMatrix()
+{
+    Matrix4 model, out;
+    model.setIdentity();
+    model.multiply(*transform.getModelMatrix());
+
+    out.setIdentity();
+    out.multiply(a);
+    out.multiply(model);
+
+    return out;
+}
