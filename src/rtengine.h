@@ -1,42 +1,42 @@
+// SPDX-FileCopyrightText: 2022 Dmitrii Shashkov
+// SPDX-License-Identifier: MIT
+
 #pragma once
-#include "utils.h"
-#include "viewManager.h"
-#include "stageManager.h"
-#include "resourceManager.h"
-#include "shadersManager.h"
-#include "physicsManager.h"
-#include "inputManager.h"
-#include "soundManager.h"
-#include "camera.h"
-#include "cameraOrto.h"
-#include "actor.h"
-#include "actorPawn.h"
-#include "actorGUIElement.h"
-#include "component.h"
-#include "componentSprite.h"
-#include "componentSoundPlayer.h"
-#include "componentText.h"
-#include "stage.h"
-#include "vector2.h"
-#include "vector3.h"
-#include "vector4.h"
-#include "matrix4.h"
-#include "effect.h"
-#include "watchable.h"
-#include "watcher.h"
+#include "common/utils.h"
+#include "actor/actor.h"
+#include "actor/actorPawn.h"
+#include "actor/actorGUIElement.h"
+#include "camera/camera.h"
+#include "camera/cameraOrto.h"
+#include "controller/viewController.h"
+#include "controller/stageController.h"
+#include "controller/resourceController.h"
+#include "controller/shadersController.h"
+#include "controller/physicsController.h"
+#include "controller/inputController.h"
+#include "controller/soundController.h"
+#include "component/component.h"
+#include "component/componentSprite.h"
+#include "component/componentSoundPlayer.h"
+#include "component/componentText.h"
+#include "stage/stage.h"
+#include "math/math.h"
+#include "shaders/effect.h"
+#include "actor/watchable.h"
+#include "actor/watcher.h"
 
 class RTEngine
 {
 protected:
     RTEngine();
 
-    static ViewManager *viewManager;
-    static StageManager *stageManager;
-    static ResourceManager *resourceManager;
-    static ShadersManager *shadersManager;
-    static PhysicsManager *physicsManager;
-    static InputManager *inputManager;
-    static SoundManager *soundManager;
+    static ViewController *viewController;
+    static StageController *stageController;
+    static ResourceController *resourceController;
+    static ShadersController *shadersController;
+    static PhysicsController *physicsController;
+    static InputController *inputController;
+    static SoundController *soundController;
 
     static bool isSDLInitDone;
 
@@ -49,11 +49,11 @@ protected:
 public:
     EXPORT static RTEngine *createInstance();
 
-    EXPORT static ViewManager *getViewManager();
-    EXPORT static StageManager *getStageManager();
-    EXPORT static ResourceManager *getResourceManager();
-    EXPORT static PhysicsManager *getPhysicsManager();
-    EXPORT static InputManager *getInputManager();
+    EXPORT static ViewController *getViewController();
+    EXPORT static StageController *getStageController();
+    EXPORT static ResourceController *getResourceController();
+    EXPORT static PhysicsController *getPhysicsController();
+    EXPORT static InputController *getInputController();
 
     EXPORT void openUrl(const char *url);
 

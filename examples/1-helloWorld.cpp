@@ -3,17 +3,17 @@
 
 int main()
 {
-    // Engine instance is the source of managers and settings of the engine
+    // Engine instance is the source of controllers and settings of the engine
     auto engine = RTEngine::createInstance();
 
     // Provides ability to create views, also stores them and update
     // 0 width and height means that with fullscreen (last parameter) it will take the maximum resolution
-    auto viewManager = engine->getViewManager();
-    auto view = viewManager->createView("Example \"1. Hello World\"", 0, 0, true);
+    auto viewController = engine->getViewController();
+    auto view = viewController->createView("Example \"1. Hello World\"", 0, 0, true);
 
     // Stage is where your game actores are presented
-    auto stageManager = engine->getStageManager();
-    auto stage = stageManager->createStage("Hello World");
+    auto stageController = engine->getStageController();
+    auto stage = stageController->createStage("Hello World");
     stage->setClearColor(0, 0, 0);
 
     // Layer with actors contain sprites and camera to view them
@@ -28,8 +28,8 @@ int main()
     camera->setHeightBasedResolution(640);
 
     // To put sprite onto our stage layer we first need to load image for this sprite
-    auto resourceManager = engine->getResourceManager();
-    auto helloTexture = resourceManager->addTexture("./data/hello.png");
+    auto resourceController = engine->getResourceController();
+    auto helloTexture = resourceController->addTexture("./data/hello.png");
 
     // First we need to create Actor. Actor is representation of some affecting environment entity in the scene
     auto sprite = layerActors->createActor<Actor>();
@@ -54,7 +54,7 @@ int main()
         // You can use your own counter if you prefer, it wont break anything
         float delta = engine->syncFrame();
         // Process operating system events coming to all created windows
-        viewManager->processEvents();
+        viewController->processEvents();
         // Processes all layers, actors and physics if enabled
         stage->process(delta);
         // Renders all actor components on all layers

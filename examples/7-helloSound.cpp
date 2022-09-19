@@ -70,12 +70,12 @@ int main()
     auto engine = RTEngine::createInstance();
 
     // View setup
-    auto viewManager = engine->getViewManager();
-    auto view = viewManager->createView("Example \"7. Hello Sound\"", 1280, 800, false);
+    auto viewController = engine->getViewController();
+    auto view = viewController->createView("Example \"7. Hello Sound\"", 1280, 800, false);
 
     // Stage setup
-    auto stageManager = engine->getStageManager();
-    auto stage = stageManager->createStage("Hello Sound");
+    auto stageController = engine->getStageController();
+    auto stage = stageController->createStage("Hello Sound");
 
     // Layers and camera setup
     auto layerActors = stage->createLayerActors("Hello Sound", 0);
@@ -83,11 +83,11 @@ int main()
     camera->setWidthBasedResolution(1280);
 
     // Textures and sound setup
-    auto resourceManager = engine->getResourceManager();
-    JoJo::jojoTexture = resourceManager->addTexture("./data/jojo.png");
-    auto background = resourceManager->addTexture("./data/background.jpg");
+    auto resourceController = engine->getResourceController();
+    JoJo::jojoTexture = resourceController->addTexture("./data/jojo.png");
+    auto background = resourceController->addTexture("./data/background.jpg");
 
-    JoJo::jojoSong = resourceManager->addSound("./data/sound.wav");
+    JoJo::jojoSong = resourceController->addSound("./data/sound.wav");
     // Note that only mono sounds can be panned. Stereo sounds always being played as is
     // But we can force mono
     JoJo::jojoSong->setForceMono(true);
@@ -104,7 +104,7 @@ int main()
     while (!engine->isTerminationIntended())
     {
         float delta = engine->syncFrame();
-        viewManager->processEvents();
+        viewController->processEvents();
         stage->process(delta);
         stage->present(view);
     }

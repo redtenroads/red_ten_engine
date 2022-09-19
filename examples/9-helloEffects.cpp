@@ -167,12 +167,12 @@ int main()
     auto engine = RTEngine::createInstance();
 
     // View setup
-    auto viewManager = engine->getViewManager();
-    auto view = viewManager->createView("Example \"9. Hello Effects\"", 1280, 800, false);
+    auto viewController = engine->getViewController();
+    auto view = viewController->createView("Example \"9. Hello Effects\"", 1280, 800, false);
 
     // Stage setup
-    auto stageManager = engine->getStageManager();
-    auto stage = stageManager->createStage("Hello Effects");
+    auto stageController = engine->getStageController();
+    auto stage = stageController->createStage("Hello Effects");
 
     // We have now 4 layers. 3 to draw actors and 1 to apply effects
     // Note the position of effect layer. It will be below gui layer and will effect only first 2 layers with background and jojo
@@ -199,14 +199,14 @@ int main()
     guiCamera->setWidthBasedResolution(1280);
 
     // Textures, fonts and sound setup
-    auto resourceManager = engine->getResourceManager();
-    JoJo::jojoTexture = resourceManager->addTexture("./data/jojo.png");
-    auto background = resourceManager->addTexture("./data/background.jpg");
-    CratePlate::crateTexture = resourceManager->addTexture("./data/crate.jpg");
-    CratePlate::plateTexture = resourceManager->addTexture("./data/plate.png");
+    auto resourceController = engine->getResourceController();
+    JoJo::jojoTexture = resourceController->addTexture("./data/jojo.png");
+    auto background = resourceController->addTexture("./data/background.jpg");
+    CratePlate::crateTexture = resourceController->addTexture("./data/crate.jpg");
+    CratePlate::plateTexture = resourceController->addTexture("./data/plate.png");
 
-    auto font = resourceManager->addFont("./data/BebasNeue-Regular.ttf", 72);
-    GUIButton::font = resourceManager->addFont("./data/BebasNeue-Regular.ttf", 48);
+    auto font = resourceController->addFont("./data/BebasNeue-Regular.ttf", 72);
+    GUIButton::font = resourceController->addFont("./data/BebasNeue-Regular.ttf", 48);
 
     // Just a background for better look
     auto backgroundActor = bottomLayerActors->createActor<Actor>();
@@ -218,7 +218,7 @@ int main()
     dio->transform.setScale(1.1f);
     dio->transform.setPosition(-100.0f, 0.0f);
     auto dioSprite = dio->createComponent<ComponentSprite>();
-    dioSprite->setTexture(resourceManager->addTexture("./data/dio.jpg"));
+    dioSprite->setTexture(resourceController->addTexture("./data/dio.jpg"));
     dioSprite->setOpacity(0);
 
     auto plate = topLayerActors->createActor<CratePlate>();
@@ -261,7 +261,7 @@ int main()
     while (!engine->isTerminationIntended())
     {
         float delta = engine->syncFrame();
-        viewManager->processEvents();
+        viewController->processEvents();
         stage->process(delta);
 
         effectInverse->update(delta);

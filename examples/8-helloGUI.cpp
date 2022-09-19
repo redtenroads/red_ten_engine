@@ -145,12 +145,12 @@ int main()
     auto engine = RTEngine::createInstance();
 
     // View setup
-    auto viewManager = engine->getViewManager();
-    auto view = viewManager->createView("Example \"8. Hello GUI\"", 1280, 800, false);
+    auto viewController = engine->getViewController();
+    auto view = viewController->createView("Example \"8. Hello GUI\"", 1280, 800, false);
 
     // Stage setup
-    auto stageManager = engine->getStageManager();
-    auto stage = stageManager->createStage("Hello GUI");
+    auto stageController = engine->getStageController();
+    auto stage = stageController->createStage("Hello GUI");
 
     // Layers and camera setup
     auto layerActors = stage->createLayerActors("Hello Actor Layer", 0);
@@ -163,15 +163,15 @@ int main()
     guiCamera->setWidthBasedResolution(1280);
 
     // Textures and sound setup
-    auto resourceManager = engine->getResourceManager();
-    JoJo::jojoTexture = resourceManager->addTexture("./data/jojo.png");
-    auto background = resourceManager->addTexture("./data/background.jpg");
-    CratePlate::crateTexture = resourceManager->addTexture("./data/crate.jpg");
-    CratePlate::plateTexture = resourceManager->addTexture("./data/plate.png");
+    auto resourceController = engine->getResourceController();
+    JoJo::jojoTexture = resourceController->addTexture("./data/jojo.png");
+    auto background = resourceController->addTexture("./data/background.jpg");
+    CratePlate::crateTexture = resourceController->addTexture("./data/crate.jpg");
+    CratePlate::plateTexture = resourceController->addTexture("./data/plate.png");
 
     // To create texts we first need to load font
-    auto font = resourceManager->addFont("./data/BebasNeue-Regular.ttf", 72);
-    GUIButton::font = resourceManager->addFont("./data/BebasNeue-Regular.ttf", 48);
+    auto font = resourceController->addFont("./data/BebasNeue-Regular.ttf", 72);
+    GUIButton::font = resourceController->addFont("./data/BebasNeue-Regular.ttf", 48);
 
     // Just a background for better look
     auto backgroundActor = layerActors->createActor<Actor>();
@@ -230,7 +230,7 @@ int main()
     while (!engine->isTerminationIntended())
     {
         float delta = engine->syncFrame();
-        viewManager->processEvents();
+        viewController->processEvents();
         stage->process(delta);
         stage->present(view);
 

@@ -64,16 +64,16 @@ int main()
     auto engine = RTEngine::createInstance();
 
     // View setup
-    auto viewManager = engine->getViewManager();
-    auto view = viewManager->createView(
+    auto viewController = engine->getViewController();
+    auto view = viewController->createView(
         "Example \"10. Hello Animation\"",
-        viewManager->getPrimaryScreenWidth() * 0.8f,
-        viewManager->getPrimaryScreenHeight() * 0.8f,
+        viewController->getPrimaryScreenWidth() * 0.8f,
+        viewController->getPrimaryScreenHeight() * 0.8f,
         false);
 
     // Stage setup
-    auto stageManager = engine->getStageManager();
-    auto stage = stageManager->createStage("Hello Animation");
+    auto stageController = engine->getStageController();
+    auto stage = stageController->createStage("Hello Animation");
 
     // Layer with actors contain sprites and camera to view them
     // To make 2d games you should use ortographic camera that has no perspective distorsion
@@ -86,21 +86,21 @@ int main()
     camera->setWidthBasedResolution(1280);
 
     // Textures setup
-    auto resourceManager = engine->getResourceManager();
-    Sonic::sonicTexture = resourceManager->addTexture("./data/sonic.png");
+    auto resourceController = engine->getResourceController();
+    Sonic::sonicTexture = resourceController->addTexture("./data/sonic.png");
 
     // Just a background for better look
     auto backgroundActor = layerActors->createActor<Actor>();
     backgroundActor->transform.setScale(2.0f);
     auto backgroundActorSprite = backgroundActor->createComponent<ComponentSprite>();
-    backgroundActorSprite->setTexture(resourceManager->addTexture("./data/background.jpg"));
+    backgroundActorSprite->setTexture(resourceController->addTexture("./data/background.jpg"));
 
     float spawnerCounter = 0.0f;
 
     while (!engine->isTerminationIntended())
     {
         float delta = engine->syncFrame();
-        viewManager->processEvents();
+        viewController->processEvents();
 
         spawnerCounter += delta;
         while (spawnerCounter > 0.1f)

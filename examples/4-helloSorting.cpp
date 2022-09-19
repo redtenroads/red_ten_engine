@@ -40,12 +40,12 @@ int main()
     auto engine = RTEngine::createInstance();
 
     // View setup
-    auto viewManager = engine->getViewManager();
-    auto view = viewManager->createView("Example \"2. Hello Actors\"", 1280, 800, false);
+    auto viewController = engine->getViewController();
+    auto view = viewController->createView("Example \"2. Hello Actors\"", 1280, 800, false);
 
     // Stage setup
-    auto stageManager = engine->getStageManager();
-    auto stage = stageManager->createStage("Hello Actors");
+    auto stageController = engine->getStageController();
+    auto stage = stageController->createStage("Hello Actors");
 
     // Ortographic camera in layer disables Z test in OpenGL. It means Z axis doesn't effect which sprite is on the top
     // But you can still sort sprites by enabling manual sort. This way actors will be sorted depending on their inner zIndex before rendering
@@ -56,9 +56,9 @@ int main()
     camera->setWidthBasedResolution(1280);
 
     // Textures setup
-    auto resourceManager = engine->getResourceManager();
-    Figure::ballTexture = resourceManager->addTexture("./data/plate.png");
-    Figure::crateTexture = resourceManager->addTexture("./data/crate.jpg");
+    auto resourceController = engine->getResourceController();
+    Figure::ballTexture = resourceController->addTexture("./data/plate.png");
+    Figure::crateTexture = resourceController->addTexture("./data/crate.jpg");
 
     int figuresAmount = 20;
     float period = (CONST_PI * 2.0f) / (float)figuresAmount;
@@ -71,7 +71,7 @@ int main()
     while (!engine->isTerminationIntended())
     {
         float delta = engine->syncFrame();
-        viewManager->processEvents();
+        viewController->processEvents();
         stage->process(delta);
         stage->present(view);
     }

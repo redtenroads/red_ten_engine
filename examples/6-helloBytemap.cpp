@@ -81,10 +81,10 @@ public:
                 1.0f);
 
             // Now we need to move the vector into local space of the component
-            v = v * sprite->getLocalspaceMatrix();
+            v = sprite->getLocalspaceMatrix() * v;
 
             // And then to local space of the actor
-            v = v * (*transform.getModelMatrix());
+            v = (*transform.getModelMatrix()) * v;
 
             // That's it. v now holds the position on the actual scene and we can put our star there!
             star->transform.setPosition(v.x, v.y);
@@ -107,12 +107,12 @@ int main()
     auto engine = RTEngine::createInstance();
 
     // View setup
-    auto viewManager = engine->getViewManager();
-    auto view = viewManager->createView("Example \"6. Hello Bytemap\"", 1280, 800, false);
+    auto viewController = engine->getViewController();
+    auto view = viewController->createView("Example \"6. Hello Bytemap\"", 1280, 800, false);
 
     // Stage setup
-    auto stageManager = engine->getStageManager();
-    auto stage = stageManager->createStage("Hello Bytemap");
+    auto stageController = engine->getStageController();
+    auto stage = stageController->createStage("Hello Bytemap");
 
     // Layers and camera setup
     auto layerActors = stage->createLayerActors("Hello Bytemap", 0);
@@ -120,10 +120,10 @@ int main()
     camera->setWidthBasedResolution(1280);
 
     // Textures setup
-    auto resourceManager = engine->getResourceManager();
-    JoJo::jojoTexture = resourceManager->addTexture("./data/jojo.png");
-    Star::starTexture = resourceManager->addTexture("./data/star.png");
-    auto background = resourceManager->addTexture("./data/background.jpg");
+    auto resourceController = engine->getResourceController();
+    JoJo::jojoTexture = resourceController->addTexture("./data/jojo.png");
+    Star::starTexture = resourceController->addTexture("./data/star.png");
+    auto background = resourceController->addTexture("./data/background.jpg");
 
     // Just a background for better look
     auto backgroundActor = layerActors->createActor<Actor>();
@@ -137,7 +137,7 @@ int main()
     while (!engine->isTerminationIntended())
     {
         float delta = engine->syncFrame();
-        viewManager->processEvents();
+        viewController->processEvents();
         stage->process(delta);
         stage->present(view);
     }

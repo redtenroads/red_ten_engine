@@ -1,6 +1,9 @@
+// SPDX-FileCopyrightText: 2022 Dmitrii Shashkov
+// SPDX-License-Identifier: MIT
+
 #include "rtengine.h"
-#include "SDL.h"
-#include "SDL_ttf.h"
+#include <SDL.h>
+#include <SDL_ttf.h>
 #include <cmath>
 #include <shellscalingapi.h>
 
@@ -8,57 +11,57 @@
 #include <windows.h>
 #endif
 
-ViewManager *RTEngine::viewManager = nullptr;
-StageManager *RTEngine::stageManager = nullptr;
-ResourceManager *RTEngine::resourceManager = nullptr;
-ShadersManager *RTEngine::shadersManager = nullptr;
-PhysicsManager *RTEngine::physicsManager = nullptr;
-InputManager *RTEngine::inputManager = nullptr;
-SoundManager *RTEngine::soundManager = nullptr;
+ViewController *RTEngine::viewController = nullptr;
+StageController *RTEngine::stageController = nullptr;
+ResourceController *RTEngine::resourceController = nullptr;
+ShadersController *RTEngine::shadersController = nullptr;
+PhysicsController *RTEngine::physicsController = nullptr;
+InputController *RTEngine::inputController = nullptr;
+SoundController *RTEngine::soundController = nullptr;
 
 bool RTEngine::isSDLInitDone = false;
 
 RTEngine::RTEngine()
 {
-    if (!inputManager)
+    if (!inputController)
     {
-        inputManager = new InputManager();
-        ViewManager::setInputManager(inputManager);
-        ActorPawn::setInputManager(inputManager);
+        inputController = new InputController();
+        ViewController::setInputController(inputController);
+        ActorPawn::setInputController(inputController);
     }
-    if (!viewManager)
+    if (!viewController)
     {
-        viewManager = new ViewManager();
+        viewController = new ViewController();
     }
-    if (!stageManager)
+    if (!stageController)
     {
-        stageManager = new StageManager();
+        stageController = new StageController();
     }
-    if (!resourceManager)
+    if (!resourceController)
     {
-        resourceManager = new ResourceManager();
+        resourceController = new ResourceController();
     }
-    if (!soundManager)
+    if (!soundController)
     {
-        soundManager = new SoundManager();
-        ComponentSoundPlayer::setSoundManager(soundManager);
-        Camera::setSoundManager(soundManager);
+        soundController = new SoundController();
+        ComponentSoundPlayer::setSoundController(soundController);
+        Camera::setSoundController(soundController);
     }
-    if (!shadersManager)
+    if (!shadersController)
     {
-        shadersManager = new ShadersManager();
-        Component::setShadersManager(shadersManager);
-        Actor::setShadersManager(shadersManager);
-        Stage::setShadersManager(shadersManager);
-        Effect::setShadersManager(shadersManager);
-        Layer::setShadersManager(shadersManager);
+        shadersController = new ShadersController();
+        Component::setShadersController(shadersController);
+        Actor::setShadersController(shadersController);
+        Stage::setShadersController(shadersController);
+        Effect::setShadersController(shadersController);
+        Layer::setShadersController(shadersController);
     }
-    if (!physicsManager)
+    if (!physicsController)
     {
-        physicsManager = new PhysicsManager();
-        physicsManager->setupPhysics();
-        Layer::setPhysicsManager(physicsManager);
-        Actor::setPhysicsManager(physicsManager);
+        physicsController = new PhysicsController();
+        physicsController->setupPhysics();
+        Layer::setPhysicsController(physicsController);
+        Actor::setPhysicsController(physicsController);
     }
 
     tick = SDL_GetTicks();
@@ -84,24 +87,24 @@ RTEngine *RTEngine::createInstance()
     return instance;
 }
 
-ViewManager *RTEngine::getViewManager()
+ViewController *RTEngine::getViewController()
 {
-    return viewManager;
+    return viewController;
 }
 
-StageManager *RTEngine::getStageManager()
+StageController *RTEngine::getStageController()
 {
-    return stageManager;
+    return stageController;
 }
 
-ResourceManager *RTEngine::getResourceManager()
+ResourceController *RTEngine::getResourceController()
 {
-    return resourceManager;
+    return resourceController;
 }
 
-PhysicsManager *RTEngine::getPhysicsManager()
+PhysicsController *RTEngine::getPhysicsController()
 {
-    return physicsManager;
+    return physicsController;
 }
 
 void RTEngine::openUrl(const char *url)
@@ -134,5 +137,5 @@ void RTEngine::terminate()
 
 bool RTEngine::isTerminationIntended()
 {
-    return viewManager->getIsExitIntended() | bTerminationRequested;
+    return viewController->getIsExitIntended() | bTerminationRequested;
 }

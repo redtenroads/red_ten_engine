@@ -1,0 +1,38 @@
+// SPDX-FileCopyrightText: 2022 Dmitrii Shashkov
+// SPDX-License-Identifier: MIT
+
+#pragma once
+#include "common/utils.h"
+#include "controller/shadersController.h"
+#include "math/math.h"
+#include "math/transformation.h"
+#include "physics/physicsEntity.h"
+#include "physics/physicsEntityBox.h"
+#include "physics/physicsEntitySphere.h"
+#include "common/destroyable.h"
+#include <list>
+
+class Component : public Destroyable
+{
+public:
+    EXPORT Component();
+    EXPORT virtual ~Component();
+    EXPORT virtual void prepare();
+    EXPORT virtual void process(float delta);
+    EXPORT virtual void render(Matrix4 &vpMatrix, Transformation *tf);
+
+    EXPORT PhysicsEntitySphere *addPhysics2dCircle(float radius);
+    EXPORT PhysicsEntitySphere *addPhysics2dCircle(float radius, float px, float py, float pz);
+    EXPORT PhysicsEntityBox *addPhysics2dBox(float width, float height);
+    EXPORT PhysicsEntityBox *addPhysics2dBox(float width, float height, float px, float py, float pz);
+
+    EXPORT virtual Matrix4 getLocalspaceMatrix();
+
+    static void setShadersController(ShadersController *shadersController);
+
+    std::list<PhysicsEntity *> physicsEntities;
+    
+    Transformation transform;
+protected:
+    static ShadersController *shadersController;
+};

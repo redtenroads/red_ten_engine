@@ -132,12 +132,12 @@ int main()
     auto engine = RTEngine::createInstance();
 
     // View setup
-    auto viewManager = engine->getViewManager();
-    auto view = viewManager->createView("Example \"3. Hello Physics\"", 1280, 800, false);
+    auto viewController = engine->getViewController();
+    auto view = viewController->createView("Example \"3. Hello Physics\"", 1280, 800, false);
 
     // Stage setup
-    auto stageManager = engine->getStageManager();
-    auto stage = stageManager->createStage("Hello Physics");
+    auto stageController = engine->getStageController();
+    auto stage = stageController->createStage("Hello Physics");
 
     // Layers and camera setup
     auto layerActors = stage->createLayerActors("Hello Physics", 0);
@@ -150,11 +150,11 @@ int main()
     layerActors->enablePhisics(Vector3(0.0f, -6.0f, 0.0f));
 
     // Textures setup
-    auto resourceManager = engine->getResourceManager();
-    Ball::ballTexture = resourceManager->addTexture("./data/ball.png");
-    Crate::crateTexture = resourceManager->addTexture("./data/crate.jpg");
+    auto resourceController = engine->getResourceController();
+    Ball::ballTexture = resourceController->addTexture("./data/ball.png");
+    Crate::crateTexture = resourceController->addTexture("./data/crate.jpg");
     DoubleCrate::crateTexture = Crate::crateTexture;
-    auto background = resourceManager->addTexture("./data/background.jpg");
+    auto background = resourceController->addTexture("./data/background.jpg");
 
     // Just a background for better look
     auto backgroundActor = layerActors->createActor<Actor>();
@@ -193,7 +193,7 @@ int main()
             if (spawn)
                 spawn->transform.setPosition((float)(rand() % 600 - 300), 600.0f);
         }
-        viewManager->processEvents();
+        viewController->processEvents();
         stage->process(delta);
         stage->present(view);
     }

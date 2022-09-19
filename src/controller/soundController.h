@@ -1,0 +1,25 @@
+// SPDX-FileCopyrightText: 2022 Dmitrii Shashkov
+// SPDX-License-Identifier: MIT
+
+#pragma once
+#include "common/utils.h"
+#include <vector>
+
+struct AudioDevice
+{
+    const char *name;
+};
+
+class SoundController
+{
+public:
+    SoundController();
+
+    void setListenerCamera(void *listenerCamera);
+    void *getListenerCamera();
+protected:
+    bool bSoundEnabled = false;
+    std::vector<AudioDevice *> devicesList;
+
+    void *listenerCamera = nullptr;
+};

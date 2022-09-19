@@ -59,12 +59,12 @@ int main()
     auto engine = RTEngine::createInstance();
 
     // View setup
-    auto viewManager = engine->getViewManager();
-    auto view = viewManager->createView("Example \"2. Hello Actors\"", 1280, 800, false);
+    auto viewController = engine->getViewController();
+    auto view = viewController->createView("Example \"2. Hello Actors\"", 1280, 800, false);
 
     // Stage setup
-    auto stageManager = engine->getStageManager();
-    auto stage = stageManager->createStage("Hello Actors");
+    auto stageController = engine->getStageController();
+    auto stage = stageController->createStage("Hello Actors");
 
     // Layers and camera setup
     auto layerActors = stage->createLayerActors("Hello Actors", 0);
@@ -72,8 +72,8 @@ int main()
     camera->setWidthBasedResolution(1280);
 
     // Textures setup
-    auto resourceManager = engine->getResourceManager();
-    Ball::ballTexture = resourceManager->addTexture("./data/plate.png");
+    auto resourceController = engine->getResourceController();
+    Ball::ballTexture = resourceController->addTexture("./data/plate.png");
 
     float creationCounter = 0;
     while (!engine->isTerminationIntended())
@@ -89,7 +89,7 @@ int main()
             layerActors->createActor<Ball>();
         }
 
-        viewManager->processEvents();
+        viewController->processEvents();
         stage->process(delta);
         stage->present(view);
     }

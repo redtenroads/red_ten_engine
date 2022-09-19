@@ -48,12 +48,12 @@ int main()
     auto engine = RTEngine::createInstance();
 
     // View setup
-    auto viewManager = engine->getViewManager();
-    auto view = viewManager->createView("Example \"11. Hello Music\"", 1280, 800, false);
+    auto viewController = engine->getViewController();
+    auto view = viewController->createView("Example \"11. Hello Music\"", 1280, 800, false);
 
     // Stage setup
-    auto stageManager = engine->getStageManager();
-    auto stage = stageManager->createStage("Hello Music");
+    auto stageController = engine->getStageController();
+    auto stage = stageController->createStage("Hello Music");
 
     // Layers and camera setup
     auto layerActors = stage->createLayerActors("Hello Music", 0);
@@ -61,12 +61,12 @@ int main()
     camera->setWidthBasedResolution(1280);
 
     // Textures setup
-    auto resourceManager = engine->getResourceManager();
-    JoJo::jojoTexture = resourceManager->addTexture("./data/jojo.png");
-    auto background = resourceManager->addTexture("./data/background.jpg");
+    auto resourceController = engine->getResourceController();
+    JoJo::jojoTexture = resourceController->addTexture("./data/jojo.png");
+    auto background = resourceController->addTexture("./data/background.jpg");
 
     // Music setup
-    JoJo::cyberpunkSong = resourceManager->addSound("./data/streamable.ogg");
+    JoJo::cyberpunkSong = resourceController->addSound("./data/streamable.ogg");
     JoJo::cyberpunkSong->load();
 
     // Just a background for better look
@@ -80,7 +80,7 @@ int main()
     while (!engine->isTerminationIntended())
     {
         float delta = engine->syncFrame();
-        viewManager->processEvents();
+        viewController->processEvents();
         stage->process(delta);
         stage->present(view);
     }
