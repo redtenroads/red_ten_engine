@@ -2,14 +2,15 @@
 // SPDX-License-Identifier: MIT
 
 #pragma once
+#include "common/utils.h"
 #include "camera/camera.h"
 #include "stage/layer.h"
 #include "os/view.h"
 
-class CameraOrto : public Camera
+class CameraPerspective : public Camera
 {
 public:
-    EXPORT CameraOrto();
+    EXPORT CameraPerspective();
     EXPORT void prepareToRender(View *view);
     EXPORT void finishRender();
     EXPORT int getWidth();
@@ -20,10 +21,17 @@ public:
     EXPORT void setWidthBasedResolution(float width);
     EXPORT void setHeightBasedResolution(float height);
 
+    EXPORT void setFarDistance(float farDistance);
+    EXPORT void setNearDistance(float nearDistance);
+    EXPORT void setFov(float fov);
+
     View *view;
 
 protected:
     Layer *layer;
     bool useWidthBasedProportion = true;
     float mainLine = 320.0f;
+    float farDistance = 5600.0f;
+    float nearDistance = 1.0f;
+    float fov = 45.0f;
 };

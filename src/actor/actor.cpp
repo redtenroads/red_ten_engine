@@ -37,12 +37,10 @@ using namespace JPH;
 // We're also using STL classes in this example
 using namespace std;
 
-ShadersController *Actor::shadersController = nullptr;
 PhysicsController *Actor::physicsController = nullptr;
 
 Actor::Actor()
 {
-    shadersController->compileSysShaders();
     registerName("Actor");
 }
 
@@ -386,11 +384,6 @@ void Actor::registerName(std::string name)
 {
     className = name;
     classChierarchy.push_back(className);
-}
-
-void Actor::setShadersController(ShadersController *shadersController)
-{
-    Actor::shadersController = shadersController;
 }
 
 void Actor::setPhysicsController(PhysicsController *physicsController)

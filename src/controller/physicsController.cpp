@@ -267,7 +267,7 @@ PhysicsDescriptor *PhysicsController::createSystem(Vector3 gravity, int sizeOfAl
     physicsSystem->SetBodyActivationListener(bodyActivationListener);
     physicsSystem->SetGravity(Vec3(gravity.x, gravity.y, gravity.z));
 
-    // Create body ShadersController
+    // Create body
     BodyManager *mBodyManager = new BodyManager();
     mBodyManager->Init(cMaxBodies, 0, *broadPhaseLayerInterface);
 

@@ -2,6 +2,7 @@
 // SPDX-License-Identifier: MIT
 
 #include "rtengine.h"
+#include "common/commonShaders.h"
 #include <SDL.h>
 #include <SDL_ttf.h>
 #include <cmath>
@@ -14,7 +15,6 @@
 ViewController *RTEngine::viewController = nullptr;
 StageController *RTEngine::stageController = nullptr;
 ResourceController *RTEngine::resourceController = nullptr;
-ShadersController *RTEngine::shadersController = nullptr;
 PhysicsController *RTEngine::physicsController = nullptr;
 InputController *RTEngine::inputController = nullptr;
 SoundController *RTEngine::soundController = nullptr;
@@ -40,21 +40,13 @@ RTEngine::RTEngine()
     if (!resourceController)
     {
         resourceController = new ResourceController();
+        CommonShaders::resourceController = resourceController;
     }
     if (!soundController)
     {
         soundController = new SoundController();
         ComponentSoundPlayer::setSoundController(soundController);
         Camera::setSoundController(soundController);
-    }
-    if (!shadersController)
-    {
-        shadersController = new ShadersController();
-        Component::setShadersController(shadersController);
-        Actor::setShadersController(shadersController);
-        Stage::setShadersController(shadersController);
-        Effect::setShadersController(shadersController);
-        Layer::setShadersController(shadersController);
     }
     if (!physicsController)
     {

@@ -4,12 +4,11 @@
 #include "os/view.h"
 #include "opengl/glew.h"
 #include "opengl/wglew.h"
+#include "common/commonShaders.h"
 #include <windows.h>
 #include <gl/GL.h>
 #include <gl/GLU.h>
 #include <SDL.h>
-
-ShadersController *View::shadersController = nullptr;
 
 View::View(int width, int height, bool isFullscreen)
 {
@@ -33,6 +32,8 @@ bool View::makeWindow()
     {
         SDL_GL_CreateContext(newWindow);
         glewInit();
+
+        CommonShaders::build();
 
         window = newWindow;
 
@@ -100,9 +101,4 @@ void View::minimize()
 unsigned int View::getTexture()
 {
     return renderedTexture;
-}
-
-void View::setShadersController(ShadersController *shadersController)
-{
-    View::shadersController = shadersController;
 }

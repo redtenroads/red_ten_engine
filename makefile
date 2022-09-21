@@ -18,16 +18,16 @@ OBJDIR = objects
 BINDIR = bin
  
 OBJ_FILES = ${OBJDIR}/rtengine.o ${OBJDIR}/view.o ${OBJDIR}/viewController.o ${OBJDIR}/layer.o ${OBJDIR}/glew.o \
-			${OBJDIR}/layerActors.o ${OBJDIR}/layerEffects.o \
+			${OBJDIR}/layerActors.o ${OBJDIR}/layerEffects.o  \
 			${OBJDIR}/stage.o ${OBJDIR}/stageController.o ${OBJDIR}/stb_image.o ${OBJDIR}/effect.o  \
-			${OBJDIR}/resourceController.o ${OBJDIR}/camera.o ${OBJDIR}/cameraOrto.o \
-			${OBJDIR}/shadersController.o  ${OBJDIR}/physicsController.o ${OBJDIR}/soundController.o \
+			${OBJDIR}/camera.o ${OBJDIR}/cameraOrto.o ${OBJDIR}/cameraPerspective.o  \
+			${OBJDIR}/physicsController.o ${OBJDIR}/soundController.o ${OBJDIR}/resourceController.o \
 			${OBJDIR}/transformation.o ${OBJDIR}/inputController.o \
 			${OBJDIR}/physicsEntity.o ${OBJDIR}/physicsEntityBox.o ${OBJDIR}/physicsEntitySphere.o \
 			${OBJDIR}/actor.o  ${OBJDIR}/actorPawn.o ${OBJDIR}/actorGUIElement.o \
-			${OBJDIR}/sound.o ${OBJDIR}/texture.o ${OBJDIR}/font.o \
+			${OBJDIR}/sound.o ${OBJDIR}/texture.o ${OBJDIR}/font.o ${OBJDIR}/shader.o ${OBJDIR}/mesh.o \
 			${OBJDIR}/component.o ${OBJDIR}/componentSprite.o ${OBJDIR}/componentSoundPlayer.o ${OBJDIR}/componentText.o \
-			${OBJDIR}/stb_vorbis.o ${OBJDIR}/destroyable.o
+			${OBJDIR}/stb_vorbis.o ${OBJDIR}/destroyable.o ${OBJDIR}/commonShaders.o
 
 EXAMPLES = 	${BINDIR}/1-helloWorld.exe ${BINDIR}/2-helloActors.exe ${BINDIR}/3-helloPhysics.exe ${BINDIR}/4-helloSorting.exe \
 			${BINDIR}/5-helloInput.exe ${BINDIR}/6-helloBytemap.exe ${BINDIR}/7-helloSound.exe ${BINDIR}/8-helloGUI.exe \
@@ -47,9 +47,6 @@ ${OBJDIR}/stageController.o: ${SRCDIR}/controller/stageController.cpp
 
 ${OBJDIR}/resourceController.o: ${SRCDIR}/controller/resourceController.cpp
 	$(CC) $(CFLAGS) -o ${OBJDIR}/resourceController.o ${SRCDIR}/controller/resourceController.cpp
-
-${OBJDIR}/shadersController.o: ${SRCDIR}/controller/shadersController.cpp
-	$(CC) $(CFLAGS) -o ${OBJDIR}/shadersController.o ${SRCDIR}/controller/shadersController.cpp
 
 ${OBJDIR}/physicsController.o: ${SRCDIR}/controller/physicsController.cpp
 	$(CC) $(CFLAGS) -o ${OBJDIR}/physicsController.o ${SRCDIR}/controller/physicsController.cpp
@@ -84,6 +81,12 @@ ${OBJDIR}/sound.o: ${SRCDIR}/resource/sound.cpp
 ${OBJDIR}/font.o: ${SRCDIR}/resource/font.cpp
 	$(CC) $(CFLAGS) -o ${OBJDIR}/font.o ${SRCDIR}/resource/font.cpp
 
+${OBJDIR}/shader.o: ${SRCDIR}/resource/shader.cpp
+	$(CC) $(CFLAGS) -o ${OBJDIR}/shader.o ${SRCDIR}/resource/shader.cpp
+
+${OBJDIR}/mesh.o: ${SRCDIR}/resource/mesh.cpp
+	$(CC) $(CFLAGS) -o ${OBJDIR}/mesh.o ${SRCDIR}/resource/mesh.cpp
+
 ${OBJDIR}/vector3.o: ${SRCDIR}/math/vector3.cpp
 	$(CC) $(CFLAGS) -o ${OBJDIR}/vector3.o ${SRCDIR}/math/vector3.cpp
 
@@ -105,14 +108,17 @@ ${OBJDIR}/stb_image.o: ${SRCDIR}/loaders/stb_image.cpp
 ${OBJDIR}/stb_vorbis.o: ${SRCDIR}/loaders/stb_vorbis.cpp
 	$(CC) $(CFLAGS) -o ${OBJDIR}/stb_vorbis.o ${SRCDIR}/loaders/stb_vorbis.cpp
 
-${OBJDIR}/effect.o: ${SRCDIR}/shaders/effect.cpp
-	$(CC) $(CFLAGS) -o ${OBJDIR}/effect.o ${SRCDIR}/shaders/effect.cpp
+${OBJDIR}/effect.o: ${SRCDIR}/common/effect.cpp
+	$(CC) $(CFLAGS) -o ${OBJDIR}/effect.o ${SRCDIR}/common/effect.cpp
 
 ${OBJDIR}/camera.o: ${SRCDIR}/camera/camera.cpp
 	$(CC) $(CFLAGS) -o ${OBJDIR}/camera.o ${SRCDIR}/camera/camera.cpp
 
 ${OBJDIR}/cameraOrto.o: ${SRCDIR}/camera/cameraOrto.cpp
 	$(CC) $(CFLAGS) -o ${OBJDIR}/cameraOrto.o ${SRCDIR}/camera/cameraOrto.cpp
+
+${OBJDIR}/cameraPerspective.o: ${SRCDIR}/camera/cameraPerspective.cpp
+	$(CC) $(CFLAGS) -o ${OBJDIR}/cameraPerspective.o ${SRCDIR}/camera/cameraPerspective.cpp
 
 ${OBJDIR}/actor.o: ${SRCDIR}/actor/actor.cpp
 	$(CC) $(CFLAGS) -o ${OBJDIR}/actor.o ${SRCDIR}/actor/actor.cpp
@@ -149,6 +155,9 @@ ${OBJDIR}/destroyable.o: ${SRCDIR}/common/destroyable.cpp
 
 ${OBJDIR}/utils.o: ${SRCDIR}/common/utils.cpp
 	$(CC) $(CFLAGS) -o ${OBJDIR}/utils.o ${SRCDIR}/common/utils.cpp
+
+${OBJDIR}/commonShaders.o: ${SRCDIR}/common/commonShaders.cpp
+	$(CC) $(CFLAGS) -o ${OBJDIR}/commonShaders.o ${SRCDIR}/common/commonShaders.cpp
 
 ${OBJDIR}/glew.o: ${SRCDIR}/opengl/glew.c
 	$(CC) $(CFLAGS) -o ${OBJDIR}/glew.o ${SRCDIR}/opengl/glew.c

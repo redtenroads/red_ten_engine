@@ -5,7 +5,6 @@
 #include "common/utils.h"
 #include "os/view.h"
 #include "controller/physicsController.h"
-#include "controller/shadersController.h"
 
 class Layer
 {
@@ -15,12 +14,10 @@ protected:
     std::string name;
 
     static PhysicsController *physicsController;
-    static ShadersController *shadersController;
 
 public:
     virtual void process(float delta);
     virtual void render(View *view);
 
     static void setPhysicsController(PhysicsController *physicsController);
-    static void setShadersController(ShadersController *shadersController);
 };

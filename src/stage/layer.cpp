@@ -4,7 +4,6 @@
 #include "stage/layer.h"
 
 PhysicsController *Layer::physicsController = nullptr;
-ShadersController *Layer::shadersController = nullptr;
 
 Layer::Layer(std::string name, int index)
 {
@@ -23,9 +22,4 @@ void Layer::render(View *view)
 void Layer::setPhysicsController(PhysicsController *physicsController)
 {
     Layer::physicsController = physicsController;
-}
-
-void Layer::setShadersController(ShadersController *shadersController)
-{
-    Layer::shadersController = shadersController;
 }

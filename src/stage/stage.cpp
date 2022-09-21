@@ -1,13 +1,12 @@
 // SPDX-FileCopyrightText: 2022 Dmitrii Shashkov
 // SPDX-License-Identifier: MIT
 
+#include "common/commonShaders.h"
 #include "stage/stage.h"
 #include "opengl/glew.h"
 #include "opengl/wglew.h"
 #include <SDL.h>
 #include <math.h>
-
-ShadersController *Stage::shadersController = nullptr;
 
 Stage::Stage(std::string name)
 {
@@ -50,10 +49,11 @@ void Stage::present(View *view)
 
     glBindFramebuffer(GL_FRAMEBUFFER, 0);
 
-    auto screenShader = shadersController->getScreenShader();
-    shadersController->switchShader(screenShader);
+    auto screenShader = CommonShaders::screenShader;
+    screenShader->use();
+
     glBindTexture(GL_TEXTURE_2D, view->getTexture());
-    glBindVertexArray(screenShader->vao);
+    CommonShaders::screenMesh->use();
     glDrawArrays(GL_QUADS, 0, 4);
 
     view->swapBuffers();
@@ -66,20 +66,15 @@ void Stage::setClearColor(unsigned char r, unsigned char g, unsigned char b)
     clearColor[2] = (float)b / 255.0f;
 }
 
-void Stage::setShadersController(ShadersController *shadersController)
-{
-    Stage::shadersController = shadersController;
-}
-
 void Stage::sortLayers()
 {
 }
 
 void Stage::clearTarget()
 {
-    auto clearShader = shadersController->getClearShader();
-    shadersController->switchShader(clearShader);
+    auto clearShader = CommonShaders::clearShader;
+    clearShader->use();
     glUniform3fv(clearShader->v3ColorLoc, 1, clearColor);
-    glBindVertexArray(clearShader->vao);
+    CommonShaders::screenMesh->use();
     glDrawArrays(GL_QUADS, 0, 4);
 }

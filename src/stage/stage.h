@@ -6,7 +6,6 @@
 #include "stage/layer.h"
 #include "stage/layerActors.h"
 #include "stage/layerEffects.h"
-#include "controller/shadersController.h"
 #include "os/view.h"
 #include <list>
 
@@ -23,8 +22,6 @@ public:
 
     EXPORT void setClearColor(unsigned char r, unsigned char g, unsigned char b);
 
-    static void setShadersController(ShadersController *shadersController);
-
 protected:
     void clearTarget();
     float clearColor[3] = {0.1f, 0.1f, 0.1f};
@@ -32,6 +29,4 @@ protected:
     std::string name;
     std::list<Layer *> layers;
     void sortLayers();
-
-    static ShadersController *shadersController;
 };

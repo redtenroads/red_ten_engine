@@ -2,6 +2,7 @@
 // SPDX-License-Identifier: MIT
 
 #include "component/componentSprite.h"
+#include "common/commonShaders.h"
 #include "opengl/glew.h"
 #include "math/glm/gtc/type_ptr.hpp"
 #include <math.h>
@@ -10,6 +11,8 @@ ComponentSprite::ComponentSprite() : Component()
 {
     mAnchor = Matrix4(1.0f);
     setAnchor(0.5f, 0.5f);
+    shader = CommonShaders::spriteShader;
+    shaderFramed = CommonShaders::spriteFrameShader;
 }
 
 void ComponentSprite::render(Matrix4 &vpMatrix, Transformation *tf)
@@ -21,26 +24,21 @@ void ComponentSprite::render(Matrix4 &vpMatrix, Transformation *tf)
 
         Matrix4 mOut = mModelTransform * mAnchor;
 
-        ShaderDescriptor *spShader;
-        if (framesTotal == 1)
-            spShader = shadersController->getSpriteShader();
-        else
-            spShader = shadersController->getSpriteFramedShader();
+        Shader *primaryShader = framesTotal == 1 ? shader : shaderFramed;
+        primaryShader->use();
 
-        shadersController->switchShader(spShader);
-
-        glUniformMatrix4fv(spShader->mViewProjectionLoc, 1, GL_FALSE, value_ptr(vpMatrix));
-        glUniformMatrix4fv(spShader->mTransformLoc, 1, GL_FALSE, value_ptr(mOut));
-        glUniform1f(spShader->fOpacityLoc, opacity);
+        glUniformMatrix4fv(primaryShader->mViewProjectionLoc, 1, GL_FALSE, value_ptr(vpMatrix));
+        glUniformMatrix4fv(primaryShader->mTransformLoc, 1, GL_FALSE, value_ptr(mOut));
+        glUniform1f(primaryShader->fOpacityLoc, opacity);
 
         if (framesTotal)
         {
-            glUniform2fv(spShader->v2TexCoordShift, 1, frameShift);
-            glUniform2fv(spShader->v2TexCoordMul, 1, frameRenderSize);
+            glUniform2fv(primaryShader->v2TexCoordShiftLoc, 1, frameShift);
+            glUniform2fv(primaryShader->v2TexCoordMulLoc, 1, frameRenderSize);
         }
 
         glBindTexture(GL_TEXTURE_2D, texture->getGLTextureId());
-        glBindVertexArray(spShader->vao);
+        CommonShaders::spriteMesh->use();
         glDrawArrays(GL_QUADS, 0, 4);
     }
 }

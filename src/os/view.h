@@ -3,7 +3,6 @@
 
 #pragma once
 #include "common/utils.h"
-#include "controller/shadersController.h"
 #include <string>
 
 class View
@@ -25,8 +24,6 @@ public:
 
     EXPORT unsigned int getTexture();
 
-    static void setShadersController(ShadersController *shadersController);
-
 protected:
     void *window = nullptr;
     int width = 640;
@@ -35,6 +32,4 @@ protected:
 
     unsigned int framebuffer = 0;
     unsigned int renderedTexture = 0;
-
-    static ShadersController *shadersController;
 };

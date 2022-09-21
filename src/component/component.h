@@ -3,7 +3,6 @@
 
 #pragma once
 #include "common/utils.h"
-#include "controller/shadersController.h"
 #include "math/math.h"
 #include "math/transformation.h"
 #include "physics/physicsEntity.h"
@@ -28,11 +27,7 @@ public:
 
     EXPORT virtual Matrix4 getLocalspaceMatrix();
 
-    static void setShadersController(ShadersController *shadersController);
-
     std::list<PhysicsEntity *> physicsEntities;
     
     Transformation transform;
-protected:
-    static ShadersController *shadersController;
 };

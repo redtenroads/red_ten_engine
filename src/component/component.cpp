@@ -3,8 +3,6 @@
 
 #include "component/component.h"
 
-ShadersController *Component::shadersController = nullptr;
-
 Component::Component()
 {
 }
@@ -51,9 +49,4 @@ PhysicsEntityBox *Component::addPhysics2dBox(float width, float height, float px
 Matrix4 Component::getLocalspaceMatrix()
 {
     return Matrix4(1.0f);
-}
-
-void Component::setShadersController(ShadersController *shadersController)
-{
-    Component::shadersController = shadersController;
 }

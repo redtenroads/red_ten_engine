@@ -4,6 +4,7 @@
 #include "math/glm/gtc/type_ptr.hpp"
 #include "component/componentText.h"
 #include "opengl/glew.h"
+#include "common/commonShaders.h"
 #include <math.h>
 #include <SDL_ttf.h>
 #include <SDL.h>
@@ -28,21 +29,19 @@ void ComponentText::render(Matrix4 &vpMatrix, Transformation *tf)
     if (textureID)
     {
         Matrix4 mTransform = *transform.getModelMatrix();
-        Matrix4 mModelTransform = mTransform * *tf->getModelMatrix();
+        Matrix4 mModelTransform = *tf->getModelMatrix() * mTransform;
 
-        Matrix4 mOut(1.0f);
-        mOut *= mAnchor;
-        mOut *= mModelTransform;
+        Matrix4 mOut = mModelTransform * mAnchor;
 
-        auto spShader = shadersController->getSpriteShader();
-        shadersController->switchShader(spShader);
+        auto shader = CommonShaders::spriteShader;
+        shader->use();
 
-        glUniformMatrix4fv(spShader->mViewProjectionLoc, 1, GL_FALSE, value_ptr(vpMatrix));
-        glUniformMatrix4fv(spShader->mTransformLoc, 1, GL_FALSE, value_ptr(mOut));
-        glUniform1f(spShader->fOpacityLoc, opacity);
+        glUniformMatrix4fv(shader->mViewProjectionLoc, 1, GL_FALSE, value_ptr(vpMatrix));
+        glUniformMatrix4fv(shader->mTransformLoc, 1, GL_FALSE, value_ptr(mOut));
+        glUniform1f(shader->fOpacityLoc, opacity);
 
         glBindTexture(GL_TEXTURE_2D, textureID);
-        glBindVertexArray(spShader->vao);
+        CommonShaders::spriteMesh->use();
         glDrawArrays(GL_QUADS, 0, 4);
     }
 }
@@ -114,22 +113,22 @@ void ComponentText::rebuildString()
         SDL_Surface *surface = TTF_RenderUTF8_Blended((TTF_Font *)font->getFont(), string.c_str(), color);
 
         if (!surface)
-        {
             printf("no surface\n");
+        else
+        {
+            transform.setScale(surface->w, surface->h);
+
+            glGenTextures(1, &textureID);
+            glBindTexture(GL_TEXTURE_2D, textureID);
+
+            glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST_MIPMAP_NEAREST);
+            glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+
+            glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, surface->w, surface->h, 0, GL_RGBA, GL_UNSIGNED_BYTE, surface->pixels);
+            glGenerateMipmap(GL_TEXTURE_2D);
+
+            SDL_FreeSurface(surface);
         }
-
-        transform.setScale(surface->w, surface->h);
-
-        glGenTextures(1, &textureID);
-        glBindTexture(GL_TEXTURE_2D, textureID);
-
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST_MIPMAP_NEAREST);
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
-
-        glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, surface->w, surface->h, 0, GL_RGBA, GL_UNSIGNED_BYTE, surface->pixels);
-        glGenerateMipmap(GL_TEXTURE_2D);
-
-        SDL_FreeSurface(surface);
     }
 }
 

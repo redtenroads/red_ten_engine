@@ -1,6 +1,7 @@
 // SPDX-FileCopyrightText: 2022 Dmitrii Shashkov
 // SPDX-License-Identifier: MIT
 
+#include "common/commonShaders.h"
 #include "stage/layerEffects.h"
 #include "opengl/glew.h"
 #include "opengl/wglew.h"
@@ -54,32 +55,29 @@ void LayerEffects::render(View *view)
         glBlendFunc(GL_ONE, GL_ONE_MINUS_SRC_ALPHA);
         glEnable(GL_BLEND);
 
-        auto effectShader = shadersController->getEffectShader();
+        Shader *effectShader = CommonShaders::effectShader;
 
         for (auto it = effects.begin(); it != effects.end(); it++)
         {
             auto effect = *it;
-            if (effect->getProgramm() && effect->isEnabled() && effect->getOpacity() > 0.0f)
+            if (effect->isLoaded() && effect->isEnabled() && effect->getOpacity() > 0.0f)
             {
                 glBindFramebuffer(GL_FRAMEBUFFER, framebuffer);
                 glViewport(0, 0, width, height);
 
-                glUseProgram(effect->getProgramm());
-
+                effect->use();
                 glBindTexture(GL_TEXTURE_2D, view->getTexture());
-                glBindVertexArray(effectShader->vao);
+                CommonShaders::screenMesh->use();
                 glDrawArrays(GL_QUADS, 0, 4);
 
                 view->prepare();
-                glUseProgram(effectShader->programm);
+                effectShader->use();
                 glUniform1f(effectShader->fOpacityLoc, effect->getOpacity());
 
                 glBindTexture(GL_TEXTURE_2D, renderedTexture);
-                glBindVertexArray(effectShader->vao);
+                CommonShaders::screenMesh->use();
                 glDrawArrays(GL_QUADS, 0, 4);
             }
         }
-
-        shadersController->switchShader(nullptr);
     }
 }

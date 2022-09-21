@@ -62,7 +62,7 @@ void ActorGUIElement::onProcess(float delta)
     float mouseY = -((float)y * camera->getHeightViewProportion() - ((float)camera->getHeight() / 2.0f));
 
     Vector4 position(0, 0, 0, 1.0f);
-    Vector4 screenPosition = position * *transform.getModelMatrix();
+    Vector4 screenPosition = *transform.getModelMatrix() * position;
 
     bool bHover = screenPosition.x + activeAreaLeft < mouseX &&
                   screenPosition.x + activeAreaRight > mouseX &&

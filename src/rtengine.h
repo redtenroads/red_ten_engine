@@ -3,15 +3,20 @@
 
 #pragma once
 #include "common/utils.h"
+#include "common/effect.h"
+#include "resource/mesh.h"
+#include "resource/font.h"
+#include "resource/sound.h"
+#include "resource/texture.h"
 #include "actor/actor.h"
 #include "actor/actorPawn.h"
 #include "actor/actorGUIElement.h"
 #include "camera/camera.h"
 #include "camera/cameraOrto.h"
+#include "camera/cameraPerspective.h"
 #include "controller/viewController.h"
 #include "controller/stageController.h"
 #include "controller/resourceController.h"
-#include "controller/shadersController.h"
 #include "controller/physicsController.h"
 #include "controller/inputController.h"
 #include "controller/soundController.h"
@@ -21,7 +26,6 @@
 #include "component/componentText.h"
 #include "stage/stage.h"
 #include "math/math.h"
-#include "shaders/effect.h"
 #include "actor/watchable.h"
 #include "actor/watcher.h"
 
@@ -33,7 +37,6 @@ protected:
     static ViewController *viewController;
     static StageController *stageController;
     static ResourceController *resourceController;
-    static ShadersController *shadersController;
     static PhysicsController *physicsController;
     static InputController *inputController;
     static SoundController *soundController;

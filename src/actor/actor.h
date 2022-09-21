@@ -8,7 +8,6 @@
 #include "math/math.h"
 #include "math/transformation.h"
 #include "component/component.h"
-#include "controller/shadersController.h"
 #include "controller/physicsController.h"
 #include "physics/physicsEntity.h"
 #include <string>
@@ -75,7 +74,6 @@ public:
     EXPORT bool implements(std::string name);
     EXPORT void setCurrentLayer(void *layer);
 
-    static void setShadersController(ShadersController *shadersController);
     static void setPhysicsController(PhysicsController *physicsController);
 
     Transformation transform;
@@ -102,7 +100,6 @@ protected:
 
     std::list<Component *> components;
 
-    static ShadersController *shadersController;
     static PhysicsController *physicsController;
 
 private:

@@ -5,6 +5,7 @@
 #include "common/utils.h"
 #include "component/component.h"
 #include "resource/texture.h"
+#include "resource/shader.h"
 
 class ComponentSprite : public Component
 {
@@ -36,5 +37,8 @@ protected:
 
     float opacity = 1.0f;
     Texture *texture = nullptr;
+    Shader *shader = nullptr;
+    Shader *shaderFramed = nullptr;
     Matrix4 mAnchor;
+
 };
