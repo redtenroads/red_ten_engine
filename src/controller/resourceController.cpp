@@ -79,7 +79,7 @@ Mesh *ResourceController::addMesh()
 
 Mesh *ResourceController::addMesh(std::string path)
 {
-    auto mesh = new Mesh();
+    auto mesh = new Mesh(path);
     meshes.push_back(mesh);
     return mesh;
 }

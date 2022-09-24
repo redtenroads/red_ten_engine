@@ -19,7 +19,7 @@ BINDIR = bin
  
 OBJ_FILES = ${OBJDIR}/rtengine.o ${OBJDIR}/view.o ${OBJDIR}/viewController.o ${OBJDIR}/layer.o ${OBJDIR}/glew.o \
 			${OBJDIR}/layerActors.o ${OBJDIR}/layerEffects.o  \
-			${OBJDIR}/stage.o ${OBJDIR}/stageController.o ${OBJDIR}/stb_image.o ${OBJDIR}/effect.o  \
+			${OBJDIR}/stage.o ${OBJDIR}/stageController.o ${OBJDIR}/effect.o  \
 			${OBJDIR}/camera.o ${OBJDIR}/cameraOrto.o ${OBJDIR}/cameraPerspective.o  \
 			${OBJDIR}/physicsController.o ${OBJDIR}/soundController.o ${OBJDIR}/resourceController.o \
 			${OBJDIR}/transformation.o ${OBJDIR}/inputController.o \
@@ -27,11 +27,13 @@ OBJ_FILES = ${OBJDIR}/rtengine.o ${OBJDIR}/view.o ${OBJDIR}/viewController.o ${O
 			${OBJDIR}/actor.o  ${OBJDIR}/actorPawn.o ${OBJDIR}/actorGUIElement.o \
 			${OBJDIR}/sound.o ${OBJDIR}/texture.o ${OBJDIR}/font.o ${OBJDIR}/shader.o ${OBJDIR}/mesh.o \
 			${OBJDIR}/component.o ${OBJDIR}/componentSprite.o ${OBJDIR}/componentSoundPlayer.o ${OBJDIR}/componentText.o \
-			${OBJDIR}/stb_vorbis.o ${OBJDIR}/destroyable.o ${OBJDIR}/commonShaders.o
+			${OBJDIR}/componentMesh.o ${OBJDIR}/meshDescriptor.o \
+			${OBJDIR}/stb_image.o ${OBJDIR}/fbx_loader.o ${OBJDIR}/stb_vorbis.o \
+			${OBJDIR}/destroyable.o ${OBJDIR}/commonShaders.o
 
 EXAMPLES = 	${BINDIR}/1-helloWorld.exe ${BINDIR}/2-helloActors.exe ${BINDIR}/3-helloPhysics.exe ${BINDIR}/4-helloSorting.exe \
 			${BINDIR}/5-helloInput.exe ${BINDIR}/6-helloBytemap.exe ${BINDIR}/7-helloSound.exe ${BINDIR}/8-helloGUI.exe \
-			${BINDIR}/9-helloEffects.exe ${BINDIR}/10-helloAnimation.exe ${BINDIR}/11-helloMusic.exe
+			${BINDIR}/9-helloEffects.exe ${BINDIR}/10-helloAnimation.exe ${BINDIR}/11-helloMusic.exe ${BINDIR}/12-hello3d.exe
 
 all: engine examples
 
@@ -107,6 +109,9 @@ ${OBJDIR}/stb_image.o: ${SRCDIR}/loaders/stb_image.cpp
 
 ${OBJDIR}/stb_vorbis.o: ${SRCDIR}/loaders/stb_vorbis.cpp
 	$(CC) $(CFLAGS) -o ${OBJDIR}/stb_vorbis.o ${SRCDIR}/loaders/stb_vorbis.cpp
+	
+${OBJDIR}/fbx_loader.o: ${SRCDIR}/loaders/fbx_loader.cpp
+	$(CC) $(CFLAGS) -o ${OBJDIR}/fbx_loader.o ${SRCDIR}/loaders/fbx_loader.cpp
 
 ${OBJDIR}/effect.o: ${SRCDIR}/common/effect.cpp
 	$(CC) $(CFLAGS) -o ${OBJDIR}/effect.o ${SRCDIR}/common/effect.cpp
@@ -141,6 +146,9 @@ ${OBJDIR}/componentSoundPlayer.o: ${SRCDIR}/component/componentSoundPlayer.cpp
 ${OBJDIR}/componentText.o: ${SRCDIR}/component/componentText.cpp
 	$(CC) $(CFLAGS) -o ${OBJDIR}/componentText.o ${SRCDIR}/component/componentText.cpp
 
+${OBJDIR}/componentMesh.o: ${SRCDIR}/component/componentMesh.cpp
+	$(CC) $(CFLAGS) -o ${OBJDIR}/componentMesh.o ${SRCDIR}/component/componentMesh.cpp
+
 ${OBJDIR}/physicsEntitySphere.o: ${SRCDIR}/physics/physicsEntitySphere.cpp
 	$(CC) $(CFLAGS) -o ${OBJDIR}/physicsEntitySphere.o ${SRCDIR}/physics/physicsEntitySphere.cpp
 
@@ -159,8 +167,12 @@ ${OBJDIR}/utils.o: ${SRCDIR}/common/utils.cpp
 ${OBJDIR}/commonShaders.o: ${SRCDIR}/common/commonShaders.cpp
 	$(CC) $(CFLAGS) -o ${OBJDIR}/commonShaders.o ${SRCDIR}/common/commonShaders.cpp
 
+${OBJDIR}/meshDescriptor.o: ${SRCDIR}/common/meshDescriptor.cpp
+	$(CC) $(CFLAGS) -o ${OBJDIR}/meshDescriptor.o ${SRCDIR}/common/meshDescriptor.cpp
+
 ${OBJDIR}/glew.o: ${SRCDIR}/opengl/glew.c
 	$(CC) $(CFLAGS) -o ${OBJDIR}/glew.o ${SRCDIR}/opengl/glew.c
+
 
 $(BINDIR)/$(TARGET).dll: ${OBJ_FILES}
 	$(LD) ${LFLAGS} ${LIBRARIES} ${OBJ_FILES} -o $(BINDIR)/$(TARGET).dll
@@ -232,6 +244,11 @@ ${OBJDIR}/11-helloMusic.o: ${EXMDIR}/11-helloMusic.cpp
 ${BINDIR}/11-helloMusic.exe: ${OBJDIR}/11-helloMusic.o
 	$(LD) -Wl ${OBJDIR}/11-helloMusic.o -o ${BINDIR}/11-helloMusic.exe
 
+${OBJDIR}/12-hello3d.o: ${EXMDIR}/12-hello3d.cpp
+	$(CC) $(CFLAGS) -o ${OBJDIR}/12-hello3d.o ${EXMDIR}/12-hello3d.cpp
+
+${BINDIR}/12-hello3d.exe: ${OBJDIR}/12-hello3d.o
+	$(LD) -Wl ${OBJDIR}/12-hello3d.o -o ${BINDIR}/12-hello3d.exe
 
 
 # llvm-objcopy

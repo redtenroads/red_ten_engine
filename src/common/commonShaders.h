@@ -18,4 +18,6 @@ public:
     static Shader *screenShader;
     static Shader *effectShader;
     static Shader *clearShader;
+
+    static Shader *meshShader;
 };

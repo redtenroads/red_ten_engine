@@ -31,5 +31,6 @@ protected:
     bool bIsFullscreen = false;
 
     unsigned int framebuffer = 0;
+    unsigned int depthbuffer = 0;
     unsigned int renderedTexture = 0;
 };

@@ -49,6 +49,10 @@ void Stage::present(View *view)
 
     glBindFramebuffer(GL_FRAMEBUFFER, 0);
 
+    glDisable(GL_DEPTH_TEST);
+    glDisable(GL_CULL_FACE);
+    glDisable(GL_BLEND);
+
     auto screenShader = CommonShaders::screenShader;
     screenShader->use();
 
@@ -72,6 +76,10 @@ void Stage::sortLayers()
 
 void Stage::clearTarget()
 {
+    glDisable(GL_DEPTH_TEST);
+    glDisable(GL_CULL_FACE);
+    glDisable(GL_BLEND);
+
     auto clearShader = CommonShaders::clearShader;
     clearShader->use();
     glUniform3fv(clearShader->v3ColorLoc, 1, clearColor);

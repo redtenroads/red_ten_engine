@@ -9,11 +9,13 @@ CameraPerspective::CameraPerspective() : Camera()
 
 void CameraPerspective::prepareToRender(View *view)
 {
-    glDisable(GL_DEPTH_TEST);
-    glDisable(GL_CULL_FACE);
-
-    glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+    glEnable(GL_DEPTH_TEST);
+    glEnable(GL_CULL_FACE);
     glEnable(GL_BLEND);
+    glClear(GL_DEPTH_BUFFER_BIT);
+    glDisable(GL_ALPHA_TEST);
+    glDepthFunc(GL_LESS);
+    glDepthMask(GL_TRUE);
 
     float aspect = (float)view->getWidth() / (float)view->getHeight();
     float distance = 45.0f;

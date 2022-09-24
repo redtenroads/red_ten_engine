@@ -24,6 +24,7 @@
 #include "component/componentSprite.h"
 #include "component/componentSoundPlayer.h"
 #include "component/componentText.h"
+#include "component/componentMesh.h"
 #include "stage/stage.h"
 #include "math/math.h"
 #include "actor/watchable.h"

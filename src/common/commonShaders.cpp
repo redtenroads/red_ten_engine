@@ -13,6 +13,9 @@ extern const char *screenFragmentShader;
 
 extern const char *clearFragmentShader;
 
+extern const char *meshVertexShader;
+extern const char *meshFragmentShader;
+
 Shader *CommonShaders::shader = nullptr;
 ResourceController *CommonShaders::resourceController = nullptr;
 
@@ -25,16 +28,21 @@ Shader *CommonShaders::screenShader = nullptr;
 Shader *CommonShaders::effectShader = nullptr;
 Shader *CommonShaders::clearShader = nullptr;
 
+Shader *CommonShaders::meshShader = nullptr;
+
 void CommonShaders::build()
 {
     spriteMesh = resourceController->addMesh();
-    spriteMesh->setupByArray5f(spritePoints, 20);
-    
+    spriteMesh->setupByArray8f(spritePoints, 8 * 4);
+
     screenMesh = resourceController->addMesh();
-    screenMesh->setupByArray5f(screenPoints, 20);
+    screenMesh->setupByArray8f(screenPoints, 8 * 4);
 
     printf("compiling sprite shader ...\n");
     spriteShader = resourceController->addShader(spriteVertexShader, spriteFragmentShader);
+
+    printf("compiling mesh shader ...\n");
+    meshShader = resourceController->addShader(meshVertexShader, meshFragmentShader);
 
     printf("compiling framed sprite shader ...\n");
     spriteFrameShader = resourceController->addShader(spriteFramedVertexShader, spriteFragmentShader);
@@ -52,21 +60,22 @@ void CommonShaders::build()
 }
 
 float spritePoints[] = {
-    0.0f, 0.0f, 0.0f, 0.0f, 1.0f,
-    1.0f, 0.0f, 0.0f, 1.0f, 1.0f,
-    1.0f, 1.0f, 0.0f, 1.0f, 0.0f,
-    0.0f, 1.0f, 0.0f, 0.0f, 0.0f};
+    0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 1.0f, 0.0f, 1.0f,
+    1.0f, 0.0f, 0.0f, 0.0f, 0.0f, 1.0f, 1.0f, 1.0f,
+    1.0f, 1.0f, 0.0f, 0.0f, 0.0f, 1.0f, 1.0f, 0.0f,
+    0.0f, 1.0f, 0.0f, 0.0f, 0.0f, 1.0f, 0.0f, 0.0f};
 
 float screenPoints[] = {
-    -1.0f, -1.0f, 0.0f, 0.0f, 0.0f,
-    1.0f, -1.0f, 0.0f, 1.0f, 0.0f,
-    1.0f, 1.0f, 0.0f, 1.0f, 1.0f,
-    -1.0f, 1.0f, 0.0f, 0.0f, 1.0f};
+    -1.0f, -1.0f, 0.0f, 0.0f, 0.0f, 1.0f, 0.0f, 0.0f,
+    1.0f, -1.0f, 0.0f, 0.0f, 0.0f, 1.0f, 1.0f, 0.0f,
+    1.0f, 1.0f, 0.0f, 0.0f, 0.0f, 1.0f, 1.0f, 1.0f,
+    -1.0f, 1.0f, 0.0f, 0.0f, 0.0f, 1.0f, 0.0f, 1.0f};
 
 const char *spriteVertexShader =
     "#version 400\n"
     "layout (location = 0) in vec3 aPos;\n"
-    "layout (location = 1) in vec2 aTexCoord;\n"
+    "layout (location = 1) in vec3 aNormals;\n"
+    "layout (location = 2) in vec2 aTexCoord;\n"
     "out vec2 texCoord;\n"
     "uniform mat4 mTransform;\n"
     "uniform mat4 mViewProjection;\n"
@@ -78,7 +87,8 @@ const char *spriteVertexShader =
 const char *spriteFramedVertexShader =
     "#version 400\n"
     "layout (location = 0) in vec3 aPos;\n"
-    "layout (location = 1) in vec2 aTexCoord;\n"
+    "layout (location = 1) in vec3 aNormals;\n"
+    "layout (location = 2) in vec2 aTexCoord;\n"
     "out vec2 texCoord;\n"
     "uniform mat4 mTransform;\n"
     "uniform mat4 mViewProjection;\n"
@@ -103,7 +113,8 @@ const char *spriteFragmentShader =
 const char *screenVertexShader =
     "#version 400\n"
     "layout (location = 0) in vec3 aPos;\n"
-    "layout (location = 1) in vec2 aTexCoord;\n"
+    "layout (location = 1) in vec3 aNormals;\n"
+    "layout (location = 2) in vec2 aTexCoord;\n"
     "out vec2 texCoord;\n"
     "void main() {\n"
     "   gl_Position = vec4(aPos, 1.0);\n"
@@ -125,4 +136,27 @@ const char *clearFragmentShader =
     "uniform vec3 clearColor;\n"
     "void main() {\n"
     "   fragColor = vec4(clearColor, 1.0);\n"
+    "}\n";
+
+const char *meshVertexShader =
+    "#version 400\n"
+    "layout (location = 0) in vec3 aPos;\n"
+    "layout (location = 1) in vec3 aNormals;\n"
+    "layout (location = 2) in vec2 aTexCoord;\n"
+    "out vec2 texCoord;\n"
+    "uniform mat4 mTransform;\n"
+    "uniform mat4 mViewProjection;\n"
+    "void main() {\n"
+    "   gl_Position = mViewProjection * mTransform * vec4(aPos, 1.0);\n"
+    "   texCoord = aTexCoord;\n"
+    "}\n";
+
+const char *meshFragmentShader =
+    "#version 400\n"
+    "out vec4 fragColor;\n"
+    "in vec2 texCoord;\n"
+    "uniform sampler2D t;\n"
+    "void main() {\n"
+    "   vec4 color = texture(t, texCoord);\n"
+    "   fragColor = color;\n"
     "}\n";

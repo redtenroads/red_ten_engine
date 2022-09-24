@@ -19,10 +19,7 @@ void ComponentSprite::render(Matrix4 &vpMatrix, Transformation *tf)
 {
     if (texture)
     {
-        Matrix4 mTransform = *transform.getModelMatrix();
-        Matrix4 mModelTransform = *tf->getModelMatrix() * mTransform;
-
-        Matrix4 mOut = mModelTransform * mAnchor;
+        Matrix4 mOut = *tf->getModelMatrix() * *transform.getModelMatrix() * mAnchor;
 
         Shader *primaryShader = framesTotal == 1 ? shader : shaderFramed;
         primaryShader->use();

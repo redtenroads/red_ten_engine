@@ -15,22 +15,23 @@ public:
     EXPORT bool isLoaded();
     EXPORT bool isPath(std::string meshPath);
 
-    // positions
-    // x, y, z + u, v
-    EXPORT void setupByArray5f(const float *data, int amount);
+    EXPORT int getFloatsAmount();
 
-    // x, y, z
-    EXPORT void setupByArray3f(const float *data, int amount);
+    // positions
+    // x, y, z - nx, ny, nz - u, v
+    EXPORT void setupByArray8f(const float *data, int amount);
+
 
     EXPORT void use();
 
 protected:
     unsigned int makeVBO(const float *data, int amount);
-    unsigned int makeVAO(int vbo, bool bSetupUV);
+    unsigned int makeVAO(int vbo);
 
     bool bSettedUp = false;
-    bool bHasUV = false;
-    int entrySize = 0;
+    bool bLoaded = false;
+
+    int floatsAmount = 0;
 
     unsigned int vbo = 0;
     unsigned int vao = 0;
