@@ -52,21 +52,23 @@ public:
     EXPORT void setLinearVelocity(Vector3 v);
     EXPORT void addLinearVelocity(Vector3 v);
 
-
     EXPORT Vector3 getAngularVelocity();
     EXPORT void setAngularVelocity(Vector3 v);
     EXPORT void addAngularVelocity(Vector3 v);
-    
 
     EXPORT virtual void onSpawned();
     EXPORT virtual void onProcess(float delta);
     EXPORT virtual void onRender(Matrix4 &vpMatrix);
+    EXPORT virtual void onRenderLight(Matrix4 &vpMatrix);
+    EXPORT virtual void onRenderBlended(Matrix4 &vpMatrix);
     EXPORT virtual void onDestroy();
     EXPORT virtual void onCollide(Actor *hitWith, Vector3 v);
     EXPORT virtual void onCollidePersisted(Actor *hitWith, Vector3 v);
 
     EXPORT bool isVisible();
     EXPORT void setVisible(bool state);
+    EXPORT bool hasLights() { return bHasLights; }
+    EXPORT bool hasBlended() { return bHasBlended; };
 
     EXPORT const std::string getName();
     EXPORT const std::string getClass();
@@ -87,8 +89,9 @@ protected:
     bool bIsZAxisLocked = false;
     bool bIsZRotationLocked = false;
     bool bIsVisible = true;
+    bool bHasLights = false;
+    bool bHasBlended = false;
 
-    
     MotionType mType = MotionType::Static;
 
     PhysicsDescriptor *system = nullptr;

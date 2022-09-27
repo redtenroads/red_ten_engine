@@ -1,3 +1,6 @@
+// SPDX-FileCopyrightText: 2022 Dmitrii Shashkov
+// SPDX-License-Identifier: MIT
+
 #include "camera/cameraPerspective.h"
 #include "opengl/glew.h"
 #include "math/glm/gtc/type_ptr.hpp"
@@ -11,8 +14,7 @@ void CameraPerspective::prepareToRender(View *view)
 {
     glEnable(GL_DEPTH_TEST);
     glEnable(GL_CULL_FACE);
-    glEnable(GL_BLEND);
-    glClear(GL_DEPTH_BUFFER_BIT);
+    glDisable(GL_BLEND);
     glDisable(GL_ALPHA_TEST);
     glDepthFunc(GL_LESS);
     glDepthMask(GL_TRUE);

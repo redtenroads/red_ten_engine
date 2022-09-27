@@ -25,11 +25,13 @@ OBJ_FILES = ${OBJDIR}/rtengine.o ${OBJDIR}/view.o ${OBJDIR}/viewController.o ${O
 			${OBJDIR}/transformation.o ${OBJDIR}/inputController.o \
 			${OBJDIR}/physicsEntity.o ${OBJDIR}/physicsEntityBox.o ${OBJDIR}/physicsEntitySphere.o \
 			${OBJDIR}/actor.o  ${OBJDIR}/actorPawn.o ${OBJDIR}/actorGUIElement.o \
-			${OBJDIR}/sound.o ${OBJDIR}/texture.o ${OBJDIR}/font.o ${OBJDIR}/shader.o ${OBJDIR}/mesh.o \
-			${OBJDIR}/component.o ${OBJDIR}/componentSprite.o ${OBJDIR}/componentSoundPlayer.o ${OBJDIR}/componentText.o \
-			${OBJDIR}/componentMesh.o ${OBJDIR}/meshDescriptor.o \
+			${OBJDIR}/sound.o ${OBJDIR}/texture.o ${OBJDIR}/font.o ${OBJDIR}/mesh.o \
+			${OBJDIR}/component.o ${OBJDIR}/componentSprite.o ${OBJDIR}/componentSoundPlayer.o \
+			${OBJDIR}/componentText.o ${OBJDIR}/componentLight.o \
+			${OBJDIR}/componentMesh.o ${OBJDIR}/meshDescriptor.o ${OBJDIR}/renderer.o \
 			${OBJDIR}/stb_image.o ${OBJDIR}/fbx_loader.o ${OBJDIR}/stb_vorbis.o \
-			${OBJDIR}/destroyable.o ${OBJDIR}/commonShaders.o
+			${OBJDIR}/destroyable.o ${OBJDIR}/commonShaders.o ${OBJDIR}/utils.o \
+			${OBJDIR}/phongShader.o ${OBJDIR}/rawShader.o ${OBJDIR}/shader.o ${OBJDIR}/lightningShader.o
 
 EXAMPLES = 	${BINDIR}/1-helloWorld.exe ${BINDIR}/2-helloActors.exe ${BINDIR}/3-helloPhysics.exe ${BINDIR}/4-helloSorting.exe \
 			${BINDIR}/5-helloInput.exe ${BINDIR}/6-helloBytemap.exe ${BINDIR}/7-helloSound.exe ${BINDIR}/8-helloGUI.exe \
@@ -83,9 +85,6 @@ ${OBJDIR}/sound.o: ${SRCDIR}/resource/sound.cpp
 ${OBJDIR}/font.o: ${SRCDIR}/resource/font.cpp
 	$(CC) $(CFLAGS) -o ${OBJDIR}/font.o ${SRCDIR}/resource/font.cpp
 
-${OBJDIR}/shader.o: ${SRCDIR}/resource/shader.cpp
-	$(CC) $(CFLAGS) -o ${OBJDIR}/shader.o ${SRCDIR}/resource/shader.cpp
-
 ${OBJDIR}/mesh.o: ${SRCDIR}/resource/mesh.cpp
 	$(CC) $(CFLAGS) -o ${OBJDIR}/mesh.o ${SRCDIR}/resource/mesh.cpp
 
@@ -112,9 +111,6 @@ ${OBJDIR}/stb_vorbis.o: ${SRCDIR}/loaders/stb_vorbis.cpp
 	
 ${OBJDIR}/fbx_loader.o: ${SRCDIR}/loaders/fbx_loader.cpp
 	$(CC) $(CFLAGS) -o ${OBJDIR}/fbx_loader.o ${SRCDIR}/loaders/fbx_loader.cpp
-
-${OBJDIR}/effect.o: ${SRCDIR}/common/effect.cpp
-	$(CC) $(CFLAGS) -o ${OBJDIR}/effect.o ${SRCDIR}/common/effect.cpp
 
 ${OBJDIR}/camera.o: ${SRCDIR}/camera/camera.cpp
 	$(CC) $(CFLAGS) -o ${OBJDIR}/camera.o ${SRCDIR}/camera/camera.cpp
@@ -149,6 +145,9 @@ ${OBJDIR}/componentText.o: ${SRCDIR}/component/componentText.cpp
 ${OBJDIR}/componentMesh.o: ${SRCDIR}/component/componentMesh.cpp
 	$(CC) $(CFLAGS) -o ${OBJDIR}/componentMesh.o ${SRCDIR}/component/componentMesh.cpp
 
+${OBJDIR}/componentLight.o: ${SRCDIR}/component/componentLight.cpp
+	$(CC) $(CFLAGS) -o ${OBJDIR}/componentLight.o ${SRCDIR}/component/componentLight.cpp
+
 ${OBJDIR}/physicsEntitySphere.o: ${SRCDIR}/physics/physicsEntitySphere.cpp
 	$(CC) $(CFLAGS) -o ${OBJDIR}/physicsEntitySphere.o ${SRCDIR}/physics/physicsEntitySphere.cpp
 
@@ -158,21 +157,38 @@ ${OBJDIR}/physicsEntityBox.o: ${SRCDIR}/physics/physicsEntityBox.cpp
 ${OBJDIR}/physicsEntity.o: ${SRCDIR}/physics/physicsEntity.cpp
 	$(CC) $(CFLAGS) -o ${OBJDIR}/physicsEntity.o ${SRCDIR}/physics/physicsEntity.cpp
 
-${OBJDIR}/destroyable.o: ${SRCDIR}/common/destroyable.cpp
-	$(CC) $(CFLAGS) -o ${OBJDIR}/destroyable.o ${SRCDIR}/common/destroyable.cpp
-
 ${OBJDIR}/utils.o: ${SRCDIR}/common/utils.cpp
 	$(CC) $(CFLAGS) -o ${OBJDIR}/utils.o ${SRCDIR}/common/utils.cpp
+
+${OBJDIR}/destroyable.o: ${SRCDIR}/common/destroyable.cpp
+	$(CC) $(CFLAGS) -o ${OBJDIR}/destroyable.o ${SRCDIR}/common/destroyable.cpp
 
 ${OBJDIR}/commonShaders.o: ${SRCDIR}/common/commonShaders.cpp
 	$(CC) $(CFLAGS) -o ${OBJDIR}/commonShaders.o ${SRCDIR}/common/commonShaders.cpp
 
 ${OBJDIR}/meshDescriptor.o: ${SRCDIR}/common/meshDescriptor.cpp
 	$(CC) $(CFLAGS) -o ${OBJDIR}/meshDescriptor.o ${SRCDIR}/common/meshDescriptor.cpp
+	
+${OBJDIR}/renderer.o: ${SRCDIR}/common/renderer.cpp
+	$(CC) $(CFLAGS) -o ${OBJDIR}/renderer.o ${SRCDIR}/common/renderer.cpp
+
+${OBJDIR}/effect.o: ${SRCDIR}/shaders/effect.cpp
+	$(CC) $(CFLAGS) -o ${OBJDIR}/effect.o ${SRCDIR}/shaders/effect.cpp
+
+${OBJDIR}/phongShader.o: ${SRCDIR}/shaders/phongShader.cpp
+	$(CC) $(CFLAGS) -o ${OBJDIR}/phongShader.o ${SRCDIR}/shaders/phongShader.cpp
+
+${OBJDIR}/rawShader.o: ${SRCDIR}/shaders/rawShader.cpp
+	$(CC) $(CFLAGS) -o ${OBJDIR}/rawShader.o ${SRCDIR}/shaders/rawShader.cpp
+
+${OBJDIR}/lightningShader.o: ${SRCDIR}/shaders/lightningShader.cpp
+	$(CC) $(CFLAGS) -o ${OBJDIR}/lightningShader.o ${SRCDIR}/shaders/lightningShader.cpp
+
+${OBJDIR}/shader.o: ${SRCDIR}/shaders/shader.cpp
+	$(CC) $(CFLAGS) -o ${OBJDIR}/shader.o ${SRCDIR}/shaders/shader.cpp
 
 ${OBJDIR}/glew.o: ${SRCDIR}/opengl/glew.c
 	$(CC) $(CFLAGS) -o ${OBJDIR}/glew.o ${SRCDIR}/opengl/glew.c
-
 
 $(BINDIR)/$(TARGET).dll: ${OBJ_FILES}
 	$(LD) ${LFLAGS} ${LIBRARIES} ${OBJ_FILES} -o $(BINDIR)/$(TARGET).dll

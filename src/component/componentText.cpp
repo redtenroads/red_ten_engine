@@ -13,6 +13,7 @@ ComponentText::ComponentText()
 {
     mAnchor = Matrix4(1.0f);
     setAnchor(0.5f, 0.5f);
+    bUseBlendingPhase = true;
 }
 
 EXPORT ComponentText::~ComponentText()
@@ -34,11 +35,8 @@ void ComponentText::render(Matrix4 &vpMatrix, Transformation *tf)
         Matrix4 mOut = mModelTransform * mAnchor;
 
         auto shader = CommonShaders::spriteShader;
-        shader->use();
-
-        glUniformMatrix4fv(shader->mViewProjectionLoc, 1, GL_FALSE, value_ptr(vpMatrix));
-        glUniformMatrix4fv(shader->mTransformLoc, 1, GL_FALSE, value_ptr(mOut));
-        glUniform1f(shader->fOpacityLoc, opacity);
+        shader->use(vpMatrix, mOut);
+        shader->setOpacity(opacity);
 
         glBindTexture(GL_TEXTURE_2D, textureID);
         CommonShaders::spriteMesh->use();

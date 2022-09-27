@@ -1,3 +1,6 @@
+// SPDX-FileCopyrightText: 2022 Dmitrii Shashkov
+// SPDX-License-Identifier: MIT
+
 #include "../src/rtengine.h"
 #include <math.h>
 #pragma comment(lib, "bin/rtengine.lib")

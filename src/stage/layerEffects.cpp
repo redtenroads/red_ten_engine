@@ -5,8 +5,6 @@
 #include "stage/layerEffects.h"
 #include "opengl/glew.h"
 #include "opengl/wglew.h"
-#include <gl/GL.h>
-#include <gl/GLU.h>
 
 LayerEffects::LayerEffects(std::string name, int index) : Layer(name, index)
 {
@@ -18,7 +16,6 @@ LayerEffects::LayerEffects(std::string name, int index) : Layer(name, index)
     glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, 32, 32, 0, GL_RGBA, GL_UNSIGNED_BYTE, 0);
     glFramebufferTexture(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, renderedTexture, 0);
 
-    // Poor filtering. Needed !
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
 }
@@ -54,25 +51,30 @@ void LayerEffects::render(View *view)
 
         glBlendFunc(GL_ONE, GL_ONE_MINUS_SRC_ALPHA);
         glEnable(GL_BLEND);
+        glDisable(GL_DEPTH_TEST);
+        glDisable(GL_CULL_FACE);
 
-        Shader *effectShader = CommonShaders::effectShader;
+        RawShader *effectShader = CommonShaders::effectShader;
+        Matrix4 m;
 
         for (auto it = effects.begin(); it != effects.end(); it++)
         {
             auto effect = *it;
-            if (effect->isLoaded() && effect->isEnabled() && effect->getOpacity() > 0.0f)
+
+            if (effect->isReady() && effect->isEnabled() && effect->getOpacity() > 0.0f)
             {
                 glBindFramebuffer(GL_FRAMEBUFFER, framebuffer);
                 glViewport(0, 0, width, height);
 
-                effect->use();
+                effect->use(m, m);
+                glActiveTexture(GL_TEXTURE0);
                 glBindTexture(GL_TEXTURE_2D, view->getTexture());
                 CommonShaders::screenMesh->use();
                 glDrawArrays(GL_QUADS, 0, 4);
 
-                view->prepare();
-                effectShader->use();
-                glUniform1f(effectShader->fOpacityLoc, effect->getOpacity());
+                view->useFrameBuffer();
+                effectShader->use(m, m);
+                effectShader->setOpacity(effect->getOpacity());
 
                 glBindTexture(GL_TEXTURE_2D, renderedTexture);
                 CommonShaders::screenMesh->use();

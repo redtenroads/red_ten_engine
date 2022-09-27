@@ -6,5 +6,5 @@
 #define CONST_PI 3.1415926f
 #define EXPORT __declspec(dllexport)
 
-float randf();
-float randf(float from, float to);
+EXPORT float randf();
+EXPORT float randf(float from, float to);

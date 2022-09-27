@@ -22,6 +22,10 @@ void Component::render(Matrix4 &vpMatrix, Transformation *tf)
 {
 }
 
+void Component::renderLightPhase(Matrix4 &vpMatrix, Transformation *tf)
+{
+}
+
 PhysicsEntitySphere *Component::addPhysics2dCircle(float radius)
 {
     return addPhysics2dCircle(radius, 0, 0, 0);

@@ -11,5 +11,5 @@ float randf()
 
 float randf(float from, float to)
 {
-    float r3 = from + static_cast<float>(rand()) / (static_cast<float>(RAND_MAX / (to - from)));
+    return from + static_cast<float>(rand()) / (static_cast<float>(RAND_MAX / (to - from)));
 }

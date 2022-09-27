@@ -3,7 +3,7 @@
 
 #pragma once
 #include "common/utils.h"
-#include "common/effect.h"
+#include "shaders/effect.h"
 #include "stage/layer.h"
 #include <vector>
 

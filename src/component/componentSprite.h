@@ -5,7 +5,7 @@
 #include "common/utils.h"
 #include "component/component.h"
 #include "resource/texture.h"
-#include "resource/shader.h"
+#include "shaders/shader.h"
 
 class ComponentSprite : public Component
 {

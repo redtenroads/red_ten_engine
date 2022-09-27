@@ -3,6 +3,7 @@
 
 #pragma once
 #include "common/utils.h"
+#include "common/renderer.h"
 #include <string>
 
 class View
@@ -13,7 +14,6 @@ public:
     std::string windowName = "unnamed";
 
     EXPORT bool makeWindow();
-    EXPORT void prepare();
     EXPORT void swapBuffers();
 
     EXPORT int getWidth();
@@ -23,6 +23,8 @@ public:
     EXPORT void minimize();
 
     EXPORT unsigned int getTexture();
+    EXPORT Renderer *getRenderer();
+    EXPORT void useFrameBuffer();
 
 protected:
     void *window = nullptr;
@@ -31,6 +33,6 @@ protected:
     bool bIsFullscreen = false;
 
     unsigned int framebuffer = 0;
-    unsigned int depthbuffer = 0;
     unsigned int renderedTexture = 0;
+    Renderer *renderer = nullptr;
 };

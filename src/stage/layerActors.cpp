@@ -4,6 +4,9 @@
 #include "stage/layerActors.h"
 #include "math/math.h"
 #include "actor/actorGUIElement.h"
+#include "opengl/glew.h"
+#include "opengl/wglew.h"
+#include "common/commonShaders.h"
 #include <math.h>
 
 #define JPH_FLOATING_POINT_EXCEPTIONS_ENABLED
@@ -87,7 +90,6 @@ void LayerActors::process(float delta)
         else
             ++actor;
 
-
     if (bUseSorting)
     {
         actors.sort([](const Actor *player1, const Actor *player2)
@@ -97,23 +99,96 @@ void LayerActors::process(float delta)
 
 void LayerActors::render(View *view)
 {
-    if (activeCamera && bIsVisible)
+    Matrix4 m1, m2;
+    auto renderer = view->getRenderer();
+    renderer->setupNewFrame();
+
+    std::vector<Actor *> lights;
+    std::vector<Actor *> blends;
+
+    if (!activeCamera || !bIsVisible)
+        return;
+
+    Matrix4 mView = *activeCamera->getViewMatrix();
+    Matrix4 mProjectionView = *activeCamera->getProjectionMatrix() * mView;
+
+    // G Buffer phase
+    activeCamera->prepareToRender(view);
+    ActorGUIElement::camera = activeCamera;
+
+    for (auto actor = actors.begin(); actor != actors.end(); ++actor)
     {
-        view->prepare();
-        activeCamera->prepareToRender(view);
-        ActorGUIElement::camera = activeCamera;
-
-        Matrix4 mView = *activeCamera->getViewMatrix();
-        Matrix4 mProjectionView = *activeCamera->getProjectionMatrix() * mView;
-
-        for (auto actor = actors.begin(); actor != actors.end(); ++actor)
+        if ((*actor)->isVisible())
         {
-            if ((*actor)->isVisible())
-                (*actor)->onRender(mProjectionView);
+            (*actor)->onRender(mProjectionView);
+            if ((*actor)->hasLights())
+                lights.push_back(*actor);
+            if ((*actor)->hasBlended())
+                blends.push_back(*actor);
         }
-
-        activeCamera->finishRender();
     }
+    activeCamera->finishRender();
+
+    // Lightning phase
+    glDisable(GL_DEPTH_TEST);
+    glDisable(GL_CULL_FACE);
+
+    auto initialLightningShader = CommonShaders::initialLightningShader;
+    renderer->setupLightning();
+    initialLightningShader->use(m1, m2);
+
+    glActiveTexture(GL_TEXTURE0);
+    glBindTexture(GL_TEXTURE_2D, renderer->getAlbedoTexture());
+    glUniform3fv(initialLightningShader->locV3AmbientColor, 1, ambientColor);
+    CommonShaders::screenMesh->use();
+
+    glEnable(GL_BLEND);
+    glDrawArrays(GL_QUADS, 0, 4);
+    glBlendFunc(GL_ONE, GL_ONE);
+
+    if (lights.size() > 0)
+    {
+        glActiveTexture(GL_TEXTURE0);
+        glBindTexture(GL_TEXTURE_2D, renderer->getAlbedoTexture());
+
+        glActiveTexture(GL_TEXTURE1);
+        glBindTexture(GL_TEXTURE_2D, renderer->getNormalTexture());
+
+        glActiveTexture(GL_TEXTURE2);
+        glBindTexture(GL_TEXTURE_2D, renderer->getPositionTexture());
+
+        for (auto actor = lights.begin(); actor != lights.end(); ++actor)
+        {
+            (*actor)->onRenderLight(mProjectionView);
+        }
+    }
+
+    glActiveTexture(GL_TEXTURE0);
+
+    // Blending phase
+    glDisable(GL_DEPTH_TEST);
+    glDisable(GL_CULL_FACE);
+    glEnable(GL_BLEND);
+    glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+
+    if (blends.size() > 0)
+    {
+        for (auto actor = blends.begin(); actor != blends.end(); ++actor)
+        {
+            (*actor)->onRenderBlended(mProjectionView);
+        }
+    }
+
+    // Final phase
+    view->useFrameBuffer();
+
+    glActiveTexture(GL_TEXTURE0);
+    glBindTexture(GL_TEXTURE_2D, renderer->getLightningTexture());
+
+    CommonShaders::screenShader->use(m1, m2);
+    CommonShaders::screenMesh->use();
+
+    glDrawArrays(GL_QUADS, 0, 4);
 }
 
 void LayerActors::prepareNewActor(Actor *actor)

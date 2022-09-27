@@ -37,9 +37,9 @@ bool View::makeWindow()
 
         window = newWindow;
 
-        const GLubyte *renderer = glGetString(GL_RENDERER); // get renderer string
+        const GLubyte *oglVersion = glGetString(GL_RENDERER); // get renderer string
         const GLubyte *version = glGetString(GL_VERSION);   // version as a string
-        printf("Renderer: %s\n", renderer ? (char *)renderer : "no renderer");
+        printf("Renderer: %s\n", oglVersion ? (char *)oglVersion : "no renderer");
         printf("OpenGL version supported %s\n", version ? (char *)version : "no version");
 
         glGenFramebuffers(1, &framebuffer);
@@ -54,25 +54,14 @@ bool View::makeWindow()
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
 
-        // Depth buffer
-        glGenRenderbuffers(1, &depthbuffer);
-        glBindRenderbuffer(GL_RENDERBUFFER, depthbuffer);
-        glRenderbufferStorage(GL_RENDERBUFFER, GL_DEPTH_COMPONENT, width, height);
-        glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_RENDERBUFFER, depthbuffer);
-
         glBindFramebuffer(GL_FRAMEBUFFER, 0);
 
+        renderer = new Renderer(width, height);
         return true;
     }
 
     window = nullptr;
     return false;
-}
-
-void View::prepare()
-{
-    glBindFramebuffer(GL_FRAMEBUFFER, framebuffer);
-    glViewport(0, 0, width, height);
 }
 
 void View::swapBuffers()
@@ -109,4 +98,14 @@ void View::minimize()
 unsigned int View::getTexture()
 {
     return renderedTexture;
+}
+
+Renderer *View::getRenderer()
+{
+    return renderer;
+}
+
+void View::useFrameBuffer()
+{
+    glBindFramebuffer(GL_FRAMEBUFFER, framebuffer);
 }

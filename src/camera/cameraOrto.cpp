@@ -1,3 +1,6 @@
+// SPDX-FileCopyrightText: 2022 Dmitrii Shashkov
+// SPDX-License-Identifier: MIT
+
 #include "camera/cameraOrto.h"
 #include "math/glm/gtc/type_ptr.hpp"
 #include "opengl/glew.h"
@@ -12,9 +15,8 @@ void CameraOrto::prepareToRender(View *view)
 {
     glDisable(GL_DEPTH_TEST);
     glDisable(GL_CULL_FACE);
-
-    glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-    glEnable(GL_BLEND);
+    glDepthFunc(GL_LESS);
+    glDepthMask(GL_TRUE);
 
     float aspect = (float)view->getWidth() / (float)view->getHeight();
     float targetWidth = useWidthBasedProportion ? mainLine : mainLine * aspect;

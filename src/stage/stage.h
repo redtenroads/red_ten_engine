@@ -20,13 +20,17 @@ public:
     EXPORT void process(float delta);
     EXPORT void present(View *view);
 
-    EXPORT void setClearColor(unsigned char r, unsigned char g, unsigned char b);
+    EXPORT void setClearColor(float r, float g, float b)
+    {
+        clearColor[0] = r;
+        clearColor[1] = g;
+        clearColor[2] = b;
+    }
 
 protected:
-    void clearTarget();
-    float clearColor[3] = {0.1f, 0.1f, 0.1f};
-
     std::string name;
     std::list<Layer *> layers;
     void sortLayers();
+
+    float clearColor[3] = {0.15f, 0.15f, 0.15f};
 };

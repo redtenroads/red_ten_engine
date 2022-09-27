@@ -316,11 +316,36 @@ void Actor::onProcess(float delta)
 
 void Actor::onRender(Matrix4 &vpMatrix)
 {
+    bHasLights = false;
+    bHasBlended = false;
     if (components.size() > 0)
         for (auto it = components.begin(); it != components.end(); it++)
-        {
-            (*it)->render(vpMatrix, &transform);
-        }
+            if ((*it)->isVisible())
+            {
+                if ((*it)->isUsingBlendingPhase())
+                    bHasBlended = true;
+                else
+                    (*it)->render(vpMatrix, &transform);
+
+                if ((*it)->isUsingLightPhase())
+                    bHasLights = true;
+            }
+}
+
+void Actor::onRenderLight(Matrix4 &vpMatrix)
+{
+    if (components.size() > 0)
+        for (auto it = components.begin(); it != components.end(); it++)
+            if ((*it)->isVisible())
+                (*it)->renderLightPhase(vpMatrix, &transform);
+}
+
+void Actor::onRenderBlended(Matrix4 &vpMatrix)
+{
+    if (components.size() > 0)
+        for (auto it = components.begin(); it != components.end(); it++)
+            if ((*it)->isUsingBlendingPhase() && (*it)->isVisible())
+                (*it)->render(vpMatrix, &transform);
 }
 
 void Actor::onDestroy()
@@ -329,9 +354,7 @@ void Actor::onDestroy()
 
     if (components.size() > 0)
         for (auto it = components.begin(); it != components.end(); it++)
-        {
             (*it)->destroy();
-        }
 }
 
 void Actor::onCollide(Actor *hitWith, Vector3 v)

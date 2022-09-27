@@ -45,9 +45,17 @@ public:
     EXPORT void setProcessingEnabled(bool state) { bProcessingEnabled = state; }
     EXPORT bool isProcessingEnabled() { return bProcessingEnabled; }
 
+    EXPORT void setAmbientColor(float r, float g, float b)
+    {
+        ambientColor[0] = r;
+        ambientColor[1] = g;
+        ambientColor[2] = b;
+    }
+
 protected:
     bool bIsVisible = true;
     bool bProcessingEnabled = true;
+    float ambientColor[3] = {1.0f, 1.0f, 1.0f};
 
     std::list<Actor *> actors;
     PhysicsDescriptor *physicsSystem = nullptr;

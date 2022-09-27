@@ -1,3 +1,6 @@
+// SPDX-FileCopyrightText: 2022 Dmitrii Shashkov
+// SPDX-License-Identifier: MIT
+
 #pragma once
 #include <vector>
 

@@ -1,3 +1,6 @@
+// SPDX-FileCopyrightText: 2022 Dmitrii Shashkov
+// SPDX-License-Identifier: MIT
+
 #include "meshDescriptor.h"
 
 MeshDescriptor::MeshDescriptor(MeshDescriptor *parent)
@@ -80,21 +83,21 @@ float *MeshDescriptor::getAsFloatArray8f(int *amountOfFloats)
         if (filled == 0)
         {
             p.p1 = vertexes[index];
-            p.n1 = normals[index];
+            p.n1 = normals[i];
             p.uv1 = uvs[uvIndex];
             filled++;
         }
         else if (filled == 1)
         {
             p.p2 = vertexes[index];
-            p.n2 = normals[index];
+            p.n2 = normals[i];
             p.uv2 = uvs[uvIndex];
             filled++;
         }
         else if (filled == 2)
         {
             p.p3 = vertexes[index];
-            p.n3 = normals[index];
+            p.n3 = normals[i];
             p.uv3 = uvs[uvIndex];
             filled++;
             polygons.push_back(p);
@@ -109,7 +112,7 @@ float *MeshDescriptor::getAsFloatArray8f(int *amountOfFloats)
             p.n1 = p.n3;
             p.uv1 = p.uv3;
             p.p3 = vertexes[index];
-            p.n3 = normals[index];
+            p.n3 = normals[i];
             p.uv3 = uvs[uvIndex];
 
             Vertex r = p.p1;

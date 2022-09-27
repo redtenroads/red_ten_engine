@@ -3,13 +3,13 @@
 
 #pragma once
 #include "common/utils.h"
-#include "resource/shader.h"
+#include "shaders/rawShader.h"
 
-class Effect : public Shader
+class Effect : public RawShader
 {
 public:
-    EXPORT void makeFromShaderSource(const char *fragmentShader);
-    EXPORT void makeFromShaderSource(const char *vertexShader, const char *fragmentShader);
+    EXPORT Effect(const char *fragmentShader);
+    EXPORT Effect(const char *vertexShader, const char *fragmentShader);
 
     EXPORT int getIndex();
 
@@ -23,4 +23,5 @@ protected:
     int index = 0;
     bool bIsEnabled = true;
     float opacity = 1.0f;
+    static const char *internalVertexShader;
 };

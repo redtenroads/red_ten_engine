@@ -13,6 +13,7 @@ ComponentSprite::ComponentSprite() : Component()
     setAnchor(0.5f, 0.5f);
     shader = CommonShaders::spriteShader;
     shaderFramed = CommonShaders::spriteFrameShader;
+    bUseBlendingPhase = true;
 }
 
 void ComponentSprite::render(Matrix4 &vpMatrix, Transformation *tf)
@@ -22,17 +23,11 @@ void ComponentSprite::render(Matrix4 &vpMatrix, Transformation *tf)
         Matrix4 mOut = *tf->getModelMatrix() * *transform.getModelMatrix() * mAnchor;
 
         Shader *primaryShader = framesTotal == 1 ? shader : shaderFramed;
-        primaryShader->use();
+        primaryShader->use(vpMatrix, mOut);
+        primaryShader->setOpacity(opacity);
 
-        glUniformMatrix4fv(primaryShader->mViewProjectionLoc, 1, GL_FALSE, value_ptr(vpMatrix));
-        glUniformMatrix4fv(primaryShader->mTransformLoc, 1, GL_FALSE, value_ptr(mOut));
-        glUniform1f(primaryShader->fOpacityLoc, opacity);
-
-        if (framesTotal)
-        {
-            glUniform2fv(primaryShader->v2TexCoordShiftLoc, 1, frameShift);
-            glUniform2fv(primaryShader->v2TexCoordMulLoc, 1, frameRenderSize);
-        }
+        primaryShader->setFrameShift(frameShift);
+        primaryShader->setFrameSize(frameRenderSize);
 
         glBindTexture(GL_TEXTURE_2D, texture->getGLTextureId());
         CommonShaders::spriteMesh->use();

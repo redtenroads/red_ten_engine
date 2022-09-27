@@ -3,7 +3,6 @@
 
 #pragma once
 #include "common/utils.h"
-#include "common/effect.h"
 #include "resource/mesh.h"
 #include "resource/font.h"
 #include "resource/sound.h"
@@ -25,10 +24,14 @@
 #include "component/componentSoundPlayer.h"
 #include "component/componentText.h"
 #include "component/componentMesh.h"
+#include "component/componentLight.h"
 #include "stage/stage.h"
 #include "math/math.h"
 #include "actor/watchable.h"
 #include "actor/watcher.h"
+#include "shaders/phongShader.h"
+#include "shaders/rawShader.h"
+#include "shaders/effect.h"
 
 class RTEngine
 {

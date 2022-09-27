@@ -1,6 +1,11 @@
+// SPDX-FileCopyrightText: 2022 Dmitrii Shashkov
+// SPDX-License-Identifier: MIT
+
 #pragma once
-#include "resource/shader.h"
+#include "shaders/shader.h"
+#include "shaders/rawShader.h"
 #include "controller/resourceController.h"
+#include "shaders/lightningShader.h"
 
 class CommonShaders
 {
@@ -16,8 +21,9 @@ public:
     static Shader *spriteShader;
     static Shader *spriteFrameShader;
     static Shader *screenShader;
-    static Shader *effectShader;
-    static Shader *clearShader;
+    static RawShader *effectShader;
+    static RawShader *initialLightningShader;
 
-    static Shader *meshShader;
+    static LightningShader *sunShader;
+    static LightningShader *omniShader;
 };

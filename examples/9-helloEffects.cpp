@@ -1,3 +1,6 @@
+// SPDX-FileCopyrightText: 2022 Dmitrii Shashkov
+// SPDX-License-Identifier: MIT
+
 #include "../src/rtengine.h"
 #include <math.h>
 #pragma comment(lib, "bin/rtengine.lib")
@@ -140,10 +143,9 @@ Texture *CratePlate::plateTexture = nullptr;
 class SuperEffect : public Effect
 {
 public:
-    SuperEffect(const char *fragmentShader)
+    // if we provide only fragment shader, default vertex shader will be used
+    SuperEffect(const char *fragmentShader) : Effect(fragmentShader)
     {
-        // if we provide only fragment shader, default vertex shader will be used
-        makeFromShaderSource(fragmentShader);
         opacity = 0.0f;
     }
 

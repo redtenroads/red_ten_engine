@@ -28,7 +28,6 @@ void Texture::reload()
         glGenerateMipmap(GL_TEXTURE_2D);
 
         stbi_image_free(data);
-
         bIsLoaded = true;
     }
     else
@@ -54,9 +53,7 @@ bool Texture::isPath(std::string path)
 unsigned int Texture::getGLTextureId()
 {
     if (!bIsLoaded)
-    {
         reload();
-    }
     return textureID;
 }
 
@@ -72,7 +69,9 @@ int Texture::getHeight()
 
 void Texture::processBytemaps(const unsigned char *data, int width, int height, int nrChannels)
 {
-
+    if (!bMakeBytemapAlpha && !bMakeFullBytemap)
+        return;
+    
     if (!data)
         data = stbi_load(path.c_str(), &width, &height, &nrChannels, 4);
 

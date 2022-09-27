@@ -94,38 +94,9 @@ Mesh *ResourceController::getMeshByPath(std::string path)
     return nullptr;
 }
 
-Shader *ResourceController::addShader(std::string vertexPath, std::string fragmentPath)
-{
-    auto shader = new Shader(vertexPath, fragmentPath);
-    shaders.push_back(shader);
-    return shader;
-}
-
-Shader *ResourceController::addShader(const char *vertexShaderString, const char *fragmentShaderString)
-{
-    auto shader = new Shader(vertexShaderString, fragmentShaderString);
-    shaders.push_back(shader);
-    return shader;
-}
-
-Shader *ResourceController::getShaderByPath(std::string vertexPath, std::string fragmentPath)
-{
-    for (auto it = shaders.begin(); it != shaders.end(); ++it)
-    {
-        if ((*it)->isPath(vertexPath, fragmentPath))
-            return (*it);
-    }
-    return nullptr;
-}
-
 void ResourceController::loadAll()
 {
     for (auto it = textures.begin(); it != textures.end(); ++it)
-    {
-        if (!(*it)->isLoaded())
-            (*it)->reload();
-    }
-    for (auto it = shaders.begin(); it != shaders.end(); ++it)
     {
         if (!(*it)->isLoaded())
             (*it)->reload();
