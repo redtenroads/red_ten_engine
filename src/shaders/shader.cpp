@@ -16,6 +16,12 @@ bool Shader::use(Matrix4 mViewProjection, Matrix4 mModel)
     return false;
 }
 
+bool Shader::useShadow(Matrix4 mViewProjection, Matrix4 mModel)
+{
+    return false;
+}
+
+
 bool Shader::compile(unsigned short type, const char *code, unsigned int *shader)
 {
     int isCompiled;
@@ -36,5 +42,5 @@ void Shader::showCompilationError(unsigned int shader)
 {
     char log[2048];
     glGetShaderInfoLog(shader, sizeof(log), nullptr, log);
-    printf("Shader Compilation Error:\n%s\n", log);
+    logger->logff("Shader Compilation Error:\n%s\n", log);
 }

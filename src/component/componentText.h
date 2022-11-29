@@ -3,11 +3,12 @@
 
 #pragma once
 #include "common/utils.h"
+#include "common/withLogger.h"
 #include "component/component.h"
 #include "resource/texture.h"
 #include "resource/font.h"
 
-class ComponentText : public Component
+class ComponentText : public Component, WithLogger
 {
 public:
     EXPORT ComponentText();

@@ -8,33 +8,56 @@
 extern const char *gShaderVertexCode;
 extern const char *gShaderFragmentCode;
 
+extern const char *gShaderShadowVertexCode;
+extern const char *gShaderShadowFragmentCode;
+
+unsigned int PhongShader::currentProgramm = 0;
+
 bool PhongShader::build()
 {
-    unsigned int vertexShader = 0, fragmentShader = 0;
+    unsigned int vertexShader = 0, fragmentShader = 0, shadowVertexShader = 0, shadowFragmentShader = 0;
     if (!compile(GL_VERTEX_SHADER, gShaderVertexCode, &vertexShader))
         return false;
 
     if (!compile(GL_FRAGMENT_SHADER, gShaderFragmentCode, &fragmentShader))
         return false;
 
+    if (!compile(GL_VERTEX_SHADER, gShaderShadowVertexCode, &shadowVertexShader))
+        return false;
+
+    if (!compile(GL_FRAGMENT_SHADER, gShaderShadowFragmentCode, &shadowFragmentShader))
+        return false;
+
+    // Building usual pass programm
     programm = glCreateProgram();
-    if (programm != -1)
-    {
-        glAttachShader(programm, fragmentShader);
-        glAttachShader(programm, vertexShader);
-        glLinkProgram(programm);
+    if (programm == -1)
+        return false;
 
-        locMViewProjection = glGetUniformLocation(programm, "mViewProjection");
-        locMTransform = glGetUniformLocation(programm, "mTransform");
-        locMNormal = glGetUniformLocation(programm, "mNormal");
-        locTDefuse = glGetUniformLocation(programm, "TextureDefuse");
-        locTSpecular = glGetUniformLocation(programm, "TextureSpecular");
-        locTNormal = glGetUniformLocation(programm, "TextureNormal");
+    glAttachShader(programm, fragmentShader);
+    glAttachShader(programm, vertexShader);
+    glLinkProgram(programm);
 
-        bIsReady = true;
-        return true;
-    }
-    return false;
+    locMViewProjection = glGetUniformLocation(programm, "mViewProjection");
+    locMTransform = glGetUniformLocation(programm, "mTransform");
+    locMNormal = glGetUniformLocation(programm, "mNormal");
+    locTDefuse = glGetUniformLocation(programm, "TextureDefuse");
+    locTSpecular = glGetUniformLocation(programm, "TextureSpecular");
+    locTNormal = glGetUniformLocation(programm, "TextureNormal");
+
+    // Building shadow pass programm
+    shadowProgramm = glCreateProgram();
+    if (shadowProgramm == -1)
+        return false;
+
+    glAttachShader(shadowProgramm, shadowVertexShader);
+    glAttachShader(shadowProgramm, shadowFragmentShader);
+    glLinkProgram(shadowProgramm);
+
+    locShadowMViewProjection = glGetUniformLocation(shadowProgramm, "mViewProjection");
+    locShadowMTransform = glGetUniformLocation(shadowProgramm, "mTransform");
+
+    bIsReady = true;
+    return true;
 }
 
 void PhongShader::setTexture(TextureType type, Texture *texture)
@@ -63,9 +86,10 @@ bool PhongShader::use(Matrix4 mViewProjection, Matrix4 mModel)
     if (!bIsReady)
         return false;
 
-    if (currentShader != this)
+    if (currentShader != this || currentProgramm != programm)
     {
         currentShader = this;
+        currentProgramm = programm;
         glUseProgram(programm);
     }
 
@@ -87,7 +111,30 @@ bool PhongShader::use(Matrix4 mViewProjection, Matrix4 mModel)
     return true;
 }
 
-// mat4 normalMatrix = transpose(inverse(modelView));
+bool PhongShader::useShadow(Matrix4 mViewProjection, Matrix4 mModel)
+{
+    if (!bIsReady)
+        build();
+    if (!bIsReady)
+        return false;
+
+    if (currentShader != this || currentProgramm != shadowProgramm)
+    {
+        currentShader = this;
+        currentProgramm = shadowProgramm;
+        glUseProgram(shadowProgramm);
+    }
+
+    if (locShadowMViewProjection)
+        glUniformMatrix4fv(locShadowMViewProjection, 1, GL_FALSE, value_ptr(mViewProjection));
+    if (locShadowMTransform)
+        glUniformMatrix4fv(locShadowMTransform, 1, GL_FALSE, value_ptr(mModel));
+
+
+    return true;
+}
+
+// Straight go shader
 const char *gShaderVertexCode =
     "#version 400\n"
     "layout (location = 0) in vec3 aPos;\n"
@@ -119,6 +166,29 @@ const char *gShaderFragmentCode =
     "void main() {\n"
     "   gPosition = FragPos;\n"
     "   gNormal = Normal;\n"
+    "   gAlbedoSpec.rgb = texture(TextureDefuse, TexCoords).rgb;\n"
+    "   gAlbedoSpec.a = texture(TextureSpecular, TexCoords).r;\n"
+    "}\n";
+
+// Shadow go shader
+const char *gShaderShadowVertexCode =
+    "#version 400\n"
+    "layout (location = 0) in vec3 aPos;\n"
+    "layout (location = 1) in vec3 aNormal;\n"
+    "layout (location = 2) in vec2 aTexCoord;\n"
+    "uniform mat4 mTransform;\n"
+    "uniform mat4 mViewProjection;\n"
+    "void main() {\n"
+    "   gl_Position = mViewProjection * mTransform * vec4(aPos, 1.0);\n"
+    "}\n";
+
+const char *gShaderShadowFragmentCode =
+    "#version 400\n"
+    "layout (location = 0) out vec4 gAlbedoSpec;"
+    "uniform sampler2D TextureDefuse;\n"
+    "uniform sampler2D TextureSpecular;\n"
+    "in vec2 TexCoords;"
+    "void main() {\n"
     "   gAlbedoSpec.rgb = texture(TextureDefuse, TexCoords).rgb;\n"
     "   gAlbedoSpec.a = texture(TextureSpecular, TexCoords).r;\n"
     "}\n";

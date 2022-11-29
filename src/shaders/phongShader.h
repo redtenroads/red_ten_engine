@@ -18,6 +18,7 @@ public:
     EXPORT bool build();
     EXPORT void setTexture(TextureType type, Texture *texture);
     EXPORT bool use(Matrix4 mViewProjection, Matrix4 mModel);
+    EXPORT bool useShadow(Matrix4 mViewProjection, Matrix4 mModel);
 
 protected:
     unsigned int locMViewProjection = 0;
@@ -27,7 +28,12 @@ protected:
     unsigned int locTSpecular = 0;
     unsigned int locTNormal = 0;
 
+    unsigned int locShadowMViewProjection = 0;
+    unsigned int locShadowMTransform = 0;
+
     unsigned int tAlbedo = 0;
     unsigned int tNormal = 0;
     unsigned int tSpecular = 0;
+
+    static unsigned int currentProgramm;
 };

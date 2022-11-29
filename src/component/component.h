@@ -20,7 +20,9 @@ public:
     EXPORT virtual void prepare();
     EXPORT virtual void process(float delta);
     EXPORT virtual void render(Matrix4 &vpMatrix, Transformation *tf);
-    EXPORT virtual void renderLightPhase(Matrix4 &vpMatrix, Transformation *tf);
+    EXPORT virtual void shadowRender(Matrix4 &vpMatrix, Transformation *tf);
+    EXPORT virtual void renderLightPhase(Matrix4 &vpMatrix, unsigned int shadowMapTexture);
+    EXPORT virtual Matrix4 preparePreShadowPhase(Vector3 cameraPosition);
 
     EXPORT PhysicsEntitySphere *addPhysics2dCircle(float radius);
     EXPORT PhysicsEntitySphere *addPhysics2dCircle(float radius, float px, float py, float pz);
@@ -31,6 +33,7 @@ public:
 
     EXPORT inline bool isUsingBlendingPhase() { return bUseBlendingPhase; }
     EXPORT inline bool isUsingLightPhase() { return bUseLightPhase; }
+    EXPORT inline bool isUsingShadowPhase() { return bUseShadowPhase; }
 
     EXPORT inline void setVisibility(bool state) { bIsVisible = state; }
     EXPORT inline bool isVisible() { return bIsVisible; }
@@ -41,5 +44,6 @@ public:
 protected:
     bool bUseBlendingPhase = false;
     bool bUseLightPhase = false;
+    bool bUseShadowPhase = false;
     bool bIsVisible = true;
 };

@@ -36,13 +36,10 @@ public:
         towerComponent->transform.setPosition(0.0f, 0.0f, -0.8f);
         towerComponent->transform.setRotation(0.0f, CONST_PI, 0.0f);
 
-        auto sun = createComponent<ComponentLight>();
-        sun->setupSunLight(Vector3(0.5f, -0.8f, -0.5f), Vector3(0.2f, 0.2f, 0.4f));
-
         for (int i = 0; i < LIGHT_COUNT; i++)
         {
             light[i] = createComponent<ComponentLight>();
-            light[i]->setupOmniLight(0.3f + randf(0.0f, 0.3f), Vector3(0.3f + randf(0.0f, 0.7f), 0.3f + randf(0.0f, 0.7f), 0.3f + randf(0.0f, 0.7f)));
+            light[i]->setupOmniLight(0.2f + randf(0.0f, 0.1f), Vector3(0.3f + randf(0.0f, 0.7f), 0.3f + randf(0.0f, 0.7f), 0.3f + randf(0.0f, 0.7f)));
         }
     }
 
@@ -55,7 +52,7 @@ public:
         for (int i = 0; i < LIGHT_COUNT; i++)
         {
             float rotation = (float)i * step + counter;
-            light[i]->transform.setPosition(Vector3(sinf(rotation) * 1.2f, 0.15f, cosf(rotation) * 1.2f));
+            light[i]->transform.setPosition(Vector3(sinf(rotation) * 1.2f, 0.10f, cosf(rotation) * 1.2f));
         }
     }
 
@@ -87,7 +84,7 @@ int main()
 
     // Layers and camera setup
     auto layerActors = stage->createLayerActors("Hello 3D Layer", 0);
-    layerActors->setAmbientColor(0.02f, 0.02f, 0.06f);
+    layerActors->setAmbientColor(0.05f, 0.05f, 0.09f);
 
     auto camera = layerActors->createActor<CameraPerspective>();
     camera->setWidthBasedResolution(1280);
@@ -120,9 +117,15 @@ int main()
     Town::towerShader = new PhongShader();
     Town::towerShader->setTexture(TextureType::Albedo, towerTexture);
 
+    // town
     auto town = layerActors->createActor<Town>();
-    town->transform.setPosition(0, 0, -9.0f);
+    town->transform.setPosition(0.0f, 0.0f, -9.0f);
     town->transform.setScale(2.0f, 2.0f, 2.0f);
+
+    // Sun with shadow casting
+    auto sun = layerActors->createActor<Actor>();
+    auto sunComponent = sun->createComponent<ComponentLight>();
+    sunComponent->setupSunLight(Vector3(-1.0f, 1.0f, -0.5f), Vector3(0.3f, 0.3f, 0.6f), true);
 
     while (!engine->isTerminationIntended())
     {

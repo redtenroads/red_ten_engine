@@ -18,36 +18,47 @@ ResourceController *RTEngine::resourceController = nullptr;
 PhysicsController *RTEngine::physicsController = nullptr;
 InputController *RTEngine::inputController = nullptr;
 SoundController *RTEngine::soundController = nullptr;
+LogController *RTEngine::logController = nullptr;
 
 bool RTEngine::isSDLInitDone = false;
 
 RTEngine::RTEngine()
 {
+    if (!logController)
+    {
+        logController = new LogController("log.txt");
+        WithLogger::setLogController(logController);
+    }
     if (!inputController)
     {
         inputController = new InputController();
         ViewController::setInputController(inputController);
         ActorPawn::setInputController(inputController);
     }
+
     if (!viewController)
     {
         viewController = new ViewController();
     }
+
     if (!stageController)
     {
         stageController = new StageController();
     }
+
     if (!resourceController)
     {
         resourceController = new ResourceController();
         CommonShaders::resourceController = resourceController;
     }
+
     if (!soundController)
     {
         soundController = new SoundController();
         ComponentSoundPlayer::setSoundController(soundController);
         Camera::setSoundController(soundController);
     }
+
     if (!physicsController)
     {
         physicsController = new PhysicsController();
@@ -116,7 +127,7 @@ float RTEngine::syncFrame()
         fpsLastCheckTick = newTick;
         fps = fpsCounter;
         fpsCounter = 0;
-        printf("FPS %i\n", fps);
+        logController->logConsole("FPS %i", fps);
     }
 
     return delta;

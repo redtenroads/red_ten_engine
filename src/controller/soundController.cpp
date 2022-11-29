@@ -17,15 +17,17 @@ SoundController::SoundController()
 
         size_t len = 0;
 
-        printf("Audio Devices:\n");
+        logger->logf("Audio Devices:");
         while (device && *device != '\0' && next && *next != '\0')
         {
-            printf("%s\n", device);
+            logger->logf("- %s", device);
+            devicesList.push_back(new AudioDevice({_strdup(device)}));
+
             len = strlen(device);
             device += (len + 1);
             next += (len + 2);
-            devicesList.push_back(new AudioDevice({_strdup(device)}));
         }
+        logger->logff("");
     }
 
     ALCdevice *device = alcOpenDevice(devicesList.size() > 0 ? devicesList.at(0)->name : nullptr);
@@ -43,7 +45,7 @@ SoundController::SoundController()
     }
 
     bSoundEnabled = true;
-    printf("Sound Enabled\n");
+    logger->logff("Sound Enabled using %s", devicesList.at(0)->name);
 
     ALfloat listenerOri[] = {0.0f, 0.0f, 1.0f, 0.0f, 1.0f, 0.0f};
     alListener3f(AL_POSITION, 0, 0, 1.0f);

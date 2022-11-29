@@ -38,8 +38,6 @@ bool RawShader::build()
             locFOpacity = glGetUniformLocation(programm, "fOpacity");
             locV3AmbientColor = glGetUniformLocation(programm, "vf3ambientColor");
 
-            //printf("Build %i %i %i %i %i\n", locMViewProjection, locMTransform, locV2TexCoordShift, locV2TexCoordMul, locFOpacity);
-
             bIsReady = true;
             return true;
         }

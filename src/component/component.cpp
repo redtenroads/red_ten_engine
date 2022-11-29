@@ -22,7 +22,15 @@ void Component::render(Matrix4 &vpMatrix, Transformation *tf)
 {
 }
 
-void Component::renderLightPhase(Matrix4 &vpMatrix, Transformation *tf)
+void Component::shadowRender(Matrix4 &vpMatrix, Transformation *tf)
+{
+}
+
+void Component::renderLightPhase(Matrix4 &vpMatrix, unsigned int shadowMapTexture)
+{
+}
+
+Matrix4 Component::preparePreShadowPhase(Vector3 cameraPosition)
 {
 }
 

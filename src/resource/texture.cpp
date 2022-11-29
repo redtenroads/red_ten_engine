@@ -12,7 +12,7 @@ Texture::Texture(std::string path)
 
 void Texture::reload()
 {
-    printf("load %s\n", path.c_str());
+    logger->logf("Add texture %s", path.c_str());
     unsigned char *data = stbi_load(path.c_str(), &width, &height, &nrChannels, 4);
     if (data)
     {
@@ -32,7 +32,7 @@ void Texture::reload()
     }
     else
     {
-        printf("ERROR: %s couldn't be loaded\n", path.c_str());
+        logger->logff("ERROR: %s couldn't be loaded\n", path.c_str());
     }
 }
 

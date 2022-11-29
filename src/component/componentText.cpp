@@ -111,7 +111,7 @@ void ComponentText::rebuildString()
         SDL_Surface *surface = TTF_RenderUTF8_Blended((TTF_Font *)font->getFont(), string.c_str(), color);
 
         if (!surface)
-            printf("no surface\n");
+            logger->logff("Failed to render text into surface: %s", string.c_str());
         else
         {
             transform.setScale(surface->w, surface->h);

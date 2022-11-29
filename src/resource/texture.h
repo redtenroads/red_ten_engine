@@ -4,8 +4,9 @@
 #pragma once
 #include <string>
 #include "common/utils.h"
+#include "common/withLogger.h"
 
-class Texture
+class Texture : public WithLogger
 {
 public:
     EXPORT Texture(std::string path);

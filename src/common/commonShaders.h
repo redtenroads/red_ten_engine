@@ -6,8 +6,9 @@
 #include "shaders/rawShader.h"
 #include "controller/resourceController.h"
 #include "shaders/lightningShader.h"
+#include "common/withLogger.h"
 
-class CommonShaders
+class CommonShaders : public WithLogger
 {
 public:
     static void build();
@@ -25,5 +26,6 @@ public:
     static RawShader *initialLightningShader;
 
     static LightningShader *sunShader;
+    static LightningShader *sunWithShadowShader;
     static LightningShader *omniShader;
 };

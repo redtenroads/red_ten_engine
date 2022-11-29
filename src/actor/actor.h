@@ -58,8 +58,8 @@ public:
 
     EXPORT virtual void onSpawned();
     EXPORT virtual void onProcess(float delta);
-    EXPORT virtual void onRender(Matrix4 &vpMatrix);
-    EXPORT virtual void onRenderLight(Matrix4 &vpMatrix);
+    EXPORT virtual void onRender(Matrix4 &vpMatrix, std::vector<Component *> *lights);
+    EXPORT virtual void onRenderShadowed(Matrix4 &vpMatrix);
     EXPORT virtual void onRenderBlended(Matrix4 &vpMatrix);
     EXPORT virtual void onDestroy();
     EXPORT virtual void onCollide(Actor *hitWith, Vector3 v);
@@ -67,7 +67,6 @@ public:
 
     EXPORT bool isVisible();
     EXPORT void setVisible(bool state);
-    EXPORT bool hasLights() { return bHasLights; }
     EXPORT bool hasBlended() { return bHasBlended; };
 
     EXPORT const std::string getName();
@@ -89,7 +88,6 @@ protected:
     bool bIsZAxisLocked = false;
     bool bIsZRotationLocked = false;
     bool bIsVisible = true;
-    bool bHasLights = false;
     bool bHasBlended = false;
 
     MotionType mType = MotionType::Static;

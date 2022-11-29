@@ -37,10 +37,8 @@ bool View::makeWindow()
 
         window = newWindow;
 
-        const GLubyte *oglVersion = glGetString(GL_RENDERER); // get renderer string
-        const GLubyte *version = glGetString(GL_VERSION);   // version as a string
-        printf("Renderer: %s\n", oglVersion ? (char *)oglVersion : "no renderer");
-        printf("OpenGL version supported %s\n", version ? (char *)version : "no version");
+        oglVersion = (char*)glGetString(GL_RENDERER); // get renderer string
+        version = (char*)glGetString(GL_VERSION);     // version as a string
 
         glGenFramebuffers(1, &framebuffer);
         glBindFramebuffer(GL_FRAMEBUFFER, framebuffer);
@@ -87,6 +85,16 @@ float View::getHWProportion()
 bool View::isFullscreen()
 {
     return bIsFullscreen;
+}
+
+const char *View::getOGLVersion()
+{
+    return oglVersion;
+}
+
+const char *View::getVersion()
+{
+    return version;
 }
 
 void View::minimize()

@@ -37,7 +37,7 @@ Sound::Sound(std::string path)
             (path[length - 3] == 'w' || path[length - 3] == 'W') &&
             path[length - 4] == '.')
         {
-            printf("Detected wav\n");
+            logger->logf("%s - wav\n");
             extension = Extension::WAV;
             bIsStreamable = false;
         }
@@ -48,7 +48,7 @@ Sound::Sound(std::string path)
             (path[length - 3] == 'o' || path[length - 3] == 'O') &&
             path[length - 4] == '.')
         {
-            printf("Detected ogg\n");
+            logger->logf("%s - ogg\n");
             extension = Extension::OGG;
             bIsStreamable = true;
         }
@@ -175,7 +175,7 @@ bool Sound::loadWAV()
     WavHeader wavHeader;
     fread(&wavHeader, sizeof(WavHeader), 1, file);
 
-    printf("%s\nformat %i, num of channels %i, sampleRate %i, byteRate %i, bytesPerSample %i, bitsPerSample %i, data size %i\n",
+    logger->logf("wav loader - %s\nformat %i, num of channels %i, sampleRate %i, byteRate %i, bytesPerSample %i, bitsPerSample %i, data size %i\n",
            path.c_str(), wavHeader.format, wavHeader.numOfChannels, wavHeader.sampleRate, wavHeader.byteRate, wavHeader.bytesPerSample,
            wavHeader.bitsPerSample, wavHeader.dataSize);
 
@@ -183,7 +183,8 @@ bool Sound::loadWAV()
     unsigned char *data = (unsigned char *)malloc(dataSize);
     if (!data)
     {
-        printf("failed to make buffer of %i\n", dataSize);
+        logger->logff("failed to make buffer of %i\n", dataSize);
+        fclose(file);
         return false;
     }
     fread(data, dataSize, 1, file);
@@ -222,7 +223,7 @@ bool Sound::loadWAV()
     if (!format)
     {
         free(data);
-        printf("Wronge file format\n");
+        logger->logff("Unknown sound format in %s\n", path.c_str());
         return false;
     }
 

@@ -29,6 +29,23 @@ void ComponentMesh::render(Matrix4 &vpMatrix, Transformation *tf)
     }
 }
 
+void ComponentMesh::shadowRender(Matrix4 &vpMatrix, Transformation *tf)
+{
+    if (mesh && shader)
+    {
+        int drawAmount = mesh->getFloatsAmount();
+        if (drawAmount > 0)
+        {
+            Matrix4 mModelTransform = *tf->getModelMatrix() * *transform.getModelMatrix();
+
+            shader->useShadow(vpMatrix, mModelTransform);
+            mesh->use();
+
+            glDrawArrays(GL_TRIANGLES, 0, drawAmount);
+        }
+    }
+}
+
 void ComponentMesh::setMesh(Mesh *mesh)
 {
     this->mesh = mesh;

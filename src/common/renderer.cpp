@@ -67,6 +67,28 @@ Renderer::Renderer(int width, int height)
     glDrawBuffers(1, lightningAttachments);
 
     glBindFramebuffer(GL_FRAMEBUFFER, 0);
+
+    // Shadow buffer
+    glGenFramebuffers(1, &shadowBuffer);
+    glBindFramebuffer(GL_FRAMEBUFFER, shadowBuffer);
+
+    // Shadowmap
+    glGenTextures(1, &shadowPicture);
+    glBindTexture(GL_TEXTURE_2D, shadowPicture);
+    glTexImage2D(GL_TEXTURE_2D, 0, GL_DEPTH_COMPONENT,
+                 shadowMapWidth, shadowMapHeight, 0, GL_DEPTH_COMPONENT, GL_FLOAT, NULL);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_BORDER);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_BORDER);
+    float borderColor[] = {1.0f, 1.0f, 1.0f, 1.0f};
+    glTexParameterfv(GL_TEXTURE_2D, GL_TEXTURE_BORDER_COLOR, borderColor);
+
+    glFramebufferTexture2D(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_TEXTURE_2D, shadowPicture, 0);
+    glDrawBuffer(GL_NONE);
+    glReadBuffer(GL_NONE);
+
+    glBindFramebuffer(GL_FRAMEBUFFER, 0);
 }
 
 unsigned int Renderer::getPositionTexture()
@@ -89,19 +111,37 @@ unsigned int Renderer::getLightningTexture()
     return lightningPicture;
 }
 
-void Renderer::setupNewFrame()
+unsigned int Renderer::getShadowTexture()
+{
+    return shadowPicture;
+}
+
+void Renderer::setupNewFrame(bool clear)
 {
     glViewport(0, 0, width, height);
     glBindFramebuffer(GL_FRAMEBUFFER, gBuffer);
-    glClearColor(0.0, 0.0, 0.0, 0.0);
-    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+    if (clear)
+    {
+        glClearColor(0.0, 0.0, 0.0, 0.0);
+        glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+    }
 }
 
-void Renderer::setupLightning()
+void Renderer::setupLightning(bool clear)
 {
     glViewport(0, 0, width, height);
     glBindFramebuffer(GL_FRAMEBUFFER, lightningBuffer);
-    glClearColor(0.0, 0.0, 0.0, 0.0);
-    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+    if (clear)
+    {
+        glClearColor(0.0, 0.0, 0.0, 0.0);
+        glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+    }
 }
 
+void Renderer::setupShadowHQ(bool clear)
+{
+    glViewport(0, 0, shadowMapWidth, shadowMapHeight);
+    glBindFramebuffer(GL_FRAMEBUFFER, shadowBuffer);
+    if (clear)
+        glClear(GL_DEPTH_BUFFER_BIT);
+}

@@ -19,6 +19,8 @@ void Mesh::reload()
 {
     if (meshPath.length() > 0 && !bLoaded)
     {
+        logger->logf("Add mesh %s", meshPath.c_str());
+
         FBXLoader *loader = new FBXLoader();
         bool result = loader->load(meshPath);
         if (result && loader->root)
@@ -34,7 +36,7 @@ void Mesh::reload()
         }
         else
         {
-            printf("Failed loading %s\n", meshPath.c_str());
+            logger->logff("Failed loading %s\n", meshPath.c_str());
         }
         delete loader;
     }

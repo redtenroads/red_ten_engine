@@ -8,13 +8,13 @@ InputController *ViewController::inputController = nullptr;
 
 ViewController::ViewController()
 {
-    printf("Gamepad amount %i\n", SDL_NumJoysticks());
+    logger->logf("Gamepad amount %i\n", SDL_NumJoysticks());
     int amount = SDL_NumJoysticks();
     for (int i = 0; i < amount; i++)
     {
         SDL_Joystick *gGameController = SDL_JoystickOpen(i);
         if (gGameController == NULL)
-            printf("Warning: Unable to open game controller! SDL Error: %s\n", SDL_GetError());
+            logger->logff("Warning: Unable to open game controller! SDL Error: %s\n", SDL_GetError());
         else
             gamePads.push_back(GamepadDevice({i, gGameController}));
     }
@@ -34,9 +34,18 @@ View *ViewController::createView(std::string name, int resX, int resY, bool isFu
 
     View *view = new View(resX, resY, isFullscreen);
     view->windowName = name;
-    view->makeWindow();
-    views.push_back(view);
-    return view;
+    if (view->makeWindow())
+    {
+        logger->logff("New view has been created: %dx%d, %s", resX, resY, isFullscreen ? "fullscreen" : "windowed");
+        logger->logff("Renderer: %s", view->getOGLVersion() ? view->getOGLVersion() : "no renderer");
+        logger->logff("OpenGL version supported: %s\n", view->getVersion() ? view->getVersion() : "no version");
+
+        views.push_back(view);
+        return view;
+    }
+
+    delete view;
+    return nullptr;
 }
 
 void ViewController::processEvents()
@@ -76,7 +85,7 @@ void ViewController::processEvents()
             {
                 SDL_Joystick *gGameController = SDL_JoystickOpen(event.jdevice.which);
                 if (gGameController == NULL)
-                    printf("Warning: Unable to open game controller!");
+                    logger->logff("Warning: Unable to open game controller!");
                 else
                     gamePads.push_back(GamepadDevice({event.jdevice.which, gGameController}));
                 break;

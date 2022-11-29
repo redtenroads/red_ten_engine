@@ -4,6 +4,7 @@
 #pragma once
 #include "common/utils.h"
 #include "common/renderer.h"
+#include "controller/logController.h"
 #include <string>
 
 class View
@@ -20,6 +21,9 @@ public:
     EXPORT int getHeight();
     EXPORT float getHWProportion();
     EXPORT bool isFullscreen();
+    EXPORT const char *getOGLVersion();
+    EXPORT const char *getVersion();
+
     EXPORT void minimize();
 
     EXPORT unsigned int getTexture();
@@ -31,6 +35,9 @@ protected:
     int width = 640;
     int height = 480;
     bool bIsFullscreen = false;
+
+    const char *oglVersion = nullptr;
+    const char *version = nullptr;
 
     unsigned int framebuffer = 0;
     unsigned int renderedTexture = 0;

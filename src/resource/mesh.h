@@ -3,9 +3,10 @@
 
 #pragma once
 #include "common/utils.h"
+#include "common/withLogger.h"
 #include <string>
 
-class Mesh
+class Mesh : public WithLogger
 {
 public:
     EXPORT Mesh();

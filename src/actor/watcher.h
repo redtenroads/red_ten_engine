@@ -1,8 +1,12 @@
+// SPDX-FileCopyrightText: 2022 Dmitrii Shashkov
+// SPDX-License-Identifier: MIT
+
 #pragma once
 #include "common/utils.h"
+#include "common/withLogger.h"
 
 template <class T>
-class Watcher
+class Watcher : public WithLogger
 {
 public:
     Watcher(T *target)
@@ -12,7 +16,7 @@ public:
     ~Watcher()
     {
         if (target)
-            printf("ERROR: Watcher removed still targeting watchable\nMake sure to first unwatch this watcher through watchable interface\n");
+            logger->logff("ERROR: Watcher removed still targeting watchable\nMake sure to first unwatch this watcher through watchable interface\n");
     }
 
     void noticeRemoved()

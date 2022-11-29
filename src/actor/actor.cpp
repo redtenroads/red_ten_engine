@@ -314,9 +314,8 @@ void Actor::onProcess(float delta)
     }
 }
 
-void Actor::onRender(Matrix4 &vpMatrix)
+void Actor::onRender(Matrix4 &vpMatrix, std::vector<Component *> *lights)
 {
-    bHasLights = false;
     bHasBlended = false;
     if (components.size() > 0)
         for (auto it = components.begin(); it != components.end(); it++)
@@ -328,23 +327,25 @@ void Actor::onRender(Matrix4 &vpMatrix)
                     (*it)->render(vpMatrix, &transform);
 
                 if ((*it)->isUsingLightPhase())
-                    bHasLights = true;
+                {
+                    lights->push_back((*it));
+                }
             }
 }
 
-void Actor::onRenderLight(Matrix4 &vpMatrix)
+void Actor::onRenderShadowed(Matrix4 &vpMatrix)
 {
     if (components.size() > 0)
         for (auto it = components.begin(); it != components.end(); it++)
-            if ((*it)->isVisible())
-                (*it)->renderLightPhase(vpMatrix, &transform);
+            if ((*it)->isVisible() && !(*it)->isUsingBlendingPhase())
+                (*it)->shadowRender(vpMatrix, &transform);
 }
 
 void Actor::onRenderBlended(Matrix4 &vpMatrix)
 {
     if (components.size() > 0)
         for (auto it = components.begin(); it != components.end(); it++)
-            if ((*it)->isUsingBlendingPhase() && (*it)->isVisible())
+            if ((*it)->isVisible() && (*it)->isUsingBlendingPhase())
                 (*it)->render(vpMatrix, &transform);
 }
 

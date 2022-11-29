@@ -4,3 +4,4 @@ bin/*.exp
 bin/*.lib
 bin/*.pdb
 objects/*.o
+log.txt

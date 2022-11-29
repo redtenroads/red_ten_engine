@@ -18,14 +18,23 @@ class ComponentLight : public Component
 {
 public:
     EXPORT ComponentLight();
-    EXPORT void setupSunLight(Vector3 normal, Vector3 color, bool bCastShadows = false);
+    EXPORT void setupSunLight(Vector3 position, Vector3 color, bool bCastShadows = false);
     EXPORT void setupOmniLight(float affectDistance, Vector3 color, bool bCastShadows = false);
 
-    EXPORT void renderLightPhase(Matrix4 &vpMatrix, Transformation *tf);
+    EXPORT void render(Matrix4 &vpMatrix, Transformation *tf);
+
+    EXPORT Matrix4 preparePreShadowPhase(Vector3 cameraPosition);
+    EXPORT void renderLightPhase(Matrix4 &vpMatrix, unsigned int shadowMapTexture);
+
+    EXPORT void enableShadows();
+    EXPORT void disableShadows();
 
 protected:
     float normal[3], color[3];
     float affectDistance = 0.0f;
-    bool bCastShadows;
     LightType type = LightType::None;
+    Matrix4 m1;
+    Matrix4 lightViewProjection;
+
+    Transformation *tf = nullptr;
 };

@@ -2,7 +2,6 @@
 // SPDX-License-Identifier: MIT
 
 #include "common/commonShaders.h"
-#include <stdio.h>
 
 extern float spritePoints[];
 extern float screenPoints[];
@@ -19,10 +18,10 @@ extern const char *clearFragmentShader;
 extern const char *meshVertexShader;
 extern const char *meshFragmentShader;
 
-extern const char *meshLightningFragmentCode;
 extern const char *initialLightningFragmentCode;
 
 extern const char *sunFragmentCode;
+extern const char *sunWithShadowFragmentCode;
 extern const char *omniFragmentCode;
 
 Shader *CommonShaders::shader = nullptr;
@@ -38,45 +37,56 @@ RawShader *CommonShaders::effectShader = nullptr;
 RawShader *CommonShaders::initialLightningShader = nullptr;
 
 LightningShader *CommonShaders::sunShader = nullptr;
+LightningShader *CommonShaders::sunWithShadowShader = nullptr;
 LightningShader *CommonShaders::omniShader = nullptr;
 
 void CommonShaders::build()
 {
+    logger->logff("compiling base meshes ...");
+
     spriteMesh = resourceController->addMesh();
     spriteMesh->setupByArray8f(spritePoints, 8 * 4);
 
     screenMesh = resourceController->addMesh();
     screenMesh->setupByArray8f(screenPoints, 8 * 4);
 
-    printf("compiling sprite shader ...\n");
+    logger->logff("base meshes compiled\n");
+
+    logger->logff("compiling shaders ...");
+
+    logger->logff("compiling sprite shader ...");
     spriteShader = new RawShader(spriteVertexShader, spriteFragmentShader);
     spriteShader->build();
 
-    printf("compiling framed sprite shader ...\n");
+    logger->logff("compiling framed sprite shader ...");
     spriteFrameShader = new RawShader(spriteFramedVertexShader, spriteFragmentShader);
     spriteFrameShader->build();
 
-    printf("compiling sun shader ...\n");
+    logger->logff("compiling sun shader ...");
     sunShader = new LightningShader(screenVertexShader, sunFragmentCode);
     sunShader->build();
 
-    printf("compiling omni shader ...\n");
+    logger->logff("compiling sun with shadow shader ...");
+    sunWithShadowShader = new LightningShader(screenVertexShader, sunWithShadowFragmentCode);
+    sunWithShadowShader->build();
+
+    logger->logff("compiling omni shader ...");
     omniShader = new LightningShader(screenVertexShader, omniFragmentCode);
     sunShader->build();
 
-    printf("compiling screen shader ...\n");
+    logger->logff("compiling screen shader ...");
     screenShader = new RawShader(screenVertexShader, screenFragmentShader);
     screenShader->build();
 
-    printf("compiling effect shader ...\n");
+    logger->logff("compiling effect shader ...");
     effectShader = new RawShader(screenVertexShader, spriteFragmentShader);
     effectShader->build();
 
-    printf("compiling initial lightning shader ...\n");
+    logger->logff("compiling initial lightning shader ...");
     initialLightningShader = new RawShader(screenVertexShader, initialLightningFragmentCode);
     initialLightningShader->build();
 
-    printf("done\n");
+    logger->logff("shaders compiled\n");
 }
 
 float spritePoints[] = {
@@ -181,43 +191,6 @@ const char *meshFragmentShader =
     "   fragColor = color;\n"
     "}\n";
 
-/*
-const char *gShaderFragmentCode =
-    "#version 400\n"
-    "layout (location = 0) out vec3 gPosition;"
-    "layout (location = 1) out vec3 gNormal;"
-    "layout (location = 2) out vec4 gAlbedoSpec;"
-    "uniform sampler2D TextureDefuse;\n"
-    "uniform sampler2D TextureSpecular;\n"
-    "in vec2 TexCoords;"
-    "in vec3 FragPos;"
-    "in vec3 Normal;"
-    "void main() {\n"
-    "   gPosition = FragPos;\n"
-    "   gNormal = Normal;\n"
-    "   gAlbedoSpec.rgb = texture(TextureDefuse, TexCoords).rgb;\n"
-    "   gAlbedoSpec.a = texture(TextureSpecular, TexCoords).r;\n"
-    "}\n";
-*/
-
-const char *meshLightningFragmentCode =
-    "#version 400\n"
-    "out vec4 FragColor;\n"
-    "in vec2 texCoord;\n"
-    "uniform sampler2D tPosition;\n"
-    "uniform sampler2D tNormal;\n"
-    "uniform sampler2D tAlbedoSpec;\n"
-    "uniform vec3 ambientColor;\n"
-    "void main() {\n"
-    "   vec3 FragPos = texture(tPosition, texCoord).rgb;\n"
-    "   vec3 Normal = texture(tNormal, texCoord).rgb;\n"
-    "   vec3 lightDir = normalize(vec3(-1.0, 1.0, 1.0));"
-    "   vec3 Albedo = texture(tAlbedoSpec, texCoord).rgb;\n"
-    "   float Specular = texture(tAlbedoSpec, texCoord).a;\n"
-    "   vec3 diffuse = Albedo * ambientColor;\n"
-    "   vec3 light = max(dot(Normal, lightDir), 0.0) * Albedo;\n"
-    "   FragColor = vec4(diffuse + light, 1.0);\n"
-    "}\n";
 
 const char *initialLightningFragmentCode =
     "#version 400\n"
@@ -229,7 +202,7 @@ const char *initialLightningFragmentCode =
     "void main() {\n"
     "   vec3 Albedo = texture(tAlbedo, texCoord).rgb;\n"
     "   vec3 Normal = texture(tNormal, texCoord).rgb;\n"
-    "   FragColor = length(Normal) == 0 ? vec4(0, 0, 0, 0) : vec4(Albedo * vf3ambientColor, 1.0);\n"
+    "   FragColor = length(Normal) == 0 ? vec4(0.0, 0, 0, 0.0) : vec4(Albedo * vf3ambientColor, 1.0);\n"
     "}\n";
 
 const char *sunFragmentCode =
@@ -244,6 +217,46 @@ const char *sunFragmentCode =
     "   vec3 Normal = texture(tNormal, texCoord).rgb;\n"
     "   vec3 Albedo = texture(tAlbedoSpec, texCoord).rgb;\n"
     "   vec3 light = max(dot(Normal, lightDir), 0.0) * Albedo * lightColor;\n"
+    "   FragColor = vec4(light, 0.0);\n"
+    "}\n";
+
+const char *sunWithShadowFragmentCode =
+    "#version 400\n"
+    "out vec4 FragColor;\n"
+    "in vec2 texCoord;\n"
+    "uniform sampler2D tPosition;\n"
+    "uniform sampler2D tAlbedoSpec;\n"
+    "uniform sampler2D tNormal;\n"
+    "uniform sampler2D tShadowMap;\n"
+    "uniform vec3 lightColor;\n"
+    "uniform vec3 lightDir;\n"
+    "uniform mat4 mlightSpace;\n"
+    ""
+    "vec2 texelSize = 1.0 / textureSize(tShadowMap, 0);\n"
+    ""
+    "float ShadowCalculation(vec4 fragPosLightSpace, vec3 Normal)\n"
+    "{\n"
+    "   vec3 projCoords = fragPosLightSpace.xyz / fragPosLightSpace.w;\n"
+    "   projCoords = projCoords * 0.5 + 0.5;\n"
+    "   float currentDepth = projCoords.z;\n"
+    "   float bias = max(0.003 * (1.0 - dot(Normal, lightDir)), 0.0003);\n"
+    "   float shadow = 0.0;\n"
+    "   for(int x = -1; x <= 1; ++x){\n"
+    "       for(int y = -1; y <= 1; ++y){\n"
+    "           float pcfDepth = texture(tShadowMap, projCoords.xy + vec2(x, y) * texelSize).r;\n" 
+    "           shadow += (currentDepth - bias > pcfDepth) || currentDepth > 1.0 ? 1.0 : 0.0;\n" 
+    "       }\n"
+    "   }\n"
+    "   shadow /= 9.0;\n"
+    "   return shadow;\n"
+    "}\n"
+    "void main() {\n"
+    "   vec3 FragPos = texture(tPosition, texCoord).rgb / 0.1;\n"
+    "   vec3 Normal = texture(tNormal, texCoord).rgb;\n"
+    "   vec3 Albedo = texture(tAlbedoSpec, texCoord).rgb;\n"
+    "   vec4 FragPosLightSpace = mlightSpace * vec4(FragPos, 1.0);\n"
+    "   float shadow = ShadowCalculation(FragPosLightSpace, Normal);\n"
+    "   vec3 light = max(dot(Normal, lightDir), 0.0) * (1.0 - shadow) * Albedo * lightColor;\n"
     "   FragColor = vec4(light, 0.0);\n"
     "}\n";
 

@@ -3,6 +3,7 @@
 
 #pragma once
 #include "common/utils.h"
+#include "common/withLogger.h"
 #include <vector>
 
 struct AudioDevice
@@ -10,7 +11,7 @@ struct AudioDevice
     const char *name;
 };
 
-class SoundController
+class SoundController : WithLogger
 {
 public:
     SoundController();

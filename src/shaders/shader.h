@@ -4,12 +4,14 @@
 #pragma once
 #include "math/math.h"
 #include "common/utils.h"
+#include "common/withLogger.h"
 
-class Shader
+class Shader : public WithLogger
 {
 public:
     EXPORT virtual bool build();
     EXPORT virtual bool use(Matrix4 mViewProjection, Matrix4 mModel);
+    EXPORT virtual bool useShadow(Matrix4 mViewProjection, Matrix4 mModel);
 
     EXPORT virtual void setOpacity(float value) {}
     EXPORT virtual void setFrameShift(float *shift) {}
@@ -25,4 +27,5 @@ protected:
 
     bool bIsReady = false;
     unsigned int programm = -1;
+    unsigned int shadowProgramm = -1;
 };

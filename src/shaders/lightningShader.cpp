@@ -32,6 +32,7 @@ bool LightningShader::build()
 
             locMViewProjection = glGetUniformLocation(programm, "mViewProjection");
             locMTransform = glGetUniformLocation(programm, "mTransform");
+            locMLightSpace = glGetUniformLocation(programm, "mlightSpace");
 
             locV3LightColor = glGetUniformLocation(programm, "lightColor");
             locV3LightDirection = glGetUniformLocation(programm, "lightDir");
@@ -40,6 +41,9 @@ bool LightningShader::build()
             locTGAlbedoSpec = glGetUniformLocation(programm, "tAlbedoSpec");
             locTGNormal = glGetUniformLocation(programm, "tNormal");
             locTGPosition = glGetUniformLocation(programm, "tPosition");
+            locTShadowMap = glGetUniformLocation(programm, "tShadowMap");
+
+            printf("%i %i\n", locMLightSpace, locTShadowMap);
 
             bIsReady = true;
             return true;
@@ -68,6 +72,9 @@ bool LightningShader::use(Matrix4 mViewProjection, Matrix4 mModel)
         glUniform1i(locTGNormal, 1);
     if (locTGPosition != -1)
         glUniform1i(locTGPosition, 2);
+    if (locTShadowMap != -1)
+        glUniform1i(locTShadowMap, 3);
+
     if (locMViewProjection != -1)
         glUniformMatrix4fv(locMViewProjection, 1, GL_FALSE, value_ptr(mViewProjection));
     if (locMTransform != -1)
@@ -87,7 +94,13 @@ void LightningShader::setLightDirection(float v[3])
         glUniform3fv(locV3LightDirection, 1, v);
 }
 
-void LightningShader::setAffectDistance(float value){
+void LightningShader::setAffectDistance(float value)
+{
     if (locFAffectDistance != -1)
         glUniform1f(locFAffectDistance, value);
+}
+void LightningShader::setLightSpaceMatrix(Matrix4 mLightSpace)
+{
+    if (locMLightSpace != -1)
+        glUniformMatrix4fv(locMLightSpace, 1, GL_FALSE, value_ptr(mLightSpace));
 }

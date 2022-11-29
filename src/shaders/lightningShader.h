@@ -15,9 +15,11 @@ public:
     EXPORT void setLightColor(float v[3]);
     EXPORT void setLightDirection(float v[3]);
     EXPORT void setAffectDistance(float value);
+    EXPORT void setLightSpaceMatrix(Matrix4 mLightSpace);
 
     unsigned int locMViewProjection;
     unsigned int locMTransform;
+    unsigned int locMLightSpace;
 
     unsigned int locV3LightColor;
     unsigned int locV3LightDirection;
@@ -26,6 +28,7 @@ public:
     unsigned int locTGAlbedoSpec;
     unsigned int locTGNormal;
     unsigned int locTGPosition;
+    unsigned int locTShadowMap;
 
 protected:
     const char *vertexCode = nullptr;

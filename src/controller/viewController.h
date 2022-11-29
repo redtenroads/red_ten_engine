@@ -3,6 +3,7 @@
 
 #pragma once
 #include "common/utils.h"
+#include "common/withLogger.h"
 #include "os/view.h"
 #include "controller/inputController.h"
 #include <list>
@@ -13,7 +14,7 @@ struct GamepadDevice
     void *gamePad;
 };
 
-class ViewController
+class ViewController : public WithLogger
 {
 public:
     ViewController();

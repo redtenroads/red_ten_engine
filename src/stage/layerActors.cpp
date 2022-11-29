@@ -7,6 +7,7 @@
 #include "opengl/glew.h"
 #include "opengl/wglew.h"
 #include "common/commonShaders.h"
+#include "component/componentLight.h"
 #include <math.h>
 
 #define JPH_FLOATING_POINT_EXCEPTIONS_ENABLED
@@ -103,8 +104,9 @@ void LayerActors::render(View *view)
     auto renderer = view->getRenderer();
     renderer->setupNewFrame();
 
-    std::vector<Actor *> lights;
+    std::vector<Component *> sceneLights;
     std::vector<Actor *> blends;
+    std::vector<Actor *> shadowCasters;
 
     if (!activeCamera || !bIsVisible)
         return;
@@ -120,46 +122,77 @@ void LayerActors::render(View *view)
     {
         if ((*actor)->isVisible())
         {
-            (*actor)->onRender(mProjectionView);
-            if ((*actor)->hasLights())
-                lights.push_back(*actor);
+            (*actor)->onRender(mProjectionView, &sceneLights);
             if ((*actor)->hasBlended())
                 blends.push_back(*actor);
+            shadowCasters.push_back(*actor);
         }
     }
     activeCamera->finishRender();
 
     // Lightning phase
-    glDisable(GL_DEPTH_TEST);
-    glDisable(GL_CULL_FACE);
-
-    auto initialLightningShader = CommonShaders::initialLightningShader;
-    renderer->setupLightning();
-    initialLightningShader->use(m1, m2);
-
-    glActiveTexture(GL_TEXTURE0);
-    glBindTexture(GL_TEXTURE_2D, renderer->getAlbedoTexture());
-    glUniform3fv(initialLightningShader->locV3AmbientColor, 1, ambientColor);
-    CommonShaders::screenMesh->use();
-
-    glEnable(GL_BLEND);
-    glDrawArrays(GL_QUADS, 0, 4);
-    glBlendFunc(GL_ONE, GL_ONE);
-
-    if (lights.size() > 0)
+    if (sceneLights.size() > 0)
     {
+        // light phase
+        glDisable(GL_DEPTH_TEST);
+        glDisable(GL_CULL_FACE);
+        glDisable(GL_ALPHA_TEST);
+        glDepthFunc(GL_LESS);
+        glDepthMask(GL_TRUE);
+
+        auto initialLightningShader = CommonShaders::initialLightningShader;
+        renderer->setupLightning();
+        initialLightningShader->use(m1, m2);
+
         glActiveTexture(GL_TEXTURE0);
         glBindTexture(GL_TEXTURE_2D, renderer->getAlbedoTexture());
+        glUniform3fv(initialLightningShader->locV3AmbientColor, 1, ambientColor);
+        CommonShaders::screenMesh->use();
 
-        glActiveTexture(GL_TEXTURE1);
-        glBindTexture(GL_TEXTURE_2D, renderer->getNormalTexture());
+        glEnable(GL_BLEND);
+        glBlendFunc(GL_ONE, GL_ONE);
+        glDrawArrays(GL_QUADS, 0, 4);
 
-        glActiveTexture(GL_TEXTURE2);
-        glBindTexture(GL_TEXTURE_2D, renderer->getPositionTexture());
-
-        for (auto actor = lights.begin(); actor != lights.end(); ++actor)
+        bool setupLightningFrame = true;
+        for (auto light = sceneLights.begin(); light != sceneLights.end(); ++light)
         {
-            (*actor)->onRenderLight(mProjectionView);
+            // shadow preparation phase
+            if ((*light)->isUsingShadowPhase())
+            {
+                glEnable(GL_DEPTH_TEST);
+                glEnable(GL_CULL_FACE);
+                glDisable(GL_BLEND);
+
+                // prepare shadowed render
+                Matrix4 mLightViewProjection = (*light)->preparePreShadowPhase(activeCamera->transform.getPosition());
+                renderer->setupShadowHQ();
+
+                for (auto actor = shadowCasters.begin(); actor != shadowCasters.end(); ++actor)
+                {
+                    (*actor)->onRenderShadowed(mLightViewProjection);
+                }
+                setupLightningFrame = true;
+            }
+            if (setupLightningFrame)
+            {
+                setupLightningFrame = false;
+                renderer->setupLightning(false);
+
+                glDisable(GL_DEPTH_TEST);
+                glDisable(GL_CULL_FACE);
+                glEnable(GL_BLEND);
+
+                glActiveTexture(GL_TEXTURE0);
+                glBindTexture(GL_TEXTURE_2D, renderer->getAlbedoTexture());
+
+                glActiveTexture(GL_TEXTURE1);
+                glBindTexture(GL_TEXTURE_2D, renderer->getNormalTexture());
+
+                glActiveTexture(GL_TEXTURE2);
+                glBindTexture(GL_TEXTURE_2D, renderer->getPositionTexture());
+            }
+
+            (*light)->renderLightPhase(mProjectionView, renderer->getShadowTexture());
         }
     }
 
@@ -181,10 +214,10 @@ void LayerActors::render(View *view)
 
     // Final phase
     view->useFrameBuffer();
+    glDisable(GL_BLEND);
 
     glActiveTexture(GL_TEXTURE0);
     glBindTexture(GL_TEXTURE_2D, renderer->getLightningTexture());
-
     CommonShaders::screenShader->use(m1, m2);
     CommonShaders::screenMesh->use();
 
