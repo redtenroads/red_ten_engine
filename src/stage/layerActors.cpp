@@ -130,25 +130,25 @@ void LayerActors::render(View *view)
     }
     activeCamera->finishRender();
 
+    // light phase
+    glDisable(GL_DEPTH_TEST);
+    glDisable(GL_CULL_FACE);
+    glDisable(GL_ALPHA_TEST);
+    glDepthFunc(GL_LESS);
+    glDepthMask(GL_TRUE);
+
+    auto initialLightningShader = CommonShaders::initialLightningShader;
+    renderer->setupLightning();
+    initialLightningShader->use(m1, m2);
+
+    glActiveTexture(GL_TEXTURE0);
+    glBindTexture(GL_TEXTURE_2D, renderer->getAlbedoTexture());
+    glUniform3fv(initialLightningShader->locV3AmbientColor, 1, ambientColor);
+    CommonShaders::screenMesh->use();
+
     // Lightning phase
     if (sceneLights.size() > 0)
     {
-        // light phase
-        glDisable(GL_DEPTH_TEST);
-        glDisable(GL_CULL_FACE);
-        glDisable(GL_ALPHA_TEST);
-        glDepthFunc(GL_LESS);
-        glDepthMask(GL_TRUE);
-
-        auto initialLightningShader = CommonShaders::initialLightningShader;
-        renderer->setupLightning();
-        initialLightningShader->use(m1, m2);
-
-        glActiveTexture(GL_TEXTURE0);
-        glBindTexture(GL_TEXTURE_2D, renderer->getAlbedoTexture());
-        glUniform3fv(initialLightningShader->locV3AmbientColor, 1, ambientColor);
-        CommonShaders::screenMesh->use();
-
         glEnable(GL_BLEND);
         glBlendFunc(GL_ONE, GL_ONE);
         glDrawArrays(GL_QUADS, 0, 4);
@@ -196,9 +196,9 @@ void LayerActors::render(View *view)
         }
     }
 
-    glActiveTexture(GL_TEXTURE0);
-
     // Blending phase
+    renderer->setupLightning(false);
+
     glDisable(GL_DEPTH_TEST);
     glDisable(GL_CULL_FACE);
     glEnable(GL_BLEND);
@@ -214,7 +214,7 @@ void LayerActors::render(View *view)
 
     // Final phase
     view->useFrameBuffer();
-    glDisable(GL_BLEND);
+    glEnable(GL_BLEND);
 
     glActiveTexture(GL_TEXTURE0);
     glBindTexture(GL_TEXTURE_2D, renderer->getLightningTexture());
