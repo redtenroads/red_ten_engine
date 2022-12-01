@@ -10,7 +10,7 @@
 class View
 {
 public:
-    View(int width, int height, bool isFullscreen);
+    View(int width, int height, int refreshRate, bool isFullscreen);
 
     std::string windowName = "unnamed";
 
@@ -34,6 +34,8 @@ protected:
     void *window = nullptr;
     int width = 640;
     int height = 480;
+    int refreshRate = 0;
+    int displayMode = -1;
     bool bIsFullscreen = false;
 
     const char *oglVersion = nullptr;

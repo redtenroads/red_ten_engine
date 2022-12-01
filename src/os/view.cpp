@@ -10,11 +10,29 @@
 #include <gl/GLU.h>
 #include <SDL.h>
 
-View::View(int width, int height, bool isFullscreen)
+View::View(int width, int height, int refreshRate, bool isFullscreen)
 {
     this->width = width;
     this->height = height;
+    this->refreshRate = refreshRate;
     this->bIsFullscreen = isFullscreen;
+
+    displayMode = -1;
+    int highestRefreshRate = 0;
+    if (isFullscreen)
+    {
+        SDL_DisplayMode mode;
+        int displayModes = SDL_GetNumDisplayModes(0);
+        for (int i = 0; i < displayModes; i++)
+        {
+            SDL_GetDisplayMode(0, i, &mode);
+            if (mode.w == width && mode.h == height && ((refreshRate == 0 && mode.refresh_rate > highestRefreshRate) || mode.refresh_rate == refreshRate))
+            {
+                highestRefreshRate = mode.refresh_rate;
+                displayMode = i;
+            }
+        }
+    }
 }
 
 bool View::makeWindow()
@@ -30,6 +48,13 @@ bool View::makeWindow()
 
     if (newWindow)
     {
+        if (bIsFullscreen && displayMode != -1)
+        {
+            SDL_DisplayMode mode;
+            SDL_GetDisplayMode(0, displayMode, &mode);
+            SDL_SetWindowDisplayMode(newWindow, &mode);
+        }
+
         SDL_GL_CreateContext(newWindow);
         glewInit();
 
@@ -37,8 +62,8 @@ bool View::makeWindow()
 
         window = newWindow;
 
-        oglVersion = (char*)glGetString(GL_RENDERER); // get renderer string
-        version = (char*)glGetString(GL_VERSION);     // version as a string
+        oglVersion = (char *)glGetString(GL_RENDERER); // get renderer string
+        version = (char *)glGetString(GL_VERSION);     // version as a string
 
         glGenFramebuffers(1, &framebuffer);
         glBindFramebuffer(GL_FRAMEBUFFER, framebuffer);

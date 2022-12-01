@@ -3,6 +3,7 @@
 
 #include "controller/viewController.h"
 #include <SDL.h>
+#include <algorithm>
 
 InputController *ViewController::inputController = nullptr;
 
@@ -25,14 +26,25 @@ View *ViewController::createViewFullscreen(std::string name)
     return createView(name, 0, 0, true);
 }
 
-View *ViewController::createView(std::string name, int resX, int resY, bool isFullscreen)
+View *ViewController::createView(std::string name, int resX, int resY, bool isFullscreen, int refreshRate)
 {
+    if (isFullscreen && (resX != 0 || resY != 0))
+    {
+        if (!isResolutionAvailable(resX, resY, refreshRate))
+        {
+            logger->logff("Unable to set fullscreen resolution %ix%i, %ihz", resX, resY, refreshRate);
+            resX = 0;
+            resY = 0;
+            refreshRate = 0;
+        }
+    }
+
     if (resX == 0)
         resX = getPrimaryScreenWidth() / (isFullscreen ? 1 : 2);
     if (resY == 0)
         resY = getPrimaryScreenHeight() / (isFullscreen ? 1 : 2);
 
-    View *view = new View(resX, resY, isFullscreen);
+    View *view = new View(resX, resY, refreshRate, isFullscreen);
     view->windowName = name;
     if (view->makeWindow())
     {
@@ -46,6 +58,76 @@ View *ViewController::createView(std::string name, int resX, int resY, bool isFu
 
     delete view;
     return nullptr;
+}
+
+void ViewController::getAvailableResolutions(std::vector<DisplayMode> *modes, bool onlyNative)
+{
+    SDL_DisplayMode mode;
+    modes->clear();
+    int displayModes = SDL_GetNumDisplayModes(0);
+
+    for (int i = 0; i < displayModes; i++)
+    {
+        SDL_GetDisplayMode(0, i, &mode);
+        float ratio = (float)mode.w / (float)mode.h;
+        float nativeRatio = (float)getPrimaryScreenWidth() / (float)getPrimaryScreenHeight();
+
+        if (ratio == nativeRatio || !onlyNative)
+        {
+            bool shouldBeAdded = true;
+            if (modes->size() > 0)
+                for (auto it = modes->begin(); it != modes->end(); it++)
+                {
+                    if ((*it).width == mode.w && (*it).height == mode.h)
+                    {
+                        shouldBeAdded = false;
+                        break;
+                    }
+                }
+            if (shouldBeAdded)
+                modes->push_back(DisplayMode({mode.w, mode.h, i}));
+        }
+    }
+
+    if (modes->size() > 0)
+        std::sort(modes->begin(), modes->end(), [](DisplayMode &a, DisplayMode &b)
+                  { return a.width * a.height > b.width * b.height; });
+}
+
+void ViewController::getAvailableRefreshRates(DisplayMode *mode, std::vector<int> *refreshRates)
+{
+    SDL_DisplayMode nativeMode;
+    int displayModes = SDL_GetNumDisplayModes(0);
+
+    printf("Refresh Rates: %i\n", displayModes);
+    for (int i = 0; i < displayModes; i++)
+    {
+        SDL_GetDisplayMode(0, i, &nativeMode);
+        if (mode->width == nativeMode.w && mode->height == nativeMode.h)
+            refreshRates->push_back(nativeMode.refresh_rate);
+    }
+
+    if (refreshRates->size() > 0)
+        std::sort(refreshRates->begin(), refreshRates->end(), std::greater<int>());
+}
+
+bool ViewController::isResolutionAvailable(int width, int height, int refreshRate)
+{
+    SDL_DisplayMode mode;
+    int displayModes = SDL_GetNumDisplayModes(0);
+
+    for (int i = 0; i < displayModes; i++)
+    {
+        SDL_GetDisplayMode(0, i, &mode);
+        if (mode.w == width && mode.h == height && (refreshRate == 0 || mode.refresh_rate == refreshRate))
+            return true;
+    }
+    return false;
+}
+
+bool ViewController::isResolutionAvailable(DisplayMode &mode, int refreshRate)
+{
+    return isResolutionAvailable(mode.width, mode.height);
 }
 
 void ViewController::processEvents()

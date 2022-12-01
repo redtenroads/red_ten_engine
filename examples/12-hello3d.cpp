@@ -76,7 +76,7 @@ int main()
 
     // View setup
     auto viewController = engine->getViewController();
-    auto view = viewController->createView("Example \"12. Hello 3D\"", 1920, 1080, false);
+    auto view = viewController->createView("Example \"12. Hello 3D\"", 1920, 1080);
 
     // Stage setup
     auto stageController = engine->getStageController();

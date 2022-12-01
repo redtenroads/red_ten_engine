@@ -8,6 +8,13 @@
 #include "controller/inputController.h"
 #include <list>
 
+struct DisplayMode
+{
+    int width;
+    int height;
+    int index;
+};
+
 struct GamepadDevice
 {
     int index;
@@ -20,7 +27,13 @@ public:
     ViewController();
 
     EXPORT View *createViewFullscreen(std::string name);
-    EXPORT View *createView(std::string name, int resX, int resY, bool isFullscreen);
+    EXPORT View *createView(std::string name, int resX = 0, int resY = 0, bool isFullscreen = false, int refreshRate = 0);
+
+    EXPORT void getAvailableResolutions(std::vector<DisplayMode> *modes, bool onlyNative = true);
+    EXPORT void getAvailableRefreshRates(DisplayMode *mode, std::vector<int> *refreshRates);
+
+    EXPORT bool isResolutionAvailable(int width, int height, int refreshRate = 0);
+    EXPORT bool isResolutionAvailable(DisplayMode &mode, int refreshRate);
 
     EXPORT void processEvents();
     EXPORT bool getIsExitIntended();

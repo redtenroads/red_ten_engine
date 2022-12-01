@@ -43,8 +43,6 @@ bool LightningShader::build()
             locTGPosition = glGetUniformLocation(programm, "tPosition");
             locTShadowMap = glGetUniformLocation(programm, "tShadowMap");
 
-            printf("%i %i\n", locMLightSpace, locTShadowMap);
-
             bIsReady = true;
             return true;
         }
