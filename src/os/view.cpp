@@ -16,23 +16,7 @@ View::View(int width, int height, int refreshRate, bool isFullscreen)
     this->height = height;
     this->refreshRate = refreshRate;
     this->bIsFullscreen = isFullscreen;
-
-    displayMode = -1;
-    int highestRefreshRate = 0;
-    if (isFullscreen)
-    {
-        SDL_DisplayMode mode;
-        int displayModes = SDL_GetNumDisplayModes(0);
-        for (int i = 0; i < displayModes; i++)
-        {
-            SDL_GetDisplayMode(0, i, &mode);
-            if (mode.w == width && mode.h == height && ((refreshRate == 0 && mode.refresh_rate > highestRefreshRate) || mode.refresh_rate == refreshRate))
-            {
-                highestRefreshRate = mode.refresh_rate;
-                displayMode = i;
-            }
-        }
-    }
+    updateSuitableDisplayMode();
 }
 
 bool View::makeWindow()
@@ -65,26 +49,60 @@ bool View::makeWindow()
         oglVersion = (char *)glGetString(GL_RENDERER); // get renderer string
         version = (char *)glGetString(GL_VERSION);     // version as a string
 
-        glGenFramebuffers(1, &framebuffer);
-        glBindFramebuffer(GL_FRAMEBUFFER, framebuffer);
+        updateFrameBuffer();
 
-        // Color texture
-        glGenTextures(1, &renderedTexture);
-        glBindTexture(GL_TEXTURE_2D, renderedTexture);
-        glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, width, height, 0, GL_RGBA, GL_UNSIGNED_BYTE, 0);
-        glFramebufferTexture(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, renderedTexture, 0);
-
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
-
-        glBindFramebuffer(GL_FRAMEBUFFER, 0);
-
-        renderer = new Renderer(width, height);
         return true;
     }
 
     window = nullptr;
     return false;
+}
+
+bool View::changeMode(int width, int height, int refreshRate, bool isFullscreen)
+{
+    this->width = width;
+    this->height = height;
+    this->refreshRate = refreshRate;
+    updateSuitableDisplayMode();
+
+    if (window)
+    {
+        if (displayMode == -1 && this->bIsFullscreen)
+        {
+            SDL_SetWindowFullscreen((SDL_Window *)window, 0);
+            this->bIsFullscreen = false;
+        }
+
+        if (displayMode != -1)
+        {
+            this->bIsFullscreen = isFullscreen;
+            SDL_DisplayMode mode;
+            SDL_GetDisplayMode(0, displayMode, &mode);
+            SDL_SetWindowDisplayMode((SDL_Window *)window, &mode);
+            if (bIsFullscreen)
+                SDL_SetWindowFullscreen((SDL_Window *)window, SDL_WINDOW_FULLSCREEN);
+            else
+                SDL_SetWindowFullscreen((SDL_Window *)window, 0);
+        }
+        else
+        {
+            if (this->bIsFullscreen)
+            {
+                SDL_SetWindowFullscreen((SDL_Window *)window, 0);
+                this->bIsFullscreen = false;
+            }
+            else
+                SDL_SetWindowSize((SDL_Window *)window, width, height);
+        }
+    }
+    else
+    {
+        this->bIsFullscreen = isFullscreen;
+        return makeWindow();
+    }
+
+    updateFrameBuffer();
+    return true;
 }
 
 void View::swapBuffers()
@@ -141,4 +159,47 @@ Renderer *View::getRenderer()
 void View::useFrameBuffer()
 {
     glBindFramebuffer(GL_FRAMEBUFFER, framebuffer);
+}
+
+void View::updateSuitableDisplayMode()
+{
+    displayMode = -1;
+    int highestRefreshRate = 0;
+    SDL_DisplayMode mode;
+    int displayModes = SDL_GetNumDisplayModes(0);
+    for (int i = 0; i < displayModes; i++)
+    {
+        SDL_GetDisplayMode(0, i, &mode);
+        if (mode.w == width && mode.h == height && ((refreshRate == 0 && mode.refresh_rate > highestRefreshRate) || mode.refresh_rate == refreshRate))
+        {
+            highestRefreshRate = mode.refresh_rate;
+            displayMode = i;
+        }
+    }
+}
+
+void View::updateFrameBuffer()
+{
+    if (framebuffer)
+        glDeleteFramebuffers(1, &framebuffer);
+    if (renderedTexture)
+        glDeleteTextures(1, &renderedTexture);
+
+    glGenFramebuffers(1, &framebuffer);
+    glBindFramebuffer(GL_FRAMEBUFFER, framebuffer);
+
+    // Color texture
+    glGenTextures(1, &renderedTexture);
+    glBindTexture(GL_TEXTURE_2D, renderedTexture);
+    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, width, height, 0, GL_RGBA, GL_UNSIGNED_BYTE, 0);
+    glFramebufferTexture(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, renderedTexture, 0);
+
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+
+    glBindFramebuffer(GL_FRAMEBUFFER, 0);
+
+    if (renderer)
+        delete renderer;
+    renderer = new Renderer(width, height);
 }

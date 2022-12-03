@@ -91,6 +91,20 @@ Renderer::Renderer(int width, int height)
     glBindFramebuffer(GL_FRAMEBUFFER, 0);
 }
 
+Renderer::~Renderer()
+{
+    // Deleting buffers
+    glDeleteFramebuffers(1, &gBuffer);
+    glDeleteFramebuffers(1, &lightningBuffer);
+    glDeleteFramebuffers(1, &shadowBuffer);
+
+    glDeleteTextures(1, &gAlbedoSpec);
+    glDeleteTextures(1, &gNormal);
+    glDeleteTextures(1, &gPosition);
+    glDeleteTextures(1, &lightningPicture);
+    glDeleteTextures(1, &shadowPicture);
+}
+
 unsigned int Renderer::getPositionTexture()
 {
     return gPosition;

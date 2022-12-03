@@ -15,6 +15,7 @@ public:
     std::string windowName = "unnamed";
 
     EXPORT bool makeWindow();
+    EXPORT bool changeMode(int width, int height, int refreshRate, bool isFullscreen);
     EXPORT void swapBuffers();
 
     EXPORT int getWidth();
@@ -31,6 +32,9 @@ public:
     EXPORT void useFrameBuffer();
 
 protected:
+    void updateSuitableDisplayMode();
+    void updateFrameBuffer();
+    
     void *window = nullptr;
     int width = 640;
     int height = 480;

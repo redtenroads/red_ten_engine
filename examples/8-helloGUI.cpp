@@ -12,6 +12,7 @@ enum GUI_BUTTON
     TOGGLE_JOJO,
     TOGGLE_PELMENI,
     TOGGLE_CRATE,
+    TOGGLE_FULLSCREEN,
     QUIT
 };
 
@@ -150,6 +151,8 @@ int main()
     // View setup
     auto viewController = engine->getViewController();
     auto view = viewController->createView("Example \"8. Hello GUI\"", 1280, 800, false);
+    int screenWidth = viewController->getPrimaryScreenWidth();
+    int screenHeight = viewController->getPrimaryScreenHeight();
 
     // Stage setup
     auto stageController = engine->getStageController();
@@ -211,6 +214,11 @@ int main()
 
     // Buttons is separate actors, how they work - look in the actor's code
     auto newButton = layerGUI->createActor<GUIButton>();
+    newButton->transform.setPosition(0, -60);
+    newButton->setPressID(GUI_BUTTON::TOGGLE_FULLSCREEN);
+    newButton->setText("Toggle fullscreen");
+
+    newButton = layerGUI->createActor<GUIButton>();
     newButton->transform.setPosition(0, -120);
     newButton->setPressID(GUI_BUTTON::TOGGLE_JOJO);
     newButton->setText("Toggle JoJo");
@@ -252,6 +260,14 @@ int main()
 
             if (firstPressID == GUI_BUTTON::TOGGLE_PELMENI)
                 plate->setVisible(!plate->isVisible());
+
+            if (firstPressID == GUI_BUTTON::TOGGLE_FULLSCREEN)
+            {
+                if (view->isFullscreen())
+                    view->changeMode(1280, 800, 0, false);
+                else
+                    view->changeMode(screenWidth, screenHeight, 0, true);
+            }
         }
     }
 }

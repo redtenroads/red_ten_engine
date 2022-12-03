@@ -7,6 +7,7 @@ class Renderer
 {
 public:
     Renderer(int width, int height);
+    ~Renderer();
 
     unsigned int getPositionTexture();
     unsigned int getNormalTexture();
@@ -21,7 +22,7 @@ public:
 protected:
     unsigned int gBuffer, depthbuffer;
     unsigned int gPosition, gNormal, gAlbedoSpec;
-    
+
     unsigned int lightningBuffer;
     unsigned int lightningPicture;
 
