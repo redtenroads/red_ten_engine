@@ -106,6 +106,12 @@ void RawShader::provideFloat3Value(int uniform, int amount, float *value)
         glUniform3fv(uniform, amount, value);
 }
 
+void RawShader::provideFloat4Value(int uniform, int amount, float *value)
+{
+    if (programm != -1)
+        glUniform4fv(uniform, amount, value);
+}
+
 void RawShader::provideIntValue(int uniform, int amount, int *value)
 {
     if (programm != -1)
@@ -122,4 +128,10 @@ void RawShader::provideInt3Value(int uniform, int amount, int *value)
 {
     if (programm != -1)
         glUniform3iv(uniform, amount, value);
+}
+
+void RawShader::provideInt4Value(int uniform, int amount, int *value)
+{
+    if (programm != -1)
+        glUniform4iv(uniform, amount, value);
 }

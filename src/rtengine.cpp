@@ -55,8 +55,8 @@ RTEngine::RTEngine()
     if (!soundController)
     {
         soundController = new SoundController();
-        ComponentSoundPlayer::setSoundController(soundController);
         Camera::setSoundController(soundController);
+        SoundPlayer::setSoundController(soundController);
     }
 
     if (!physicsController)
@@ -130,6 +130,7 @@ float RTEngine::syncFrame()
         logController->logConsole("FPS %i", fps);
     }
 
+    soundController->process(delta);
     return delta;
 }
 

@@ -2,6 +2,7 @@
 // SPDX-License-Identifier: MIT
 
 #pragma once
+
 #include "common/utils.h"
 #include "common/withLogger.h"
 #include "component/component.h"
@@ -27,6 +28,9 @@ public:
     EXPORT std::string getText();
     EXPORT void rebuildString();
 
+    EXPORT int getWidth();
+    EXPORT int getHeight();
+
     EXPORT Matrix4 getLocalspaceMatrix();
 
 protected:
@@ -37,4 +41,6 @@ protected:
     unsigned int textureID = 0;
     Matrix4 mAnchor;
     Font *font = nullptr;
+
+    int textTextureWidth = 0, textTextureHeight = 0;
 };

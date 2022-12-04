@@ -37,7 +37,7 @@ Sound::Sound(std::string path)
             (path[length - 3] == 'w' || path[length - 3] == 'W') &&
             path[length - 4] == '.')
         {
-            logger->logf("%s - wav\n");
+            logger->logf("%s - wav\n", path.c_str());
             extension = Extension::WAV;
             bIsStreamable = false;
         }
@@ -48,7 +48,7 @@ Sound::Sound(std::string path)
             (path[length - 3] == 'o' || path[length - 3] == 'O') &&
             path[length - 4] == '.')
         {
-            logger->logf("%s - ogg\n");
+            logger->logf("%s - ogg\n", path.c_str());
             extension = Extension::OGG;
             bIsStreamable = true;
         }

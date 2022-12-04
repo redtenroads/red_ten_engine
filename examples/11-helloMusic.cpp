@@ -21,10 +21,6 @@ public:
 
         sprite = createComponent<ComponentSprite>();
         sprite->setTexture(jojoTexture);
-
-        player = createComponent<ComponentSoundPlayer>();
-        player->setSound(cyberpunkSong);
-        player->playLoop();
     }
 
     void controlX(InputType type, int deviceIndex, int index, float axis)
@@ -33,17 +29,14 @@ public:
     }
 
     static Texture *jojoTexture;
-    static Sound *cyberpunkSong;
 
     float counter = 0.0f;
     float moveX = 0.0f;
 
 protected:
     ComponentSprite *sprite;
-    ComponentSoundPlayer *player;
 };
 Texture *JoJo::jojoTexture = nullptr;
-Sound *JoJo::cyberpunkSong = nullptr;
 
 int main()
 {
@@ -68,9 +61,13 @@ int main()
     JoJo::jojoTexture = resourceController->addTexture("./data/jojo.png");
     auto background = resourceController->addTexture("./data/background.jpg");
 
-    // Music setup
-    JoJo::cyberpunkSong = resourceController->addSound("./data/streamable.ogg");
-    JoJo::cyberpunkSong->load();
+    // Music setup and playing
+    Sound *cyberpunkSong = resourceController->addSound("./data/streamable.ogg");
+    cyberpunkSong->load();
+
+    SoundPlayer *player = new SoundPlayer();
+    player->setSound(cyberpunkSong);
+    player->playLoop();
 
     // Just a background for better look
     auto backgroundActor = layerActors->createActor<Actor>();

@@ -21,9 +21,11 @@ public:
     EXPORT void provideFloatValue(int uniform, int amount, float *value);
     EXPORT void provideFloat2Value(int uniform, int amount, float *value);
     EXPORT void provideFloat3Value(int uniform, int amount, float *value);
+    EXPORT void provideFloat4Value(int uniform, int amount, float *value);
     EXPORT void provideIntValue(int uniform, int amount, int *value);
     EXPORT void provideInt2Value(int uniform, int amount, int *value);
     EXPORT void provideInt3Value(int uniform, int amount, int *value);
+    EXPORT void provideInt4Value(int uniform, int amount, int *value);
 
     unsigned int locMViewProjection;
     unsigned int locMTransform;
@@ -31,18 +33,6 @@ public:
     unsigned int locV2TexCoordMul;
     unsigned int locFOpacity;
     unsigned int locV3AmbientColor;
-
-    /*
-        unsigned int mViewProjectionLoc;
-        unsigned int tPositionLoc;
-        unsigned int tNormalLoc;
-        unsigned int tAlbedoSpecLoc;
-        unsigned int fOpacityLoc;
-        unsigned int v3ColorLoc;
-        unsigned int v2TexCoordShiftLoc;
-        unsigned int v2TexCoordMulLoc;
-        unsigned int V3AmbientColorLoc;
-    */
 
 protected:
     const char *vertexCode = nullptr;

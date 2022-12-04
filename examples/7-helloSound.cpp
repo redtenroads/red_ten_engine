@@ -24,11 +24,6 @@ public:
         sprite = createComponent<ComponentSprite>();
         sprite->setTexture(jojoTexture);
 
-        // This is our sound player setted up for looping jojo song.
-        player = createComponent<ComponentSoundPlayer>();
-        player->setSound(jojoSong);
-        player->playLoop();
-
         auto inputX = registerAxisCallback(&JoJo::controlX);
         inputX->addInputBinding(InputType::KEYBOARD, 7, 400.0f);
         inputX->addInputBinding(InputType::KEYBOARD, 4, -400.0f);
@@ -53,7 +48,6 @@ public:
     }
 
     static Texture *jojoTexture;
-    static Sound *jojoSong;
 
     float counter = 0.0f;
     float moveX = 0.0f;
@@ -62,10 +56,8 @@ public:
 
 protected:
     ComponentSprite *sprite;
-    ComponentSoundPlayer *player;
 };
 Texture *JoJo::jojoTexture = nullptr;
-Sound *JoJo::jojoSong = nullptr;
 
 int main()
 {
@@ -90,10 +82,15 @@ int main()
     JoJo::jojoTexture = resourceController->addTexture("./data/jojo.png");
     auto background = resourceController->addTexture("./data/background.jpg");
 
-    JoJo::jojoSong = resourceController->addSound("./data/sound.wav");
+    Sound *jojoSong = resourceController->addSound("./data/sound.wav");
     // Note that only mono sounds can be panned. Stereo sounds always being played as is
     // But we can force mono
-    JoJo::jojoSong->setForceMono(true);
+    jojoSong->setForceMono(true);
+
+    // This is our sound player that playes the song
+    SoundPlayer *player = new SoundPlayer();
+    player->setSound(jojoSong);
+    player->playLoop();
 
     // Just a background for better look
     auto backgroundActor = layerActors->createActor<Actor>();

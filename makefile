@@ -32,7 +32,7 @@ OBJ_FILES = ${OBJDIR}/rtengine.o ${OBJDIR}/view.o ${OBJDIR}/viewController.o ${O
 			${OBJDIR}/stb_image.o ${OBJDIR}/fbx_loader.o ${OBJDIR}/stb_vorbis.o \
 			${OBJDIR}/destroyable.o ${OBJDIR}/commonShaders.o ${OBJDIR}/utils.o \
 			${OBJDIR}/phongShader.o ${OBJDIR}/rawShader.o ${OBJDIR}/shader.o ${OBJDIR}/lightningShader.o \
-			${OBJDIR}/withLogger.o
+			${OBJDIR}/withLogger.o ${OBJDIR}/soundPlayer.o ${OBJDIR}/childProcess.o
 
 EXAMPLES = 	${BINDIR}/1-helloWorld.exe ${BINDIR}/2-helloActors.exe ${BINDIR}/3-helloPhysics.exe ${BINDIR}/4-helloSorting.exe \
 			${BINDIR}/5-helloInput.exe ${BINDIR}/6-helloBytemap.exe ${BINDIR}/7-helloSound.exe ${BINDIR}/8-helloGUI.exe \
@@ -179,6 +179,12 @@ ${OBJDIR}/renderer.o: ${SRCDIR}/common/renderer.cpp
 ${OBJDIR}/withLogger.o: ${SRCDIR}/common/withLogger.cpp
 	$(CC) $(CFLAGS) -o ${OBJDIR}/withLogger.o ${SRCDIR}/common/withLogger.cpp
 
+${OBJDIR}/soundPlayer.o: ${SRCDIR}/common/soundPlayer.cpp
+	$(CC) $(CFLAGS) -o ${OBJDIR}/soundPlayer.o ${SRCDIR}/common/soundPlayer.cpp
+
+${OBJDIR}/childProcess.o: ${SRCDIR}/common/childProcess.cpp
+	$(CC) $(CFLAGS) -o ${OBJDIR}/childProcess.o ${SRCDIR}/common/childProcess.cpp
+	
 ${OBJDIR}/effect.o: ${SRCDIR}/shaders/effect.cpp
 	$(CC) $(CFLAGS) -o ${OBJDIR}/effect.o ${SRCDIR}/shaders/effect.cpp
 

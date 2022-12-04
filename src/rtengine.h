@@ -4,6 +4,7 @@
 #pragma once
 #include "common/utils.h"
 #include "common/withLogger.h"
+#include "common/soundPlayer.h"
 #include "resource/mesh.h"
 #include "resource/font.h"
 #include "resource/sound.h"

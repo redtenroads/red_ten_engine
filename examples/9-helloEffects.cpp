@@ -200,7 +200,7 @@ int main()
     auto guiCamera = layerGUI->createActor<CameraOrto>();
     guiCamera->setWidthBasedResolution(1280);
 
-    // Textures, fonts and sound setup
+    // Textures, fonts setup
     auto resourceController = engine->getResourceController();
     JoJo::jojoTexture = resourceController->addTexture("./data/jojo.png");
     auto background = resourceController->addTexture("./data/background.jpg");

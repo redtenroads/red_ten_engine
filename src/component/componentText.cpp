@@ -111,10 +111,16 @@ void ComponentText::rebuildString()
         SDL_Surface *surface = TTF_RenderUTF8_Blended((TTF_Font *)font->getFont(), string.c_str(), color);
 
         if (!surface)
+        {
             logger->logff("Failed to render text into surface: %s", string.c_str());
+            textTextureWidth = 0;
+            textTextureHeight = 0;
+        }
         else
         {
             transform.setScale(surface->w, surface->h);
+            textTextureWidth = surface->w;
+            textTextureHeight = surface->h;
 
             glGenTextures(1, &textureID);
             glBindTexture(GL_TEXTURE_2D, textureID);
@@ -128,6 +134,16 @@ void ComponentText::rebuildString()
             SDL_FreeSurface(surface);
         }
     }
+}
+
+int ComponentText::getWidth()
+{
+    return textTextureWidth;
+}
+
+int ComponentText::getHeight()
+{
+    return textTextureHeight;
 }
 
 Matrix4 ComponentText::getLocalspaceMatrix()

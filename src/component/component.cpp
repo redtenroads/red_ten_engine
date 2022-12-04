@@ -32,6 +32,8 @@ void Component::renderLightPhase(Matrix4 &vpMatrix, unsigned int shadowMapTextur
 
 Matrix4 Component::preparePreShadowPhase(Vector3 cameraPosition)
 {
+    Matrix4 m;
+    return m;
 }
 
 PhysicsEntitySphere *Component::addPhysics2dCircle(float radius)

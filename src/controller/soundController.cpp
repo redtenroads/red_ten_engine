@@ -53,6 +53,15 @@ SoundController::SoundController()
     alListenerfv(AL_ORIENTATION, listenerOri);
 }
 
+void SoundController::process(float delta)
+{
+    if (soundPlayers.size() > 0)
+    {
+        for (auto it = soundPlayers.begin(); it != soundPlayers.end(); it++)
+            (*it)->process(delta);
+    }
+}
+
 void SoundController::setListenerCamera(void *listenerCamera)
 {
     this->listenerCamera = listenerCamera;
@@ -61,4 +70,22 @@ void SoundController::setListenerCamera(void *listenerCamera)
 void *SoundController::getListenerCamera()
 {
     return listenerCamera;
+}
+
+void SoundController::subscribeSoundPlayer(ChildProcess *audioSubscribe)
+{
+    unsubscribeSoundPlayer(audioSubscribe);
+    soundPlayers.push_back(audioSubscribe);
+}
+
+bool SoundController::unsubscribeSoundPlayer(ChildProcess *audioSubscribe)
+{
+    auto it = soundPlayers.begin();
+    while (it != soundPlayers.end())
+        if ((*it) == audioSubscribe)
+        {
+            soundPlayers.erase(it);
+            return true;
+        }
+    return false;
 }
