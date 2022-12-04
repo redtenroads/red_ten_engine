@@ -291,6 +291,24 @@ void Actor::addAngularVelocity(Vector3 v)
     }
 }
 
+void Actor::lookAt(Vector3 v)
+{
+    Vector3 position = transform.getPosition();
+    Vector3 dif = glm::normalize(Vector3(v.x - position.x, v.y - position.y, v.z - position.z));
+
+    float y = atan2f(dif.z, dif.x);
+
+    float len = sqrtf(dif.x * dif.x + dif.z * dif.z);
+    float x = atan2(len, dif.y);
+
+    transform.setRotation(- JPH_PI / 2.0f + x, -y - JPH_PI / 2.0f, 0.0f);
+}
+
+void Actor::lookAt(float x, float y, float z)
+{
+    lookAt(Vector3(x, y, z));
+}
+
 void Actor::onSpawned()
 {
 }

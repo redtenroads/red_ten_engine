@@ -46,8 +46,6 @@ public:
     void onProcess(float delta)
     {
         counter += delta * 0.3f;
-        transform.rotate(Vector3(0, 0.4f * delta, 0));
-
         float step = (CONST_PI * 2.0f) / (float)LIGHT_COUNT;
         for (int i = 0; i < LIGHT_COUNT; i++)
         {
@@ -88,8 +86,6 @@ int main()
 
     auto camera = layerActors->createActor<CameraPerspective>();
     camera->setWidthBasedResolution(1280);
-    camera->transform.setPosition(0, -6.0f, 0);
-    camera->transform.setRotation(0.7, 0, 0);
 
     // Resources
     auto resourceController = engine->getResourceController();
@@ -119,7 +115,6 @@ int main()
 
     // town
     auto town = layerActors->createActor<Town>();
-    town->transform.setPosition(0.0f, 0.0f, -9.0f);
     town->transform.setScale(2.0f, 2.0f, 2.0f);
 
     // Sun with shadow casting
@@ -127,10 +122,26 @@ int main()
     auto sunComponent = sun->createComponent<ComponentLight>();
     sunComponent->setupSunLight(Vector3(-1.0f, 1.0f, -0.5f), Vector3(0.3f, 0.3f, 0.6f), true);
 
+    float cameraRotation = 0.0f;
+    float sunRotation = 0.0f;
+
     while (!engine->isTerminationIntended())
     {
         float delta = engine->syncFrame();
         viewController->processEvents();
+
+        cameraRotation += delta * 0.3f;
+        sunRotation += delta * 0.1f;
+
+        camera->transform.setPosition(sinf(cameraRotation) * 6.0f, 4.0f, cosf(cameraRotation) * 6.0f);
+        camera->lookAt(0.0f, 0.0f, 0.0f);
+
+        float effectiveLight = fmaxf(sinf(sunRotation), 0.0f);
+        sunComponent->setupSunLight(
+            Vector3(cosf(sunRotation) + 0.5f, sinf(sunRotation), cosf(sunRotation)),
+            Vector3(0.7f + (1.0f - effectiveLight) * 0.4f, 0.7f, 0.7f) * effectiveLight,
+            true);
+
         stage->process(delta);
         stage->present(view);
     }

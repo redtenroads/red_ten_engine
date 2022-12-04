@@ -3,6 +3,8 @@
 
 #include "camera/camera.h"
 #include "math/math.h"
+#include "common/utils.h"
+#include "math/glm/gtc/type_ptr.hpp"
 #include <al.h>
 #include <alc.h>
 
@@ -32,7 +34,13 @@ Matrix4 *Camera::getProjectionMatrix()
 
 Matrix4 *Camera::getViewMatrix()
 {
-    return transform.getModelMatrix();
+    Vector3 position = transform.getPosition();
+    Vector3 rotation = transform.getRotation();
+
+    Vector3 lookPoint(position.x + sin(rotation.y), position.y + sin(rotation.x), position.z + cos(rotation.y));
+    
+    viewMatrix = glm::lookAt(lookPoint, position, Vector3(0.0f, 1.0f, 0.0f));
+    return &viewMatrix;
 }
 
 int Camera::getWidth()

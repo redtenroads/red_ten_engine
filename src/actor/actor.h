@@ -56,6 +56,9 @@ public:
     EXPORT void setAngularVelocity(Vector3 v);
     EXPORT void addAngularVelocity(Vector3 v);
 
+    EXPORT void lookAt(Vector3 v);
+    EXPORT void lookAt(float x, float y, float z);
+
     EXPORT virtual void onSpawned();
     EXPORT virtual void onProcess(float delta);
     EXPORT virtual void onRender(Matrix4 &vpMatrix, std::vector<Component *> *lights);

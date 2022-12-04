@@ -32,6 +32,7 @@ public:
 
 protected:
     Matrix4 projectionMatrix;
+    Matrix4 viewMatrix;
 
     static SoundController *soundController;
 };
