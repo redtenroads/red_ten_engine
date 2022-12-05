@@ -102,6 +102,10 @@ void LayerActors::render(View *view)
 {
     Matrix4 m1, m2;
     auto renderer = view->getRenderer();
+    // Clear light renderer
+    renderer->setupLightning();
+
+    // Clear deffered buffer and set this as primary
     renderer->setupNewFrame();
 
     std::vector<Component *> sceneLights;
@@ -138,7 +142,7 @@ void LayerActors::render(View *view)
     glDepthMask(GL_TRUE);
 
     auto initialLightningShader = CommonShaders::initialLightningShader;
-    renderer->setupLightning();
+    renderer->setupLightning(false);
     initialLightningShader->use(m1, m2);
 
     glActiveTexture(GL_TEXTURE0);
@@ -146,13 +150,13 @@ void LayerActors::render(View *view)
     glUniform3fv(initialLightningShader->locV3AmbientColor, 1, ambientColor);
     CommonShaders::screenMesh->use();
 
+    glEnable(GL_BLEND);
+    glBlendFunc(GL_ONE, GL_ONE);
+    glDrawArrays(GL_QUADS, 0, 4);
+
     // Lightning phase
     if (sceneLights.size() > 0)
     {
-        glEnable(GL_BLEND);
-        glBlendFunc(GL_ONE, GL_ONE);
-        glDrawArrays(GL_QUADS, 0, 4);
-
         bool setupLightningFrame = true;
         for (auto light = sceneLights.begin(); light != sceneLights.end(); ++light)
         {

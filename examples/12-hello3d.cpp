@@ -82,7 +82,6 @@ int main()
 
     // Layers and camera setup
     auto layerActors = stage->createLayerActors("Hello 3D Layer", 0);
-    layerActors->setAmbientColor(0.05f, 0.05f, 0.09f);
 
     auto camera = layerActors->createActor<CameraPerspective>();
     camera->setWidthBasedResolution(1280);
@@ -90,7 +89,8 @@ int main()
     // Resources
     auto resourceController = engine->getResourceController();
     auto concreteTexture = resourceController->addTexture("./data/3d/concrete.jpg");
-    auto towerTexture = resourceController->addTexture("./data/3d/tower_defuse.png");
+    auto towerAlbedoTexture = resourceController->addTexture("./data/3d/tower_albedo.png");
+    auto towerEmissionTexture = resourceController->addTexture("./data/3d/tower_emission.png");
     auto plainMesh = resourceController->addMesh();
 
     auto towerMesh = resourceController->addMesh("./data/3d/tower.fbx");
@@ -111,7 +111,8 @@ int main()
     Town::floorShader->setTexture(TextureType::Albedo, concreteTexture);
 
     Town::towerShader = new PhongShader();
-    Town::towerShader->setTexture(TextureType::Albedo, towerTexture);
+    Town::towerShader->setTexture(TextureType::Albedo, towerAlbedoTexture);
+    Town::towerShader->setTexture(TextureType::Emission, towerEmissionTexture);
 
     // town
     auto town = layerActors->createActor<Town>();
@@ -137,6 +138,7 @@ int main()
         camera->lookAt(0.0f, 0.0f, 0.0f);
 
         float effectiveLight = fmaxf(sinf(sunRotation), 0.0f);
+        layerActors->setAmbientColor(0.05f + effectiveLight * 0.1f, 0.05f + effectiveLight * 0.1f, 0.09f + effectiveLight * 0.1f);
         sunComponent->setupSunLight(
             Vector3(cosf(sunRotation) + 0.5f, sinf(sunRotation), cosf(sunRotation)),
             Vector3(0.7f + (1.0f - effectiveLight) * 0.4f, 0.7f, 0.7f) * effectiveLight,

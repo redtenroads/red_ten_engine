@@ -3,6 +3,7 @@
 
 #include "phongShader.h"
 #include "opengl/glew.h"
+#include "opengl/wglew.h"
 #include "math/glm/gtc/type_ptr.hpp"
 
 extern const char *gShaderVertexCode;
@@ -12,6 +13,8 @@ extern const char *gShaderShadowVertexCode;
 extern const char *gShaderShadowFragmentCode;
 
 unsigned int PhongShader::currentProgramm = 0;
+unsigned int PhongShader::tBlack = 0;
+unsigned int PhongShader::tGrey = 0;
 
 bool PhongShader::build()
 {
@@ -43,6 +46,7 @@ bool PhongShader::build()
     locTDefuse = glGetUniformLocation(programm, "TextureDefuse");
     locTSpecular = glGetUniformLocation(programm, "TextureSpecular");
     locTNormal = glGetUniformLocation(programm, "TextureNormal");
+    locTEmission = glGetUniformLocation(programm, "TextureEmission");
 
     // Building shadow pass programm
     shadowProgramm = glCreateProgram();
@@ -55,6 +59,32 @@ bool PhongShader::build()
 
     locShadowMViewProjection = glGetUniformLocation(shadowProgramm, "mViewProjection");
     locShadowMTransform = glGetUniformLocation(shadowProgramm, "mTransform");
+
+    // Grey and Black textures
+    if (tBlack == 0)
+    {
+        const unsigned char blackData[4] = {0x00, 0x00, 0x00, 0xff};
+
+        glGenTextures(1, &tBlack);
+        glBindTexture(GL_TEXTURE_2D, tBlack);
+
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+
+        glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, 1, 1, 0, GL_RGBA, GL_UNSIGNED_BYTE, blackData);
+    }
+
+    if (tGrey == 0)
+    {
+        const unsigned char greyData[4] = {0xAA, 0xAA, 0xAA, 0xff};
+        glGenTextures(1, &tGrey);
+        glBindTexture(GL_TEXTURE_2D, tGrey);
+
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+
+        glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, 1, 1, 0, GL_RGBA, GL_UNSIGNED_BYTE, greyData);
+    }
 
     bIsReady = true;
     return true;
@@ -75,6 +105,9 @@ void PhongShader::setTexture(TextureType type, Texture *texture)
         break;
     case TextureType::Specular:
         tSpecular = texture ? texture->getGLTextureId() : 0;
+        break;
+    case TextureType::Emission:
+        tEmission = texture ? texture->getGLTextureId() : 0;
         break;
     }
 }
@@ -101,12 +134,13 @@ bool PhongShader::use(Matrix4 mViewProjection, Matrix4 mModel)
     if (locMNormal)
         glUniformMatrix4fv(locMNormal, 1, GL_FALSE, value_ptr(mnMatrix));
 
-    if (tAlbedo)
-    {
-        glActiveTexture(GL_TEXTURE0);
-        glBindTexture(GL_TEXTURE_2D, tAlbedo);
-        glUniform1i(locTDefuse, 0);
-    }
+    glActiveTexture(GL_TEXTURE0);
+    glBindTexture(GL_TEXTURE_2D, tAlbedo ? tAlbedo : tGrey);
+    glUniform1i(locTDefuse, 0);
+
+    glActiveTexture(GL_TEXTURE1);
+    glBindTexture(GL_TEXTURE_2D, tEmission ? tEmission : tBlack);
+    glUniform1i(locTEmission, 1);
 
     return true;
 }
@@ -129,7 +163,6 @@ bool PhongShader::useShadow(Matrix4 mViewProjection, Matrix4 mModel)
         glUniformMatrix4fv(locShadowMViewProjection, 1, GL_FALSE, value_ptr(mViewProjection));
     if (locShadowMTransform)
         glUniformMatrix4fv(locShadowMTransform, 1, GL_FALSE, value_ptr(mModel));
-
 
     return true;
 }
@@ -158,7 +191,9 @@ const char *gShaderFragmentCode =
     "layout (location = 0) out vec4 gAlbedoSpec;"
     "layout (location = 1) out vec3 gNormal;"
     "layout (location = 2) out vec3 gPosition;"
+    "layout (location = 3) out vec3 gEmission;"
     "uniform sampler2D TextureDefuse;\n"
+    "uniform sampler2D TextureEmission;\n"
     "uniform sampler2D TextureSpecular;\n"
     "in vec2 TexCoords;"
     "in vec3 FragPos;"
@@ -168,6 +203,7 @@ const char *gShaderFragmentCode =
     "   gNormal = Normal;\n"
     "   gAlbedoSpec.rgb = texture(TextureDefuse, TexCoords).rgb;\n"
     "   gAlbedoSpec.a = texture(TextureSpecular, TexCoords).r;\n"
+    "   gEmission.rgb = texture(TextureEmission, TexCoords).rgb;\n"
     "}\n";
 
 // Shadow go shader
