@@ -88,14 +88,15 @@ int main()
 
     // Resources
     auto resourceController = engine->getResourceController();
-    auto concreteTexture = resourceController->addTexture("./data/3d/concrete.jpg");
+    auto concreteAlbedoTexture = resourceController->addTexture("./data/3d/concrete_albedo.jpg");
+    auto concreteNormalTexture = resourceController->addTexture("./data/3d/concrete_normal.jpg");
+
     auto towerAlbedoTexture = resourceController->addTexture("./data/3d/tower_albedo.png");
     auto towerEmissionTexture = resourceController->addTexture("./data/3d/tower_emission.png");
+    auto towerNormalTexture = resourceController->addTexture("./data/3d/tower_normal.png");
+
+    // our floor
     auto plainMesh = resourceController->addMesh();
-
-    auto towerMesh = resourceController->addMesh("./data/3d/tower.fbx");
-    towerMesh->reload();
-
     const float array[] = {-1, 0, -1, 0, 1, 0, 0, 0,
                            -1, 0, 1, 0, 1, 0, 0, 3,
                            1, 0, -1, 0, 1, 0, 3, 0,
@@ -104,15 +105,22 @@ int main()
                            1, 0, 1, 0, 1, 0, 3, 3};
 
     plainMesh->setupByArray8f(array, 8 * 6);
+
+    // our tower
+    auto towerMesh = resourceController->addMesh("./data/3d/tower.fbx");
+    towerMesh->reload();
+
     Town::floorMesh = plainMesh;
     Town::towerMesh = towerMesh;
 
     Town::floorShader = new PhongShader();
-    Town::floorShader->setTexture(TextureType::Albedo, concreteTexture);
+    Town::floorShader->setTexture(TextureType::Albedo, concreteAlbedoTexture);
+    Town::floorShader->setTexture(TextureType::Normal, concreteNormalTexture);
 
     Town::towerShader = new PhongShader();
     Town::towerShader->setTexture(TextureType::Albedo, towerAlbedoTexture);
     Town::towerShader->setTexture(TextureType::Emission, towerEmissionTexture);
+    Town::towerShader->setTexture(TextureType::Normal, towerNormalTexture);
 
     // town
     auto town = layerActors->createActor<Town>();
@@ -134,7 +142,9 @@ int main()
         cameraRotation += delta * 0.3f;
         sunRotation += delta * 0.1f;
 
-        camera->transform.setPosition(sinf(cameraRotation) * 6.0f, 4.0f, cosf(cameraRotation) * 6.0f);
+        const float cameraDistance = 3.6f;
+        const float cameraHeight = 2.8f;
+        camera->transform.setPosition(sinf(cameraRotation) * cameraDistance, cameraHeight, cosf(cameraRotation) * cameraDistance);
         camera->lookAt(0.0f, 0.0f, 0.0f);
 
         float effectiveLight = fmaxf(sinf(sunRotation), 0.0f);

@@ -5,12 +5,9 @@
 
 LogController::LogController(std::string filePath)
 {
-    fopen_s(&logFile, filePath.c_str(), "w");
-
-    if (logFile)
-    {
+    errno_t err = fopen_s(&logFile, filePath.c_str(), "w");
+    if (err == 0)
         bReady = true;
-    }
 }
 
 bool LogController::isReady()

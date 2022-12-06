@@ -41,4 +41,5 @@ protected:
     static unsigned int currentProgramm;
     static unsigned int tBlack;
     static unsigned int tGrey;
+    static unsigned int tZeroNormal;
 };

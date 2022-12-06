@@ -15,6 +15,7 @@ extern const char *gShaderShadowFragmentCode;
 unsigned int PhongShader::currentProgramm = 0;
 unsigned int PhongShader::tBlack = 0;
 unsigned int PhongShader::tGrey = 0;
+unsigned int PhongShader::tZeroNormal = 0;
 
 bool PhongShader::build()
 {
@@ -39,6 +40,7 @@ bool PhongShader::build()
     glAttachShader(programm, fragmentShader);
     glAttachShader(programm, vertexShader);
     glLinkProgram(programm);
+    glUseProgram(programm);
 
     locMViewProjection = glGetUniformLocation(programm, "mViewProjection");
     locMTransform = glGetUniformLocation(programm, "mTransform");
@@ -56,6 +58,7 @@ bool PhongShader::build()
     glAttachShader(shadowProgramm, shadowVertexShader);
     glAttachShader(shadowProgramm, shadowFragmentShader);
     glLinkProgram(shadowProgramm);
+    glUseProgram(shadowProgramm);
 
     locShadowMViewProjection = glGetUniformLocation(shadowProgramm, "mViewProjection");
     locShadowMTransform = glGetUniformLocation(shadowProgramm, "mTransform");
@@ -84,6 +87,18 @@ bool PhongShader::build()
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
 
         glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, 1, 1, 0, GL_RGBA, GL_UNSIGNED_BYTE, greyData);
+    }
+
+    if (tZeroNormal == 0)
+    {
+        const unsigned char normalData[4] = {0x80, 0x80, 0xff, 0xff};
+        glGenTextures(1, &tZeroNormal);
+        glBindTexture(GL_TEXTURE_2D, tZeroNormal);
+
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+
+        glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, 1, 1, 0, GL_RGBA, GL_UNSIGNED_BYTE, normalData);
     }
 
     bIsReady = true;
@@ -127,11 +142,11 @@ bool PhongShader::use(Matrix4 mViewProjection, Matrix4 mModel)
     }
 
     auto mnMatrix = glm::transpose(glm::inverse(mModel));
-    if (locMViewProjection)
+    if (locMViewProjection != -1)
         glUniformMatrix4fv(locMViewProjection, 1, GL_FALSE, value_ptr(mViewProjection));
-    if (locMTransform)
+    if (locMTransform != -1)
         glUniformMatrix4fv(locMTransform, 1, GL_FALSE, value_ptr(mModel));
-    if (locMNormal)
+    if (locMNormal != -1)
         glUniformMatrix4fv(locMNormal, 1, GL_FALSE, value_ptr(mnMatrix));
 
     glActiveTexture(GL_TEXTURE0);
@@ -141,6 +156,10 @@ bool PhongShader::use(Matrix4 mViewProjection, Matrix4 mModel)
     glActiveTexture(GL_TEXTURE1);
     glBindTexture(GL_TEXTURE_2D, tEmission ? tEmission : tBlack);
     glUniform1i(locTEmission, 1);
+
+    glActiveTexture(GL_TEXTURE2);
+    glBindTexture(GL_TEXTURE_2D, tNormal ? tNormal : tZeroNormal);
+    glUniform1i(locTNormal, 2);
 
     return true;
 }
@@ -173,17 +192,22 @@ const char *gShaderVertexCode =
     "layout (location = 0) in vec3 aPos;\n"
     "layout (location = 1) in vec3 aNormal;\n"
     "layout (location = 2) in vec2 aTexCoord;\n"
-    "out vec2 TexCoords;"
-    "out vec3 FragPos;"
-    "out vec3 Normal;"
+    "layout (location = 3) in vec3 aTangent;\n"
+    "layout (location = 4) in vec3 aBitangent;\n"
     "uniform mat4 mTransform;\n"
     "uniform mat4 mNormal;\n"
     "uniform mat4 mViewProjection;\n"
+    "out vec2 TexCoords;\n"
+    "out vec3 FragPos;\n"
+    "out mat3 mTBN;\n"
     "void main() {\n"
     "   gl_Position = mViewProjection * mTransform * vec4(aPos, 1.0);\n"
-    "   FragPos = vec3(mTransform * vec4(aPos, 1.0)) * 0.1;\n"
-    "   Normal = normalize(vec3(mNormal * vec4(aNormal, 0.0)));\n"
+    "   FragPos = (mTransform * vec4(aPos, 1.0)).xyz * 0.1;\n"
     "   TexCoords = aTexCoord;\n"
+    "   vec3 T = normalize((mNormal * vec4(aTangent,   0.0)).xyz);\n"
+    "   vec3 B = normalize((mNormal * vec4(aBitangent, 0.0)).xyz);\n"
+    "   vec3 N = normalize((mNormal * vec4(aNormal,    0.0)).xyz);\n"
+    "   mTBN = mat3(T, B, N);\n"
     "}\n";
 
 const char *gShaderFragmentCode =
@@ -194,13 +218,14 @@ const char *gShaderFragmentCode =
     "layout (location = 3) out vec3 gEmission;"
     "uniform sampler2D TextureDefuse;\n"
     "uniform sampler2D TextureEmission;\n"
+    "uniform sampler2D TextureNormal;\n"
     "uniform sampler2D TextureSpecular;\n"
-    "in vec2 TexCoords;"
-    "in vec3 FragPos;"
-    "in vec3 Normal;"
+    "in vec2 TexCoords;\n"
+    "in vec3 FragPos;\n"
+    "in mat3 mTBN;\n"
     "void main() {\n"
     "   gPosition = FragPos;\n"
-    "   gNormal = Normal;\n"
+    "   gNormal = normalize(mTBN * (texture(TextureNormal, TexCoords).rgb * 2.0 - 1.0));\n"
     "   gAlbedoSpec.rgb = texture(TextureDefuse, TexCoords).rgb;\n"
     "   gAlbedoSpec.a = texture(TextureSpecular, TexCoords).r;\n"
     "   gEmission.rgb = texture(TextureEmission, TexCoords).rgb;\n"
