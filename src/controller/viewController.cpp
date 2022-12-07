@@ -7,8 +7,9 @@
 
 InputController *ViewController::inputController = nullptr;
 
-ViewController::ViewController()
+ViewController::ViewController(Config *config)
 {
+    this->config = config;
     logger->logf("Gamepad amount %i\n", SDL_NumJoysticks());
     int amount = SDL_NumJoysticks();
     for (int i = 0; i < amount; i++)
@@ -58,6 +59,20 @@ View *ViewController::createView(std::string name, int resX, int resY, bool isFu
 
     delete view;
     return nullptr;
+}
+
+View *ViewController::createViewUsingConfig(std::string name)
+{
+    View *view = createView(name, config->getWindowWidth(), config->getWindowHeight(), config->isFullscreen(), config->getRefreshRate());
+    if (!view)
+        view = createView(name, 0, 0, false, 0);
+    if (!view){
+        logger->logff("Unable to create view");
+        return nullptr;
+    }
+    config->setWindowWidth(view->getWidth());
+    config->setWindowHeight(view->getHeight());
+    config->setRefreshRate(view->getRefreshRate());
 }
 
 void ViewController::getAvailableResolutions(std::vector<DisplayMode> *modes, bool onlyNative)

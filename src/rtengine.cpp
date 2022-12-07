@@ -19,15 +19,28 @@ PhysicsController *RTEngine::physicsController = nullptr;
 InputController *RTEngine::inputController = nullptr;
 SoundController *RTEngine::soundController = nullptr;
 LogController *RTEngine::logController = nullptr;
+ConfigController *RTEngine::configController = nullptr;
 
 bool RTEngine::isSDLInitDone = false;
 
-RTEngine::RTEngine()
+RTEngine::RTEngine(std::string configFilePath)
 {
+    Config *config = nullptr;
     if (!logController)
     {
         logController = new LogController("log.txt");
         WithLogger::setLogController(logController);
+    }
+    if (!configController)
+    {
+        configController = new ConfigController();
+        config = configController->getConfig();
+        config->setupByQuality(RenderQuality::Balanced);
+        config->setConfigFilePath(configFilePath);
+        if (config->loadConfig())
+            logController->logff("Configuration loaded\n");
+        else
+            logController->logff("No configuration found\n");
     }
     if (!inputController)
     {
@@ -108,6 +121,11 @@ ResourceController *RTEngine::getResourceController()
 PhysicsController *RTEngine::getPhysicsController()
 {
     return physicsController;
+}
+
+ConfigController *RTEngine::getConfigController()
+{
+    return configController;
 }
 
 void RTEngine::openUrl(const char *url)

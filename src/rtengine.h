@@ -22,6 +22,7 @@
 #include "controller/inputController.h"
 #include "controller/soundController.h"
 #include "controller/logController.h"
+#include "controller/configController.h"
 #include "component/component.h"
 #include "component/componentSprite.h"
 #include "component/componentSoundPlayer.h"
@@ -39,7 +40,7 @@
 class RTEngine
 {
 protected:
-    RTEngine();
+    RTEngine(std::string configFilePath = "./cfg");
 
     static ViewController *viewController;
     static StageController *stageController;
@@ -48,6 +49,7 @@ protected:
     static InputController *inputController;
     static SoundController *soundController;
     static LogController *logController;
+    static ConfigController *configController;
 
     static bool isSDLInitDone;
 
@@ -66,6 +68,7 @@ public:
     EXPORT static PhysicsController *getPhysicsController();
     EXPORT static InputController *getInputController();
     EXPORT static LogController *getLogController();
+    EXPORT static ConfigController *getConfigController();
 
     EXPORT void openUrl(const char *url);
 
