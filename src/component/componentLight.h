@@ -21,7 +21,7 @@ public:
     EXPORT void setupSunLight(Vector3 position, Vector3 color, bool bCastShadows = false);
     EXPORT void setupOmniLight(float affectDistance, Vector3 color, bool bCastShadows = false);
 
-    EXPORT void render(Matrix4 &vpMatrix, Transformation *tf);
+    EXPORT bool onRenderPrepare(Matrix4 &vpMatrix, Transformation *tf, bool isShadowStage);
 
     EXPORT Matrix4 preparePreShadowPhase(Vector3 cameraPosition);
     EXPORT void renderLightPhase(Matrix4 &vpMatrix, unsigned int shadowMapTexture);

@@ -12,7 +12,8 @@ class ComponentSprite : public Component
 public:
     EXPORT ComponentSprite();
 
-    EXPORT void render(Matrix4 &vpMatrix, Transformation *tf);
+    EXPORT bool onRenderPrepare(Matrix4 &vpMatrix, Transformation *tf, bool isShadowStage);
+    EXPORT int getVertexAmount();
 
     EXPORT void setOpacity(float opacity);
     EXPORT float getOpacity();

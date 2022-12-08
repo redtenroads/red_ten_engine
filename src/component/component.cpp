@@ -2,6 +2,10 @@
 // SPDX-License-Identifier: MIT
 
 #include "component/component.h"
+#include "math/glm/gtc/type_ptr.hpp"
+#include "common/commonShaders.h"
+#include "opengl/glew.h"
+#include <math.h>
 
 Component::Component()
 {
@@ -20,10 +24,24 @@ void Component::process(float delta)
 
 void Component::render(Matrix4 &vpMatrix, Transformation *tf)
 {
+    bool state = onRenderPrepare(vpMatrix, tf, false);
+    if (state)
+    {
+        int drawAmount = getVertexAmount();
+        if (drawAmount)
+            glDrawArrays(drawAmount == 4 ? GL_QUADS : GL_TRIANGLES, 0, drawAmount);
+    }
 }
 
 void Component::shadowRender(Matrix4 &vpMatrix, Transformation *tf)
 {
+    bool state = onRenderPrepare(vpMatrix, tf, true);
+    if (state)
+    {
+        int drawAmount = getVertexAmount();
+        if (drawAmount)
+            glDrawArrays(GL_TRIANGLES, 0, drawAmount);
+    }
 }
 
 void Component::renderLightPhase(Matrix4 &vpMatrix, unsigned int shadowMapTexture)
@@ -34,6 +52,16 @@ Matrix4 Component::preparePreShadowPhase(Vector3 cameraPosition)
 {
     Matrix4 m;
     return m;
+}
+
+bool Component::onRenderPrepare(Matrix4 &vpMatrix, Transformation *tf, bool isShadowStage)
+{
+    return false;
+}
+
+int Component::getVertexAmount()
+{
+    return 0;
 }
 
 PhysicsEntitySphere *Component::addPhysics2dCircle(float radius)

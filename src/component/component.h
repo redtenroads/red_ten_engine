@@ -19,10 +19,14 @@ public:
     EXPORT virtual ~Component();
     EXPORT virtual void prepare();
     EXPORT virtual void process(float delta);
-    EXPORT virtual void render(Matrix4 &vpMatrix, Transformation *tf);
-    EXPORT virtual void shadowRender(Matrix4 &vpMatrix, Transformation *tf);
+    
+    EXPORT void render(Matrix4 &vpMatrix, Transformation *tf);
+    EXPORT void shadowRender(Matrix4 &vpMatrix, Transformation *tf);
     EXPORT virtual void renderLightPhase(Matrix4 &vpMatrix, unsigned int shadowMapTexture);
     EXPORT virtual Matrix4 preparePreShadowPhase(Vector3 cameraPosition);
+    
+    EXPORT virtual bool onRenderPrepare(Matrix4 &vpMatrix, Transformation *tf, bool isShadowStage);
+    EXPORT virtual int getVertexAmount();
 
     EXPORT PhysicsEntitySphere *addPhysics2dCircle(float radius);
     EXPORT PhysicsEntitySphere *addPhysics2dCircle(float radius, float px, float py, float pz);

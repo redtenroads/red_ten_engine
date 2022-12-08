@@ -13,9 +13,6 @@ class CommonShaders : public WithLogger
 public:
     static void build();
 
-    static Shader *shader;
-    static ResourceController *resourceController;
-
     static Mesh *spriteMesh;
     static Mesh *screenMesh;
 
@@ -28,4 +25,8 @@ public:
     static LightningShader *sunShader;
     static LightningShader *sunWithShadowShader;
     static LightningShader *omniShader;
+
+    static ResourceController *resourceController;
+
+    EXPORT static Mesh *getSpriteMesh();
 };

@@ -4,7 +4,6 @@
 #include "component/componentMesh.h"
 #include "math/glm/gtc/type_ptr.hpp"
 #include "common/commonShaders.h"
-#include "opengl/glew.h"
 #include <math.h>
 
 ComponentMesh::ComponentMesh() : Component()
@@ -12,38 +11,21 @@ ComponentMesh::ComponentMesh() : Component()
     shader = nullptr;
 }
 
-void ComponentMesh::render(Matrix4 &vpMatrix, Transformation *tf)
+bool ComponentMesh::onRenderPrepare(Matrix4 &vpMatrix, Transformation *tf, bool isShadowStage)
 {
     if (mesh && shader)
     {
-        int drawAmount = mesh->getFloatsAmount();
-        if (drawAmount > 0)
-        {
-            Matrix4 mModelTransform = *tf->getModelMatrix() * *transform.getModelMatrix();
-
-            shader->use(vpMatrix, mModelTransform);
-            mesh->use();
-
-            glDrawArrays(GL_TRIANGLES, 0, drawAmount);
-        }
+        Matrix4 mModelTransform = *tf->getModelMatrix() * *transform.getModelMatrix();
+        shader->use(vpMatrix, mModelTransform);
+        mesh->use();
+        return true;
     }
+    return false;
 }
 
-void ComponentMesh::shadowRender(Matrix4 &vpMatrix, Transformation *tf)
+int ComponentMesh::getVertexAmount()
 {
-    if (mesh && shader)
-    {
-        int drawAmount = mesh->getFloatsAmount();
-        if (drawAmount > 0)
-        {
-            Matrix4 mModelTransform = *tf->getModelMatrix() * *transform.getModelMatrix();
-
-            shader->useShadow(vpMatrix, mModelTransform);
-            mesh->use();
-
-            glDrawArrays(GL_TRIANGLES, 0, drawAmount);
-        }
-    }
+    return mesh ? mesh->getVertexAmount() : 0;
 }
 
 void ComponentMesh::setMesh(Mesh *mesh)

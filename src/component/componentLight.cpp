@@ -42,9 +42,11 @@ void ComponentLight::setupOmniLight(float affectDistance, Vector3 color, bool bC
     bUseShadowPhase = bCastShadows;
 }
 
-void ComponentLight::render(Matrix4 &vpMatrix, Transformation *tf)
+bool ComponentLight::onRenderPrepare(Matrix4 &vpMatrix, Transformation *tf, bool isShadowStage)
 {
-    this->tf = tf;
+    if (!isShadowStage)
+        this->tf = tf;
+    return false;
 }
 
 Matrix4 ComponentLight::preparePreShadowPhase(Vector3 cameraPosition)

@@ -11,5 +11,5 @@
 class ComponentSoundPlayer : public Component, public SoundPlayer
 {
 public:
-    EXPORT virtual void render(Matrix4 &vpMatrix, Transformation *tf);
+    bool onRenderPrepare(Matrix4 &vpMatrix, Transformation *tf, bool isShadowStage);
 };

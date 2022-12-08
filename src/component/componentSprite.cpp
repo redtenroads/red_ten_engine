@@ -3,7 +3,6 @@
 
 #include "component/componentSprite.h"
 #include "common/commonShaders.h"
-#include "opengl/glew.h"
 #include "math/glm/gtc/type_ptr.hpp"
 #include <math.h>
 
@@ -16,7 +15,7 @@ ComponentSprite::ComponentSprite() : Component()
     bUseBlendingPhase = true;
 }
 
-void ComponentSprite::render(Matrix4 &vpMatrix, Transformation *tf)
+bool ComponentSprite::onRenderPrepare(Matrix4 &vpMatrix, Transformation *tf, bool isShadowStage)
 {
     if (texture)
     {
@@ -29,10 +28,16 @@ void ComponentSprite::render(Matrix4 &vpMatrix, Transformation *tf)
         primaryShader->setFrameShift(frameShift);
         primaryShader->setFrameSize(frameRenderSize);
 
-        glBindTexture(GL_TEXTURE_2D, texture->getGLTextureId());
+        texture->bind();
         CommonShaders::spriteMesh->use();
-        glDrawArrays(GL_QUADS, 0, 4);
+        return true;
     }
+    return false;
+}
+
+int ComponentSprite::getVertexAmount()
+{
+    return 4;
 }
 
 void ComponentSprite::setOpacity(float opacity)

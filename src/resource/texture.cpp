@@ -10,6 +10,21 @@ Texture::Texture(std::string path)
     this->path = path;
 }
 
+void Texture::bind()
+{
+    if (!bIsLoaded)
+        reload();
+    glBindTexture(GL_TEXTURE_2D, textureID);
+}
+
+void Texture::bind(int slot)
+{
+    if (!bIsLoaded)
+        reload();
+    glActiveTexture(slot);
+    glBindTexture(GL_TEXTURE_2D, textureID);
+}
+
 void Texture::reload()
 {
     logger->logf("Add texture %s", path.c_str());
@@ -71,7 +86,7 @@ void Texture::processBytemaps(const unsigned char *data, int width, int height, 
 {
     if (!bMakeBytemapAlpha && !bMakeFullBytemap)
         return;
-    
+
     if (!data)
         data = stbi_load(path.c_str(), &width, &height, &nrChannels, 4);
 

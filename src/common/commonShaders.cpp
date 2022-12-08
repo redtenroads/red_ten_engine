@@ -3,8 +3,8 @@
 
 #include "common/commonShaders.h"
 
-extern float spritePoints[];
-extern float screenPoints[];
+extern float spriteData[];
+extern float screenData[];
 
 extern const char *spriteVertexShader;
 extern const char *spriteFramedVertexShader;
@@ -24,7 +24,6 @@ extern const char *sunFragmentCode;
 extern const char *sunWithShadowFragmentCode;
 extern const char *omniFragmentCode;
 
-Shader *CommonShaders::shader = nullptr;
 ResourceController *CommonShaders::resourceController = nullptr;
 
 Mesh *CommonShaders::spriteMesh = nullptr;
@@ -45,10 +44,10 @@ void CommonShaders::build()
     logger->logff("compiling base meshes ...");
 
     spriteMesh = resourceController->addMesh();
-    spriteMesh->setupByArray8f(spritePoints, 8 * 4);
+    spriteMesh->setupByArray8f(spriteData, 8 * 4);
 
     screenMesh = resourceController->addMesh();
-    screenMesh->setupByArray8f(screenPoints, 8 * 4);
+    screenMesh->setupByArray8f(screenData, 8 * 4);
 
     logger->logff("base meshes compiled\n");
 
@@ -89,13 +88,18 @@ void CommonShaders::build()
     logger->logff("shaders compiled\n");
 }
 
-float spritePoints[] = {
+Mesh *CommonShaders::getSpriteMesh()
+{
+    return CommonShaders::spriteMesh;
+}
+
+float spriteData[] = {
     0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 1.0f, 0.0f, 1.0f,
     1.0f, 0.0f, 0.0f, 0.0f, 0.0f, 1.0f, 1.0f, 1.0f,
     1.0f, 1.0f, 0.0f, 0.0f, 0.0f, 1.0f, 1.0f, 0.0f,
     0.0f, 1.0f, 0.0f, 0.0f, 0.0f, 1.0f, 0.0f, 0.0f};
 
-float screenPoints[] = {
+float screenData[] = {
     -1.0f, -1.0f, 0.0f, 0.0f, 0.0f, 1.0f, 0.0f, 0.0f,
     1.0f, -1.0f, 0.0f, 0.0f, 0.0f, 1.0f, 1.0f, 0.0f,
     1.0f, 1.0f, 0.0f, 0.0f, 0.0f, 1.0f, 1.0f, 1.0f,
@@ -191,7 +195,6 @@ const char *meshFragmentShader =
     "   fragColor = color;\n"
     "}\n";
 
-
 const char *initialLightningFragmentCode =
     "#version 400\n"
     "out vec4 FragColor;\n"
@@ -243,8 +246,8 @@ const char *sunWithShadowFragmentCode =
     "   float shadow = 0.0;\n"
     "   for(int x = -1; x <= 1; ++x){\n"
     "       for(int y = -1; y <= 1; ++y){\n"
-    "           float pcfDepth = texture(tShadowMap, projCoords.xy + vec2(x, y) * texelSize).r;\n" 
-    "           shadow += (currentDepth - bias > pcfDepth) || currentDepth > 1.0 ? 1.0 : 0.0;\n" 
+    "           float pcfDepth = texture(tShadowMap, projCoords.xy + vec2(x, y) * texelSize).r;\n"
+    "           shadow += (currentDepth - bias > pcfDepth) || currentDepth > 1.0 ? 1.0 : 0.0;\n"
     "       }\n"
     "   }\n"
     "   shadow /= 9.0;\n"
@@ -281,4 +284,3 @@ const char *omniFragmentCode =
     "   vec3 light = max(dot(Normal, lightDir), 0.0) * Albedo * lightColor * distPower;\n"
     "   FragColor = vec4(light, 0.0);\n"
     "}\n";
-

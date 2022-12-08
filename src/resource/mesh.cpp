@@ -62,9 +62,9 @@ bool Mesh::isPath(std::string meshPath)
     return this->meshPath == meshPath;
 }
 
-int Mesh::getFloatsAmount()
+int Mesh::getVertexAmount()
 {
-    return floatsAmount;
+    return vertexAmount;
 }
 
 void Mesh::setupByArray8f(const float *data, int amount)
@@ -114,7 +114,7 @@ void Mesh::setupByArray8f(const float *data, int amount)
 
     bSettedUp = true;
     bLoaded = true;
-    floatsAmount = fullAmountOfFloats;
+    vertexAmount = amountOfVertexes;
 }
 
 void Mesh::use()

@@ -16,7 +16,7 @@ public:
     EXPORT bool isLoaded();
     EXPORT bool isPath(std::string meshPath);
 
-    EXPORT int getFloatsAmount();
+    EXPORT int getVertexAmount();
 
     // positions
     // x, y, z - nx, ny, nz - u, v
@@ -32,7 +32,7 @@ protected:
     bool bSettedUp = false;
     bool bLoaded = false;
 
-    int floatsAmount = 0;
+    int vertexAmount = 0;
 
     unsigned int vbo = 0;
     unsigned int vao = 0;

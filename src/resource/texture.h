@@ -11,6 +11,9 @@ class Texture : public WithLogger
 public:
     EXPORT Texture(std::string path);
 
+    EXPORT void bind();
+    EXPORT void bind(int slot);
+    
     EXPORT void reload();
     EXPORT void clear();
     EXPORT bool isLoaded();
