@@ -7,9 +7,13 @@
 #include <stdio.h>
 #include <string>
 
-SoundController::SoundController()
+SoundController::SoundController(Config *config)
 {
+    std::string prefferedDevice = config->getCurrentAudioDevice();
     ALboolean enumeration = alcIsExtensionPresent(NULL, "ALC_ENUMERATION_EXT");
+    bool deviceFound = false;
+    bSoundEnabled = false;
+
     if (enumeration != AL_FALSE)
     {
         const ALCchar *devices = alcGetString(NULL, ALC_DEVICE_SPECIFIER);
@@ -22,6 +26,8 @@ SoundController::SoundController()
         {
             logger->logf("- %s", device);
             devicesList.push_back(new AudioDevice({_strdup(device)}));
+            if (strcmp(prefferedDevice.c_str(), device) == 0)
+                deviceFound = true;
 
             len = strlen(device);
             device += (len + 1);
@@ -30,27 +36,45 @@ SoundController::SoundController()
         logger->logff("");
     }
 
-    ALCdevice *device = alcOpenDevice(devicesList.size() > 0 ? devicesList.at(0)->name : nullptr);
+    if (devicesList.size() == 0)
+    {
+        logger->logff("No sound devices found");
+        return;
+    }
+
+    if (!deviceFound)
+    {
+        prefferedDevice = devicesList.at(0)->name;
+        config->setCurrentAudioDevice(prefferedDevice);
+        logger->logff("Auto selected %s for audio", prefferedDevice.c_str());
+    }
+
+    ALCdevice *device = alcOpenDevice(prefferedDevice.c_str());
     if (!device)
     {
-        bSoundEnabled = false;
+        logger->logff("Unable to use %s for audio", prefferedDevice.c_str());
         return;
     }
 
     ALCcontext *context = alcCreateContext(device, NULL);
     if (!alcMakeContextCurrent(context))
     {
-        bSoundEnabled = false;
+        logger->logff("Unable to create audio context");
         return;
     }
 
     bSoundEnabled = true;
-    logger->logff("Sound Enabled using %s", devicesList.at(0)->name);
+    logger->logff("Sound Enabled using %s", prefferedDevice.c_str());
 
     ALfloat listenerOri[] = {0.0f, 0.0f, 1.0f, 0.0f, 1.0f, 0.0f};
     alListener3f(AL_POSITION, 0, 0, 1.0f);
     alListener3f(AL_VELOCITY, 0, 0, 0);
     alListenerfv(AL_ORIENTATION, listenerOri);
+}
+
+void SoundController::update()
+{
+    
 }
 
 void SoundController::process(float delta)

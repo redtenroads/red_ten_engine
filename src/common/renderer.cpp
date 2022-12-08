@@ -6,10 +6,16 @@
 #include "opengl/wglew.h"
 #include "common/commonShaders.h"
 
-Renderer::Renderer(int width, int height)
+Renderer::Renderer(int width, int height, Config *config)
 {
     this->width = width;
     this->height = height;
+
+    shadowMapSize = 1024;
+    if (config->getShadowQuality() == RenderQuality::High)
+        shadowMapSize = 4096;
+    if (config->getShadowQuality() == RenderQuality::Balanced)
+        shadowMapSize = 2048;
 
     // Rendering images
     glGenTextures(1, &gAlbedoSpec);
@@ -38,10 +44,9 @@ Renderer::Renderer(int width, int height)
 
     glGenTextures(1, &shadowPicture);
     glBindTexture(GL_TEXTURE_2D, shadowPicture);
-    glTexImage2D(GL_TEXTURE_2D, 0, GL_DEPTH_COMPONENT,
-                 shadowMapWidth, shadowMapHeight, 0, GL_DEPTH_COMPONENT, GL_FLOAT, NULL);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+    glTexImage2D(GL_TEXTURE_2D, 0, GL_DEPTH_COMPONENT, shadowMapSize, shadowMapSize, 0, GL_DEPTH_COMPONENT, GL_FLOAT, NULL);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_BORDER);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_BORDER);
     float borderColor[] = {1.0f, 1.0f, 1.0f, 1.0f};
@@ -162,8 +167,13 @@ void Renderer::setupLightning(bool clear)
 
 void Renderer::setupShadowHQ(bool clear)
 {
-    glViewport(0, 0, shadowMapWidth, shadowMapHeight);
+    glViewport(0, 0, shadowMapSize, shadowMapSize);
     glBindFramebuffer(GL_FRAMEBUFFER, shadowBuffer);
     if (clear)
         glClear(GL_DEPTH_BUFFER_BIT);
+}
+
+int Renderer::getShadowMapSize()
+{
+    return shadowMapSize;
 }

@@ -27,9 +27,8 @@ class ViewController : public WithLogger
 public:
     ViewController(Config *config);
 
-    EXPORT View *createViewFullscreen(std::string name);
-    EXPORT View *createView(std::string name, int resX = 0, int resY = 0, bool isFullscreen = false, int refreshRate = 0);
-    EXPORT View *createViewUsingConfig(std::string name);
+    EXPORT View *createView(std::string name);
+    EXPORT void update();
 
     EXPORT void getAvailableResolutions(std::vector<DisplayMode> *modes, bool onlyNative = true);
     EXPORT void getAvailableRefreshRates(DisplayMode *mode, std::vector<int> *refreshRates);
@@ -46,7 +45,10 @@ public:
     EXPORT int getPrimaryScreenHeight();
 
 protected:
+    void checkConfig();
+
     std::list<View *> views;
+    View *mainView = nullptr;
     std::vector<GamepadDevice> gamePads;
     bool isExitIntended = false;
     Config *config = nullptr;

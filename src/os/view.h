@@ -10,16 +10,16 @@
 class View
 {
 public:
-    View(int width, int height, int refreshRate, bool isFullscreen);
+    View(Config *config);
 
-    std::string windowName = "unnamed";
+    bool makeWindow();
+    bool changeMode();
 
-    EXPORT bool makeWindow();
-    EXPORT bool changeMode(int width, int height, int refreshRate, bool isFullscreen);
     EXPORT void swapBuffers();
 
     EXPORT int getWidth();
     EXPORT int getHeight();
+    EXPORT int getRefreshRate();
     EXPORT float getHWProportion();
     EXPORT bool isFullscreen();
     EXPORT const char *getOGLVersion();
@@ -31,10 +31,12 @@ public:
     EXPORT Renderer *getRenderer();
     EXPORT void useFrameBuffer();
 
+    std::string windowName = "unnamed";
+
 protected:
     void updateSuitableDisplayMode();
     void updateFrameBuffer();
-    
+
     void *window = nullptr;
     int width = 640;
     int height = 480;
@@ -48,4 +50,5 @@ protected:
     unsigned int framebuffer = 0;
     unsigned int renderedTexture = 0;
     Renderer *renderer = nullptr;
+    Config *config = nullptr;
 };

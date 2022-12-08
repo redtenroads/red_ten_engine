@@ -27,7 +27,7 @@ void ComponentLight::setupSunLight(Vector3 position, Vector3 color, bool bCastSh
     this->color[2] = color.z;
 
     bUseShadowPhase = bCastShadows;
-    this->affectDistance = 40.0f;
+    this->affectDistance = 24.0f;
 }
 
 void ComponentLight::setupOmniLight(float affectDistance, Vector3 color, bool bCastShadows)

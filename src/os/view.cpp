@@ -10,12 +10,13 @@
 #include <gl/GLU.h>
 #include <SDL.h>
 
-View::View(int width, int height, int refreshRate, bool isFullscreen)
+View::View(Config *config)
 {
-    this->width = width;
-    this->height = height;
-    this->refreshRate = refreshRate;
-    this->bIsFullscreen = isFullscreen;
+    this->config = config;
+    this->width = config->getWindowWidth();
+    this->height = config->getWindowHeight();
+    this->refreshRate = config->getRefreshRate();
+    this->bIsFullscreen = config->isFullscreen();
     updateSuitableDisplayMode();
 }
 
@@ -58,47 +59,56 @@ bool View::makeWindow()
     return false;
 }
 
-bool View::changeMode(int width, int height, int refreshRate, bool isFullscreen)
+bool View::changeMode()
 {
-    this->width = width;
-    this->height = height;
-    this->refreshRate = refreshRate;
-    updateSuitableDisplayMode();
+    bool needUpdate = getWidth() != config->getWindowWidth() ||
+                      getHeight() != config->getWindowHeight() ||
+                      getRefreshRate() != config->getRefreshRate() ||
+                      isFullscreen() != config->isFullscreen();
 
-    if (window)
+    if (needUpdate)
     {
-        if (displayMode == -1 && this->bIsFullscreen)
-        {
-            SDL_SetWindowFullscreen((SDL_Window *)window, 0);
-            this->bIsFullscreen = false;
-        }
+        this->width = config->getWindowWidth();
+        this->height = config->getWindowHeight();
+        this->refreshRate = config->getRefreshRate();
+        bool isFullscreen = config->isFullscreen();
+        updateSuitableDisplayMode();
 
-        if (displayMode != -1)
+        if (window)
         {
-            this->bIsFullscreen = isFullscreen;
-            SDL_DisplayMode mode;
-            SDL_GetDisplayMode(0, displayMode, &mode);
-            SDL_SetWindowDisplayMode((SDL_Window *)window, &mode);
-            if (bIsFullscreen)
-                SDL_SetWindowFullscreen((SDL_Window *)window, SDL_WINDOW_FULLSCREEN);
-            else
-                SDL_SetWindowFullscreen((SDL_Window *)window, 0);
-        }
-        else
-        {
-            if (this->bIsFullscreen)
+            if (displayMode == -1 && this->bIsFullscreen)
             {
                 SDL_SetWindowFullscreen((SDL_Window *)window, 0);
                 this->bIsFullscreen = false;
             }
+
+            if (displayMode != -1)
+            {
+                this->bIsFullscreen = isFullscreen;
+                SDL_DisplayMode mode;
+                SDL_GetDisplayMode(0, displayMode, &mode);
+                SDL_SetWindowDisplayMode((SDL_Window *)window, &mode);
+                if (bIsFullscreen)
+                    SDL_SetWindowFullscreen((SDL_Window *)window, SDL_WINDOW_FULLSCREEN);
+                else
+                    SDL_SetWindowFullscreen((SDL_Window *)window, 0);
+            }
             else
-                SDL_SetWindowSize((SDL_Window *)window, width, height);
+            {
+                if (this->bIsFullscreen)
+                {
+                    SDL_SetWindowFullscreen((SDL_Window *)window, 0);
+                    this->bIsFullscreen = false;
+                }
+                else
+                    SDL_SetWindowSize((SDL_Window *)window, width, height);
+            }
         }
-    }
-    else
-    {
-        this->bIsFullscreen = isFullscreen;
-        return makeWindow();
+        else
+        {
+            this->bIsFullscreen = isFullscreen;
+            return makeWindow();
+        }
     }
 
     updateFrameBuffer();
@@ -118,6 +128,11 @@ int View::getWidth()
 int View::getHeight()
 {
     return height;
+}
+
+int View::getRefreshRate()
+{
+    return refreshRate;
 }
 
 float View::getHWProportion()
@@ -201,5 +216,5 @@ void View::updateFrameBuffer()
 
     if (renderer)
         delete renderer;
-    renderer = new Renderer(width, height);
+    renderer = new Renderer(width, height, config);
 }

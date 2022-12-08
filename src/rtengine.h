@@ -40,7 +40,7 @@
 class RTEngine
 {
 protected:
-    RTEngine(std::string configFilePath = "./cfg");
+    RTEngine(std::string configFilePath);
 
     static ViewController *viewController;
     static StageController *stageController;
@@ -60,7 +60,7 @@ protected:
     bool bTerminationRequested = false;
 
 public:
-    EXPORT static RTEngine *createInstance();
+    EXPORT static RTEngine *createInstance(std::string configFilePath = "./cfg");
 
     EXPORT static ViewController *getViewController();
     EXPORT static StageController *getStageController();

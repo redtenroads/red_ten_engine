@@ -6,7 +6,7 @@
 #pragma comment(lib, "bin/rtengine.lib")
 
 #define LIGHT_COUNT 5
-
+#define BUTTON_SWITCH_SHADOW_QUALITY 1
 class Town : public Actor
 {
 public:
@@ -67,14 +67,66 @@ PhongShader *Town::floorShader = nullptr;
 Mesh *Town::floorMesh = nullptr;
 Mesh *Town::towerMesh = nullptr;
 
+class GUISimpleButton : public ActorGUIElement
+{
+public:
+    GUISimpleButton() : ActorGUIElement()
+    {
+        registerName("Gui Button");
+        setActiveArea(0.0f, 320.0f, -32.0f, 32.0f);
+
+        textSprite = createComponent<ComponentText>();
+        textSprite->setFont(font);
+        textSprite->setText("Unknown Button");
+        textSprite->setColor(200, 200, 200);
+        textSprite->setAnchor(0, 0.5f);
+    }
+
+    void setText(std::string text)
+    {
+        textSprite->setText(text);
+    }
+
+    void onHover()
+    {
+        textSprite->setColor(255, 255, 255);
+    }
+
+    void onBlur()
+    {
+        textSprite->setColor(200, 200, 200);
+    }
+
+    static Font *font;
+
+protected:
+    ComponentText *textSprite;
+    int color = 170;
+};
+Font *GUISimpleButton::font = nullptr;
+
 int main()
 {
     // Engine setup
-    auto engine = RTEngine::createInstance();
+    auto engine = RTEngine::createInstance("ex12cfg.ini");
+
+    // We need view controller to get resolution
+    auto viewController = engine->getViewController();
+
+    // Set fullscreen through configuration controller
+    auto configController = engine->getConfigController();
+    auto config = configController->getConfig();
+    if (!config->isLoaded())
+    {
+        // If configuration is new we setup high quality in window
+        config->setupByQuality(RenderQuality::High);
+        config->setWindowWidth(viewController->getPrimaryScreenWidth() * 0.8f);
+        config->setWindowHeight(viewController->getPrimaryScreenHeight() * 0.8f);
+        config->setFullscreenState(false);
+    }
 
     // View setup
-    auto viewController = engine->getViewController();
-    auto view = viewController->createView("Example \"12. Hello 3D\"", 1920, 1080);
+    auto view = viewController->createView("Example \"12. Hello 3D\"");
 
     // Stage setup
     auto stageController = engine->getStageController();
@@ -82,9 +134,13 @@ int main()
 
     // Layers and camera setup
     auto layerActors = stage->createLayerActors("Hello 3D Layer", 0);
+    auto layerGUI = stage->createLayerActors("Hello Gui Layer", 1);
 
     auto camera = layerActors->createActor<CameraPerspective>();
     camera->setWidthBasedResolution(1280);
+
+    auto guiCamera = layerGUI->createActor<CameraOrto>();
+    guiCamera->setWidthBasedResolution(config->getWindowWidth());
 
     // Resources
     auto resourceController = engine->getResourceController();
@@ -134,6 +190,24 @@ int main()
     float cameraRotation = 0.0f;
     float sunRotation = 0.0f;
 
+    // Shadow quality switch GUI
+    GUISimpleButton::font = resourceController->addFont("./data/BebasNeue-Regular.ttf", 32);
+    auto newButton = layerGUI->createActor<GUISimpleButton>();
+    newButton->transform.setPosition(-config->getWindowWidth() / 2 + 60, -config->getWindowHeight() / 2 + 64);
+    newButton->setPressID(BUTTON_SWITCH_SHADOW_QUALITY);
+    newButton->setText("Toggle shadow quality");
+
+    auto shadowQualityActor = layerGUI->createActor<Actor>();
+    shadowQualityActor->transform.setPosition(-config->getWindowWidth() / 2 + 60, -config->getWindowHeight() / 2 + 32);
+    auto shadowQualityText = shadowQualityActor->createComponent<ComponentText>();
+    shadowQualityText->setFont(GUISimpleButton::font);
+    shadowQualityText->setText(std::string("Shadow quality: ") + Config::qualityToString(config->getShadowQuality()));
+    shadowQualityText->setColor(170, 170, 170);
+    shadowQualityText->setAnchor(0, 0.5f);
+
+    // Update config file if something changed from the initial configuration during setup
+    config->saveConfig();
+
     while (!engine->isTerminationIntended())
     {
         float delta = engine->syncFrame();
@@ -153,6 +227,30 @@ int main()
             Vector3(cosf(sunRotation) + 0.5f, sinf(sunRotation), cosf(sunRotation)),
             Vector3(0.7f + (1.0f - effectiveLight) * 0.4f, 0.7f, 0.7f) * effectiveLight,
             true);
+
+        // Controlling the shadow quality
+        int firstPressID;
+        while ((firstPressID = ActorGUIElement::getFirstPressID()))
+        {
+            if (firstPressID == BUTTON_SWITCH_SHADOW_QUALITY)
+            {
+                if (config->getShadowQuality() == RenderQuality::SuperFast)
+                    config->setShadowQuality(RenderQuality::Fast);
+                else if (config->getShadowQuality() == RenderQuality::Fast)
+                    config->setShadowQuality(RenderQuality::Balanced);
+                else if (config->getShadowQuality() == RenderQuality::Balanced)
+                    config->setShadowQuality(RenderQuality::High);
+                else if (config->getShadowQuality() == RenderQuality::High)
+                    config->setShadowQuality(RenderQuality::SuperFast);
+
+                shadowQualityText->setText(std::string("Shadow quality: ") + Config::qualityToString(config->getShadowQuality()));
+                configController->applyConfig();
+
+                // Saved configuration will be automatically loaded on next run of the engine
+                // In this case it will load the quality of shadows
+                config->saveConfig();
+            }
+        }
 
         stage->process(delta);
         stage->present(view);

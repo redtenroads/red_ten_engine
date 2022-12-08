@@ -22,7 +22,7 @@ OBJ_FILES = ${OBJDIR}/rtengine.o ${OBJDIR}/view.o ${OBJDIR}/viewController.o ${O
 			${OBJDIR}/stage.o ${OBJDIR}/stageController.o ${OBJDIR}/effect.o  \
 			${OBJDIR}/camera.o ${OBJDIR}/cameraOrto.o ${OBJDIR}/cameraPerspective.o  \
 			${OBJDIR}/physicsController.o ${OBJDIR}/soundController.o ${OBJDIR}/resourceController.o \
-			${OBJDIR}/transformation.o ${OBJDIR}/inputController.o ${OBJDIR}/logController.o \
+			${OBJDIR}/transformation.o ${OBJDIR}/inputController.o ${OBJDIR}/logController.o ${OBJDIR}/configController.o \
 			${OBJDIR}/physicsEntity.o ${OBJDIR}/physicsEntityBox.o ${OBJDIR}/physicsEntitySphere.o \
 			${OBJDIR}/actor.o  ${OBJDIR}/actorPawn.o ${OBJDIR}/actorGUIElement.o \
 			${OBJDIR}/sound.o ${OBJDIR}/texture.o ${OBJDIR}/font.o ${OBJDIR}/mesh.o \
@@ -32,7 +32,8 @@ OBJ_FILES = ${OBJDIR}/rtengine.o ${OBJDIR}/view.o ${OBJDIR}/viewController.o ${O
 			${OBJDIR}/stb_image.o ${OBJDIR}/fbx_loader.o ${OBJDIR}/stb_vorbis.o \
 			${OBJDIR}/destroyable.o ${OBJDIR}/commonShaders.o ${OBJDIR}/utils.o \
 			${OBJDIR}/phongShader.o ${OBJDIR}/rawShader.o ${OBJDIR}/shader.o ${OBJDIR}/lightningShader.o \
-			${OBJDIR}/withLogger.o ${OBJDIR}/soundPlayer.o ${OBJDIR}/childProcess.o
+			${OBJDIR}/withLogger.o ${OBJDIR}/soundPlayer.o ${OBJDIR}/childProcess.o \
+			${OBJDIR}/config.o
 
 EXAMPLES = 	${BINDIR}/1-helloWorld.exe ${BINDIR}/2-helloActors.exe ${BINDIR}/3-helloPhysics.exe ${BINDIR}/4-helloSorting.exe \
 			${BINDIR}/5-helloInput.exe ${BINDIR}/6-helloBytemap.exe ${BINDIR}/7-helloSound.exe ${BINDIR}/8-helloGUI.exe \
@@ -64,6 +65,9 @@ ${OBJDIR}/inputController.o: ${SRCDIR}/controller/inputController.cpp
 
 ${OBJDIR}/logController.o: ${SRCDIR}/controller/logController.cpp
 	$(CC) $(CFLAGS) -o ${OBJDIR}/logController.o ${SRCDIR}/controller/logController.cpp
+
+${OBJDIR}/configController.o: ${SRCDIR}/controller/configController.cpp
+	$(CC) $(CFLAGS) -o ${OBJDIR}/configController.o ${SRCDIR}/controller/configController.cpp
 
 ${OBJDIR}/view.o: ${SRCDIR}/os/view.cpp
 	$(CC) $(CFLAGS) -o ${OBJDIR}/view.o ${SRCDIR}/os/view.cpp
@@ -184,6 +188,9 @@ ${OBJDIR}/soundPlayer.o: ${SRCDIR}/common/soundPlayer.cpp
 
 ${OBJDIR}/childProcess.o: ${SRCDIR}/common/childProcess.cpp
 	$(CC) $(CFLAGS) -o ${OBJDIR}/childProcess.o ${SRCDIR}/common/childProcess.cpp
+
+${OBJDIR}/config.o: ${SRCDIR}/common/config.cpp
+	$(CC) $(CFLAGS) -o ${OBJDIR}/config.o ${SRCDIR}/common/config.cpp
 	
 ${OBJDIR}/effect.o: ${SRCDIR}/shaders/effect.cpp
 	$(CC) $(CFLAGS) -o ${OBJDIR}/effect.o ${SRCDIR}/shaders/effect.cpp

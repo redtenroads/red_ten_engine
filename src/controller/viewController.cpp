@@ -22,38 +22,27 @@ ViewController::ViewController(Config *config)
     }
 }
 
-View *ViewController::createViewFullscreen(std::string name)
+View *ViewController::createView(std::string name)
 {
-    return createView(name, 0, 0, true);
-}
+    checkConfig();
+    View *view = new View(config);
 
-View *ViewController::createView(std::string name, int resX, int resY, bool isFullscreen, int refreshRate)
-{
-    if (isFullscreen && (resX != 0 || resY != 0))
-    {
-        if (!isResolutionAvailable(resX, resY, refreshRate))
-        {
-            logger->logff("Unable to set fullscreen resolution %ix%i, %ihz", resX, resY, refreshRate);
-            resX = 0;
-            resY = 0;
-            refreshRate = 0;
-        }
-    }
-
-    if (resX == 0)
-        resX = getPrimaryScreenWidth() / (isFullscreen ? 1 : 2);
-    if (resY == 0)
-        resY = getPrimaryScreenHeight() / (isFullscreen ? 1 : 2);
-
-    View *view = new View(resX, resY, refreshRate, isFullscreen);
     view->windowName = name;
     if (view->makeWindow())
     {
-        logger->logff("New view has been created: %dx%d, %s", resX, resY, isFullscreen ? "fullscreen" : "windowed");
+        logger->logff(
+            "New view has been created: %dx%d, %s",
+            view->getWidth(),
+            view->getHeight(),
+            view->isFullscreen() ? "fullscreen" : "windowed");
         logger->logff("Renderer: %s", view->getOGLVersion() ? view->getOGLVersion() : "no renderer");
         logger->logff("OpenGL version supported: %s\n", view->getVersion() ? view->getVersion() : "no version");
 
         views.push_back(view);
+
+        if (!mainView)
+            mainView = view;
+
         return view;
     }
 
@@ -61,18 +50,13 @@ View *ViewController::createView(std::string name, int resX, int resY, bool isFu
     return nullptr;
 }
 
-View *ViewController::createViewUsingConfig(std::string name)
+void ViewController::update()
 {
-    View *view = createView(name, config->getWindowWidth(), config->getWindowHeight(), config->isFullscreen(), config->getRefreshRate());
-    if (!view)
-        view = createView(name, 0, 0, false, 0);
-    if (!view){
-        logger->logff("Unable to create view");
-        return nullptr;
+    if (mainView)
+    {
+        checkConfig();
+        mainView->changeMode();
     }
-    config->setWindowWidth(view->getWidth());
-    config->setWindowHeight(view->getHeight());
-    config->setRefreshRate(view->getRefreshRate());
 }
 
 void ViewController::getAvailableResolutions(std::vector<DisplayMode> *modes, bool onlyNative)
@@ -240,4 +224,27 @@ int ViewController::getPrimaryScreenHeight()
     SDL_DisplayMode DM;
     SDL_GetCurrentDisplayMode(0, &DM);
     return DM.h;
+}
+
+void ViewController::checkConfig()
+{
+    if (config)
+    {
+        bool isFullscreen = config->isFullscreen();
+        if (config->getWindowWidth() == 0)
+            config->setWindowWidth(getPrimaryScreenWidth() / (isFullscreen ? 1 : 2));
+        if (config->getWindowHeight() == 0)
+            config->setWindowHeight(getPrimaryScreenHeight() / (isFullscreen ? 1 : 2));
+
+        if (isFullscreen)
+        {
+            if (!isResolutionAvailable(config->getWindowWidth(), config->getWindowHeight(), config->getRefreshRate()))
+            {
+                logger->logff("Unable to set fullscreen resolution %ix%i, %ihz", config->getWindowWidth(), config->getWindowHeight(), config->getRefreshRate());
+                config->setWindowWidth(getPrimaryScreenWidth() / (isFullscreen ? 1 : 2));
+                config->setWindowHeight(getPrimaryScreenHeight() / (isFullscreen ? 1 : 2));
+                config->setRefreshRate(0);
+            }
+        }
+    }
 }

@@ -148,9 +148,16 @@ int main()
     // Engine setup
     auto engine = RTEngine::createInstance();
 
+    // Set fullscreen through configuration controller
+    auto configController = engine->getConfigController();
+    auto config = configController->getConfig();
+    config->setWindowWidth(1280);
+    config->setWindowHeight(800);
+    config->setFullscreenState(false);
+
     // View setup
     auto viewController = engine->getViewController();
-    auto view = viewController->createView("Example \"8. Hello GUI\"", 1280, 800, false);
+    auto view = viewController->createView("Example \"8. Hello GUI\"");
     int screenWidth = viewController->getPrimaryScreenWidth();
     int screenHeight = viewController->getPrimaryScreenHeight();
 
@@ -263,10 +270,17 @@ int main()
 
             if (firstPressID == GUI_BUTTON::TOGGLE_FULLSCREEN)
             {
-                if (view->isFullscreen())
-                    view->changeMode(1280, 800, 0, false);
-                else
-                    view->changeMode(screenWidth, screenHeight, 0, true);
+                if (view->isFullscreen()){
+                    config->setWindowWidth(1280);
+                    config->setWindowHeight(800);
+                    config->setFullscreenState(false);
+                    configController->applyConfig();
+                }else{
+                    config->setWindowWidth(screenWidth);
+                    config->setWindowHeight(screenHeight);
+                    config->setFullscreenState(true);
+                    configController->applyConfig();
+                }
             }
         }
     }

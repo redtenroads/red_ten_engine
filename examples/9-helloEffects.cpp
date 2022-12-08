@@ -168,9 +168,16 @@ int main()
     // Engine setup
     auto engine = RTEngine::createInstance();
 
+    // Set fullscreen through configuration controller
+    auto configController = engine->getConfigController();
+    auto config = configController->getConfig();
+    config->setWindowWidth(1280);
+    config->setWindowHeight(800);
+    config->setFullscreenState(false);
+
     // View setup
     auto viewController = engine->getViewController();
-    auto view = viewController->createView("Example \"9. Hello Effects\"", 1280, 800, false);
+    auto view = viewController->createView("Example \"9. Hello Effects\"");
 
     // Stage setup
     auto stageController = engine->getStageController();

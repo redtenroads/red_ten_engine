@@ -165,6 +165,8 @@ void LayerActors::render(View *view)
             {
                 glEnable(GL_DEPTH_TEST);
                 glEnable(GL_CULL_FACE);
+                if (renderer->getShadowMapSize() < 2048)
+                    glFrontFace(GL_CW);
                 glDisable(GL_BLEND);
 
                 // prepare shadowed render
@@ -176,6 +178,9 @@ void LayerActors::render(View *view)
                     (*actor)->onRenderShadowed(mLightViewProjection);
                 }
                 setupLightningFrame = true;
+
+                if (renderer->getShadowMapSize() < 2048)
+                    glFrontFace(GL_CCW);
             }
             if (setupLightningFrame)
             {

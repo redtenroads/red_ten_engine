@@ -5,6 +5,7 @@
 #include "common/utils.h"
 #include "common/withLogger.h"
 #include "common/childProcess.h"
+#include "common/config.h"
 #include <vector>
 
 struct AudioDevice
@@ -15,7 +16,8 @@ struct AudioDevice
 class SoundController : WithLogger
 {
 public:
-    SoundController();
+    SoundController(Config *config);
+    void update();
 
     void process(float delta);
 
@@ -26,6 +28,7 @@ public:
     bool unsubscribeSoundPlayer(ChildProcess *audioSubscribe);
 
 protected:
+    Config *config;
     bool bSoundEnabled = false;
     std::vector<AudioDevice *> devicesList;
     std::vector<ChildProcess *> soundPlayers;

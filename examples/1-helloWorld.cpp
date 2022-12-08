@@ -9,10 +9,15 @@ int main()
     // Engine instance is the source of controllers and settings of the engine
     auto engine = RTEngine::createInstance();
 
+    // Set fullscreen through configuration controller
+    auto configController = engine->getConfigController();
+    auto config = configController->getConfig();
+    config->setFullscreenState(true);
+
     // Provides ability to create views, also stores them and update
     // 0 width and height means that with fullscreen (last parameter) it will take the maximum resolution
     auto viewController = engine->getViewController();
-    auto view = viewController->createView("Example \"1. Hello World\"", 0, 0, true);
+    auto view = viewController->createView("Example \"1. Hello World\"");
 
     // Stage is where your game actores are presented
     auto stageController = engine->getStageController();

@@ -2,11 +2,11 @@
 // SPDX-License-Identifier: MIT
 
 #pragma once
-
+#include "common/config.h"
 class Renderer
 {
 public:
-    Renderer(int width, int height);
+    Renderer(int width, int height, Config *config);
     ~Renderer();
 
     unsigned int getPositionTexture();
@@ -18,6 +18,7 @@ public:
     void setupNewFrame(bool clear = true);
     void setupLightning(bool clear = true);
     void setupShadowHQ(bool clear = true);
+    int getShadowMapSize();
 
 protected:
     unsigned int gBuffer, depthbuffer;
@@ -30,5 +31,5 @@ protected:
     unsigned int shadowPicture;
 
     int width, height;
-    int shadowMapWidth = 4096, shadowMapHeight = 4096;
+    int shadowMapSize;
 };

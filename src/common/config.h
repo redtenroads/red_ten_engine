@@ -1,10 +1,13 @@
 #pragma once
+#include "common/withLogger.h"
+#include "common/utils.h"
 #include <string>
 #include <vector>
 
 enum RenderQuality
 {
-    Fast = 0,
+    SuperFast = 0,
+    Fast,
     Balanced,
     High
 };
@@ -15,33 +18,40 @@ struct ConfigPair
     std::string value;
 };
 
-class Config
+class Config : public WithLogger
 {
 public:
-    bool loadConfig();
-    bool saveConfig();
-    void setConfigFilePath(std::string configFilePath);
-    std::string getConfigFilePath();
-    void setupByQuality(RenderQuality quality);
+    EXPORT bool loadConfig();
+    EXPORT bool saveConfig();
+    EXPORT void setConfigFilePath(std::string configFilePath);
+    EXPORT std::string getConfigFilePath();
+    EXPORT void setupByQuality(RenderQuality quality);
 
-    bool isLoaded();
-    bool isDirty();
+    EXPORT bool isLoaded();
+    EXPORT bool isDirty();
 
-    void setCurrentVudeoDevice(std::string deviceName);
-    std::string getCurrentVudeoDevice();
+    EXPORT void setCurrentVideoDevice(std::string deviceName);
+    EXPORT std::string getCurrentVideoDevice();
+    EXPORT void setCurrentAudioDevice(std::string deviceName);
+    EXPORT std::string getCurrentAudioDevice();
 
-    int getWindowWidth();
-    void setWindowWidth(int width);
-    int getWindowHeight();
-    void setWindowHeight(int height);
-    int getRefreshRate();
-    void setRefreshRate(int height);
-    bool isFullscreen();
-    void setFullscreenState(bool isFullscreen);
-    int getShadowResolution();
+    EXPORT int getWindowWidth();
+    EXPORT void setWindowWidth(int width);
+    EXPORT int getWindowHeight();
+    EXPORT void setWindowHeight(int height);
+    EXPORT int getRefreshRate();
+    EXPORT void setRefreshRate(int refreshRate);
+    EXPORT bool isFullscreen();
+    EXPORT void setFullscreenState(bool isFullscreen);
+    EXPORT RenderQuality getShadowQuality();
+    EXPORT void setShadowQuality(RenderQuality quality);
+
+    EXPORT static std::string qualityToString(RenderQuality quality);
+    EXPORT static RenderQuality stringToQuality(std::string quality);
 
 protected:
     bool getPairFromString(char *buffer, int limit, ConfigPair *pair);
+
     std::string configFilePath = "./cfg";
     bool bIsLoaded = false;
     bool bIsDirty = false;
@@ -50,6 +60,7 @@ protected:
     int refreshRate = 0;
     bool bIsFullscreen = false;
     std::string videoDevice = "";
+    std::string audioDevice = "";
 
-    int shadowResolution = 2048;
+    RenderQuality shadowQuality = RenderQuality::Balanced;
 };

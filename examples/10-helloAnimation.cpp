@@ -66,13 +66,18 @@ int main()
     // Engine setup
     auto engine = RTEngine::createInstance();
 
-    // View setup
+    // We need view controller to get resolution
     auto viewController = engine->getViewController();
-    auto view = viewController->createView(
-        "Example \"10. Hello Animation\"",
-        viewController->getPrimaryScreenWidth() * 0.8f,
-        viewController->getPrimaryScreenHeight() * 0.8f,
-        false);
+
+    // Set fullscreen through configuration controller
+    auto configController = engine->getConfigController();
+    auto config = configController->getConfig();
+    config->setWindowWidth(viewController->getPrimaryScreenWidth() * 0.8f);
+    config->setWindowHeight(viewController->getPrimaryScreenHeight() * 0.8f);
+    config->setFullscreenState(false);
+
+    // View setup
+    auto view = viewController->createView("Example \"10. Hello Animation\"");
 
     // Stage setup
     auto stageController = engine->getStageController();

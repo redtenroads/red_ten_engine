@@ -28,9 +28,11 @@ public:
     }
 
 protected:
+    void sortLayers();
+
+    Renderer *renderer = nullptr;
     std::string name;
     std::list<Layer *> layers;
-    void sortLayers();
 
     float clearColor[3] = {0.15f, 0.15f, 0.15f};
 };

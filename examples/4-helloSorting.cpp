@@ -42,17 +42,24 @@ int main()
     // Engine setup
     auto engine = RTEngine::createInstance();
 
+    // Set fullscreen through configuration controller
+    auto configController = engine->getConfigController();
+    auto config = configController->getConfig();
+    config->setWindowWidth(1280);
+    config->setWindowHeight(800);
+    config->setFullscreenState(false);
+
     // View setup
     auto viewController = engine->getViewController();
-    auto view = viewController->createView("Example \"2. Hello Actors\"", 1280, 800, false);
+    auto view = viewController->createView("Example \"4. Hello Sorting\"");
 
     // Stage setup
     auto stageController = engine->getStageController();
-    auto stage = stageController->createStage("Hello Actors");
+    auto stage = stageController->createStage("Hello Sorting");
 
     // Ortographic camera in layer disables Z test in OpenGL. It means Z axis doesn't effect which sprite is on the top
     // But you can still sort sprites by enabling manual sort. This way actors will be sorted depending on their inner zIndex before rendering
-    auto layerActors = stage->createLayerActors("Hello Actors", 0);
+    auto layerActors = stage->createLayerActors("Hello Sorting", 0);
     layerActors->enableSorting();
 
     auto camera = layerActors->createActor<CameraOrto>();

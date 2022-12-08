@@ -51,7 +51,8 @@ RTEngine::RTEngine(std::string configFilePath)
 
     if (!viewController)
     {
-        viewController = new ViewController();
+        viewController = new ViewController(config);
+        configController->setViewController(viewController);
     }
 
     if (!stageController)
@@ -67,7 +68,8 @@ RTEngine::RTEngine(std::string configFilePath)
 
     if (!soundController)
     {
-        soundController = new SoundController();
+        soundController = new SoundController(config);
+        configController->setSoundController(soundController);
         Camera::setSoundController(soundController);
         SoundPlayer::setSoundController(soundController);
     }
@@ -84,7 +86,7 @@ RTEngine::RTEngine(std::string configFilePath)
     fpsLastCheckTick = tick;
 }
 
-RTEngine *RTEngine::createInstance()
+RTEngine *RTEngine::createInstance(std::string configFilePath)
 {
     if (!isSDLInitDone)
     {
@@ -99,7 +101,7 @@ RTEngine *RTEngine::createInstance()
         TTF_Init();
     }
 
-    auto instance = new RTEngine();
+    auto instance = new RTEngine(configFilePath);
     return instance;
 }
 

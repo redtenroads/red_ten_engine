@@ -239,7 +239,7 @@ const char *sunWithShadowFragmentCode =
     "   vec3 projCoords = fragPosLightSpace.xyz / fragPosLightSpace.w;\n"
     "   projCoords = projCoords * 0.5 + 0.5;\n"
     "   float currentDepth = projCoords.z;\n"
-    "   float bias = max(0.003 * (1.0 - dot(Normal, lightDir)), 0.0003);\n"
+    "   float bias = max(0.003 * (1.0 - dot(Normal, lightDir)), 0.0004);\n"
     "   float shadow = 0.0;\n"
     "   for(int x = -1; x <= 1; ++x){\n"
     "       for(int y = -1; y <= 1; ++y){\n"
