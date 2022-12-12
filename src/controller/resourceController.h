@@ -6,7 +6,7 @@
 #include "resource/texture.h"
 #include "resource/sound.h"
 #include "resource/font.h"
-#include "resource/mesh.h"
+#include "resource/resourceMesh.h"
 #include <vector>
 
 class ResourceController
@@ -23,9 +23,8 @@ public:
     EXPORT Font *addFont(std::string path, int size);
     EXPORT Font *getFontByPath(std::string path, int size);
 
-    EXPORT Mesh *addMesh();
-    EXPORT Mesh *addMesh(std::string path);
-    EXPORT Mesh *getMeshByPath(std::string path);
+    EXPORT ResourceMesh *addMesh(std::string path);
+    EXPORT ResourceMesh *getMeshByPath(std::string path);
 
     EXPORT void loadAll();
 
@@ -33,5 +32,5 @@ protected:
     std::vector<Texture *> textures;
     std::vector<Sound *> sounds;
     std::vector<Font *> fonts;
-    std::vector<Mesh *> meshes;
+    std::vector<ResourceMesh *> meshes;
 };

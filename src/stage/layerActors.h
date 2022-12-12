@@ -32,9 +32,9 @@ public:
     EXPORT void enableSorting();
     EXPORT void disableSorting();
 
-    EXPORT std::list<Actor *> castRayCollision(Vector3 v1, Vector3 v2);
-    EXPORT std::list<Actor *> castSphereCollision(Vector3 v1, float radius);
-    EXPORT std::list<Actor *> castPointCollision(Vector3 v1);
+    EXPORT std::list<Actor *> castRayCollision(Vector3 v1, Vector3 v2, int channelId = 0);
+    EXPORT std::list<Actor *> castSphereCollision(Vector3 v1, float radius, int channelId = 0);
+    EXPORT std::list<Actor *> castPointCollision(Vector3 v1, int channelId = 0);
 
     EXPORT std::list<Actor *> *getActorsList();
     EXPORT void clear(bool destroyCameras = true);

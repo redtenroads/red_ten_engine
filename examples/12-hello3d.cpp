@@ -58,14 +58,14 @@ public:
     ComponentLight *light[LIGHT_COUNT];
 
     static Mesh *floorMesh;
-    static Mesh *towerMesh;
+    static ResourceMesh *towerMesh;
     static PhongShader *towerShader;
     static PhongShader *floorShader;
 };
 PhongShader *Town::towerShader = nullptr;
 PhongShader *Town::floorShader = nullptr;
 Mesh *Town::floorMesh = nullptr;
-Mesh *Town::towerMesh = nullptr;
+ResourceMesh *Town::towerMesh = nullptr;
 
 class GUISimpleButton : public ActorGUIElement
 {
@@ -152,7 +152,7 @@ int main()
     auto towerNormalTexture = resourceController->addTexture("./data/3d/tower_normal.png");
 
     // our floor
-    auto plainMesh = resourceController->addMesh();
+    auto plainMesh = new Mesh();
     const float array[] = {-1, 0, -1, 0, 1, 0, 0, 0,
                            -1, 0, 1, 0, 1, 0, 0, 3,
                            1, 0, -1, 0, 1, 0, 3, 0,
@@ -160,7 +160,9 @@ int main()
                            -1, 0, 1, 0, 1, 0, 0, 3,
                            1, 0, 1, 0, 1, 0, 3, 3};
 
-    plainMesh->setupByArray8f(array, 8 * 6);
+    // 3 - position, 3 - normal, 2 - UV
+    int attributeSizes[3] = {3, 3, 2};
+    plainMesh->setupFloatsArray(array, 6, 3, attributeSizes);
 
     // our tower
     auto towerMesh = resourceController->addMesh("./data/3d/tower.fbx");

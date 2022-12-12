@@ -5,7 +5,7 @@
 #include "common/utils.h"
 #include "component/component.h"
 #include "shaders/shader.h"
-#include "resource/mesh.h"
+#include "resource/resourceMesh.h"
 
 enum LightType
 {

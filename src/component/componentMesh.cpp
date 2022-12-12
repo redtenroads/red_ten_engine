@@ -28,7 +28,7 @@ int ComponentMesh::getVertexAmount()
     return mesh ? mesh->getVertexAmount() : 0;
 }
 
-void ComponentMesh::setMesh(Mesh *mesh)
+void ComponentMesh::setMesh(ResourceMesh *mesh)
 {
     this->mesh = mesh;
 }

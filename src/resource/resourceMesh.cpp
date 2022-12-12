@@ -1,7 +1,7 @@
 // SPDX-FileCopyrightText: 2022 Dmitrii Shashkov
 // SPDX-License-Identifier: MIT
 
-#include "resource/mesh.h"
+#include "resource/resourceMesh.h"
 #include "opengl/glew.h"
 #include "loaders/fbx_loader.h"
 #include "math/math.h"
@@ -16,16 +16,18 @@
 
 #define PSIZE 14
 
-Mesh::Mesh()
-{
-}
-
-Mesh::Mesh(std::string meshPath)
+ResourceMesh::ResourceMesh(std::string meshPath)
 {
     this->meshPath = meshPath;
 }
 
-void Mesh::reload()
+ResourceMesh::~ResourceMesh()
+{
+    if (geometry)
+        delete geometry;
+}
+
+void ResourceMesh::reload()
 {
     if (meshPath.length() > 0 && !bLoaded)
     {
@@ -52,22 +54,17 @@ void Mesh::reload()
     }
 }
 
-bool Mesh::isLoaded()
+bool ResourceMesh::isLoaded()
 {
     return bLoaded;
 }
 
-bool Mesh::isPath(std::string meshPath)
+bool ResourceMesh::isPath(std::string meshPath)
 {
     return this->meshPath == meshPath;
 }
 
-int Mesh::getVertexAmount()
-{
-    return vertexAmount;
-}
-
-void Mesh::setupByArray8f(const float *data, int amount)
+void ResourceMesh::setupByArray8f(const float *data, int amount)
 {
     // calculating tangents and bitangents
     int amountOfVertexes = amount / 8;
@@ -108,16 +105,15 @@ void Mesh::setupByArray8f(const float *data, int amount)
         memcpy(&newVertex3[8], &newVertex1[8], sizeof(float) * 6);
     }
 
-    vbo = makeVBO(fullData, fullAmountOfFloats);
-    vao = makeVAO(vbo);
+    int attributeSizes[5] = {3, 3, 2, 3, 3};
+    setupFloatsArray(fullData, amountOfVertexes, 5, attributeSizes);
+    geometry = new Geometry(fullData, amountOfVertexes, PSIZE, 0);
     free(fullData);
 
-    bSettedUp = true;
     bLoaded = true;
-    vertexAmount = amountOfVertexes;
 }
 
-void Mesh::use()
+void ResourceMesh::use()
 {
     if (!bLoaded)
         reload();
@@ -126,7 +122,8 @@ void Mesh::use()
         glBindVertexArray(vao);
 }
 
-unsigned int Mesh::makeVBO(const float *data, int amount)
+/*
+unsigned int ResourceMesh::makeVBO(const float *data, int amount)
 {
     unsigned int r = 0;
     glGenBuffers(1, &r);
@@ -135,7 +132,7 @@ unsigned int Mesh::makeVBO(const float *data, int amount)
     return r;
 }
 
-unsigned int Mesh::makeVAO(int vbo)
+unsigned int ResourceMesh::makeVAO(int vbo)
 {
     unsigned int r = 0;
     glGenVertexArrays(1, &r);
@@ -153,3 +150,4 @@ unsigned int Mesh::makeVAO(int vbo)
     glVertexAttribPointer(4, 3, GL_FLOAT, GL_FALSE, PSIZE * sizeof(float), (void *)(11 * sizeof(float)));
     return r;
 }
+*/

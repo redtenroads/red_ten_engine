@@ -4,39 +4,29 @@
 #pragma once
 #include "common/utils.h"
 #include "common/withLogger.h"
+#include "common/mesh.h"
 #include <string>
 
-class Mesh : public WithLogger
+class ResourceMesh : public Mesh, public WithLogger
 {
 public:
-    EXPORT Mesh();
-    EXPORT Mesh(std::string meshPath);
+    EXPORT ResourceMesh(std::string meshPath);
+    EXPORT ~ResourceMesh();
 
     EXPORT void reload();
     EXPORT bool isLoaded();
     EXPORT bool isPath(std::string meshPath);
-
-    EXPORT int getVertexAmount();
+    EXPORT Geometry *getGeometry();
 
     // positions
     // x, y, z - nx, ny, nz - u, v
     EXPORT void setupByArray8f(const float *data, int amount);
 
-
     EXPORT void use();
 
 protected:
-    unsigned int makeVBO(const float *data, int amount);
-    unsigned int makeVAO(int vbo);
-
-    bool bSettedUp = false;
     bool bLoaded = false;
-
-    int vertexAmount = 0;
-
-    unsigned int vbo = 0;
-    unsigned int vao = 0;
-    unsigned int programm = 0;
+    Geometry *geometry;
 
     std::string meshPath;
 };

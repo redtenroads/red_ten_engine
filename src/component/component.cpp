@@ -64,6 +64,11 @@ int Component::getVertexAmount()
     return 0;
 }
 
+float *Component::getCollisionGeomtry()
+{
+    return nullptr;
+}
+
 PhysicsEntitySphere *Component::addPhysics2dCircle(float radius)
 {
     return addPhysics2dCircle(radius, 0, 0, 0);
@@ -85,6 +90,14 @@ PhysicsEntityBox *Component::addPhysics2dBox(float width, float height, float px
 {
     auto newPhysicsEntity = new PhysicsEntityBox(width * SIZE_MULTIPLIER, height * SIZE_MULTIPLIER, px, py, pz);
     physicsEntities.push_back(newPhysicsEntity);
+    return newPhysicsEntity;
+}
+
+
+    
+PhysicsEntityGeometry *Component::addPhysicsGeometry(Geometry *geometry){
+    auto newPhysicsEntity = new PhysicsEntityGeometry(geometry);
+    PhysicsEntity.push_back(newPhysicsEntity);
     return newPhysicsEntity;
 }
 
