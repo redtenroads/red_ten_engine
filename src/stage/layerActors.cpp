@@ -279,7 +279,7 @@ void LayerActors::disableSorting()
     bUseSorting = false;
 }
 
-std::list<Actor *> LayerActors::castRayCollision(Vector3 v1, Vector3 v2)
+std::list<Actor *> LayerActors::castRayCollision(Vector3 v1, Vector3 v2, int channelId)
 {
     std::list<Actor *> list;
     if (physicsSystem)
@@ -300,14 +300,18 @@ std::list<Actor *> LayerActors::castRayCollision(Vector3 v1, Vector3 v2)
             {
                 BodyLockRead lock(pSystem->GetBodyLockInterface(), item->mBodyID);
                 const Body &body = lock.GetBody();
-                list.push_back((Actor *)body.GetUserData());
-                lock.ReleaseLock();
+                Actor *actor = (Actor *)body.GetUserData();
+                if (actor && actor->hasCollisionChannel(channelId))
+                {
+                    list.push_back((Actor *)body.GetUserData());
+                    lock.ReleaseLock();
+                }
             }
     }
     return list;
 }
 
-std::list<Actor *> LayerActors::castSphereCollision(Vector3 p, float radius)
+std::list<Actor *> LayerActors::castSphereCollision(Vector3 p, float radius, int channelId)
 {
     std::list<Actor *> list;
     if (physicsSystem && physicsSystem->system)
@@ -331,9 +335,13 @@ std::list<Actor *> LayerActors::castSphereCollision(Vector3 p, float radius)
 
                 if (bounds.GetSqDistanceTo(mPosition) < radiusSQ)
                 {
-                    if ((Actor *)body.GetUserData())
-                        list.push_back((Actor *)body.GetUserData());
-                    lock.ReleaseLock();
+                    Actor *actor = (Actor *)body.GetUserData();
+                    if (actor && actor->hasCollisionChannel(channelId))
+                    {
+                        if ((Actor *)body.GetUserData())
+                            list.push_back((Actor *)body.GetUserData());
+                        lock.ReleaseLock();
+                    }
                 }
             }
         }
@@ -341,7 +349,7 @@ std::list<Actor *> LayerActors::castSphereCollision(Vector3 p, float radius)
     return list;
 }
 
-std::list<Actor *> LayerActors::castPointCollision(Vector3 v1)
+std::list<Actor *> LayerActors::castPointCollision(Vector3 v1, int channelId)
 {
     std::list<Actor *> list;
     if (physicsSystem)
@@ -357,8 +365,13 @@ std::list<Actor *> LayerActors::castPointCollision(Vector3 v1)
             {
                 BodyLockRead lock(pSystem->GetBodyLockInterface(), *item);
                 const Body &body = lock.GetBody();
-                list.push_back((Actor *)body.GetUserData());
-                lock.ReleaseLock();
+
+                Actor *actor = (Actor *)body.GetUserData();
+                if (actor && actor->hasCollisionChannel(channelId))
+                {
+                    list.push_back((Actor *)body.GetUserData());
+                    lock.ReleaseLock();
+                }
             }
     }
     return list;

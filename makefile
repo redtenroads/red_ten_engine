@@ -23,9 +23,9 @@ OBJ_FILES = ${OBJDIR}/rtengine.o ${OBJDIR}/view.o ${OBJDIR}/viewController.o ${O
 			${OBJDIR}/camera.o ${OBJDIR}/cameraOrto.o ${OBJDIR}/cameraPerspective.o  \
 			${OBJDIR}/physicsController.o ${OBJDIR}/soundController.o ${OBJDIR}/resourceController.o \
 			${OBJDIR}/transformation.o ${OBJDIR}/inputController.o ${OBJDIR}/logController.o ${OBJDIR}/configController.o \
-			${OBJDIR}/physicsEntity.o ${OBJDIR}/physicsEntityBox.o ${OBJDIR}/physicsEntitySphere.o \
+			${OBJDIR}/physicsEntity.o ${OBJDIR}/physicsEntityBox.o ${OBJDIR}/physicsEntitySphere.o ${OBJDIR}/physicsEntityGeometry.o \
 			${OBJDIR}/actor.o  ${OBJDIR}/actorPawn.o ${OBJDIR}/actorGUIElement.o \
-			${OBJDIR}/sound.o ${OBJDIR}/texture.o ${OBJDIR}/font.o ${OBJDIR}/mesh.o \
+			${OBJDIR}/sound.o ${OBJDIR}/texture.o ${OBJDIR}/font.o ${OBJDIR}/resourceMesh.o \
 			${OBJDIR}/component.o ${OBJDIR}/componentSprite.o ${OBJDIR}/componentSoundPlayer.o \
 			${OBJDIR}/componentText.o ${OBJDIR}/componentLight.o \
 			${OBJDIR}/componentMesh.o ${OBJDIR}/meshDescriptor.o ${OBJDIR}/renderer.o \
@@ -33,7 +33,7 @@ OBJ_FILES = ${OBJDIR}/rtengine.o ${OBJDIR}/view.o ${OBJDIR}/viewController.o ${O
 			${OBJDIR}/destroyable.o ${OBJDIR}/commonShaders.o ${OBJDIR}/utils.o \
 			${OBJDIR}/phongShader.o ${OBJDIR}/rawShader.o ${OBJDIR}/shader.o ${OBJDIR}/lightningShader.o \
 			${OBJDIR}/withLogger.o ${OBJDIR}/soundPlayer.o ${OBJDIR}/childProcess.o \
-			${OBJDIR}/config.o
+			${OBJDIR}/config.o ${OBJDIR}/mesh.o ${OBJDIR}/geometry.o
 
 EXAMPLES = 	${BINDIR}/1-helloWorld.exe ${BINDIR}/2-helloActors.exe ${BINDIR}/3-helloPhysics.exe ${BINDIR}/4-helloSorting.exe \
 			${BINDIR}/5-helloInput.exe ${BINDIR}/6-helloBytemap.exe ${BINDIR}/7-helloSound.exe ${BINDIR}/8-helloGUI.exe \
@@ -93,8 +93,8 @@ ${OBJDIR}/sound.o: ${SRCDIR}/resource/sound.cpp
 ${OBJDIR}/font.o: ${SRCDIR}/resource/font.cpp
 	$(CC) $(CFLAGS) -o ${OBJDIR}/font.o ${SRCDIR}/resource/font.cpp
 
-${OBJDIR}/mesh.o: ${SRCDIR}/resource/mesh.cpp
-	$(CC) $(CFLAGS) -o ${OBJDIR}/mesh.o ${SRCDIR}/resource/mesh.cpp
+${OBJDIR}/resourceMesh.o: ${SRCDIR}/resource/resourceMesh.cpp
+	$(CC) $(CFLAGS) -o ${OBJDIR}/resourceMesh.o ${SRCDIR}/resource/resourceMesh.cpp
 
 ${OBJDIR}/vector3.o: ${SRCDIR}/math/vector3.cpp
 	$(CC) $(CFLAGS) -o ${OBJDIR}/vector3.o ${SRCDIR}/math/vector3.cpp
@@ -156,6 +156,9 @@ ${OBJDIR}/componentMesh.o: ${SRCDIR}/component/componentMesh.cpp
 ${OBJDIR}/componentLight.o: ${SRCDIR}/component/componentLight.cpp
 	$(CC) $(CFLAGS) -o ${OBJDIR}/componentLight.o ${SRCDIR}/component/componentLight.cpp
 
+${OBJDIR}/physicsEntityGeometry.o: ${SRCDIR}/physics/physicsEntityGeometry.cpp
+	$(CC) $(CFLAGS) -o ${OBJDIR}/physicsEntityGeometry.o ${SRCDIR}/physics/physicsEntityGeometry.cpp
+
 ${OBJDIR}/physicsEntitySphere.o: ${SRCDIR}/physics/physicsEntitySphere.cpp
 	$(CC) $(CFLAGS) -o ${OBJDIR}/physicsEntitySphere.o ${SRCDIR}/physics/physicsEntitySphere.cpp
 
@@ -189,8 +192,14 @@ ${OBJDIR}/soundPlayer.o: ${SRCDIR}/common/soundPlayer.cpp
 ${OBJDIR}/childProcess.o: ${SRCDIR}/common/childProcess.cpp
 	$(CC) $(CFLAGS) -o ${OBJDIR}/childProcess.o ${SRCDIR}/common/childProcess.cpp
 
+${OBJDIR}/geometry.o: ${SRCDIR}/common/geometry.cpp
+	$(CC) $(CFLAGS) -o ${OBJDIR}/geometry.o ${SRCDIR}/common/geometry.cpp
+
 ${OBJDIR}/config.o: ${SRCDIR}/common/config.cpp
 	$(CC) $(CFLAGS) -o ${OBJDIR}/config.o ${SRCDIR}/common/config.cpp
+
+${OBJDIR}/mesh.o: ${SRCDIR}/common/mesh.cpp
+	$(CC) $(CFLAGS) -o ${OBJDIR}/mesh.o ${SRCDIR}/common/mesh.cpp
 	
 ${OBJDIR}/effect.o: ${SRCDIR}/shaders/effect.cpp
 	$(CC) $(CFLAGS) -o ${OBJDIR}/effect.o ${SRCDIR}/shaders/effect.cpp

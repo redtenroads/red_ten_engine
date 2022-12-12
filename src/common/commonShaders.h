@@ -7,6 +7,7 @@
 #include "controller/resourceController.h"
 #include "shaders/lightningShader.h"
 #include "common/withLogger.h"
+#include "common/mesh.h"
 
 class CommonShaders : public WithLogger
 {

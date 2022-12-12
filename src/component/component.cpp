@@ -88,6 +88,14 @@ PhysicsEntityBox *Component::addPhysics2dBox(float width, float height, float px
     return newPhysicsEntity;
 }
 
+
+    
+PhysicsEntityGeometry *Component::addPhysicsGeometry(Geometry *geometry){
+    auto newPhysicsEntity = new PhysicsEntityGeometry(geometry);
+    physicsEntities.push_back(newPhysicsEntity);
+    return newPhysicsEntity;
+}
+
 Matrix4 Component::getLocalspaceMatrix()
 {
     return Matrix4(1.0f);

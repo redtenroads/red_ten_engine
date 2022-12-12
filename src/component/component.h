@@ -8,6 +8,7 @@
 #include "physics/physicsEntity.h"
 #include "physics/physicsEntityBox.h"
 #include "physics/physicsEntitySphere.h"
+#include "physics/physicsEntityGeometry.h"
 #include "common/destroyable.h"
 #include "common/renderer.h"
 #include <list>
@@ -32,6 +33,8 @@ public:
     EXPORT PhysicsEntitySphere *addPhysics2dCircle(float radius, float px, float py, float pz);
     EXPORT PhysicsEntityBox *addPhysics2dBox(float width, float height);
     EXPORT PhysicsEntityBox *addPhysics2dBox(float width, float height, float px, float py, float pz);
+    
+    EXPORT PhysicsEntityGeometry *addPhysicsGeometry(Geometry *geometry);
 
     EXPORT virtual Matrix4 getLocalspaceMatrix();
 

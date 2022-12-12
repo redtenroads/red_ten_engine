@@ -15,9 +15,6 @@ extern const char *screenFragmentShader;
 
 extern const char *clearFragmentShader;
 
-extern const char *meshVertexShader;
-extern const char *meshFragmentShader;
-
 extern const char *initialLightningFragmentCode;
 
 extern const char *sunFragmentCode;
@@ -43,11 +40,13 @@ void CommonShaders::build()
 {
     logger->logff("compiling base meshes ...");
 
-    spriteMesh = resourceController->addMesh();
-    spriteMesh->setupByArray8f(spriteData, 8 * 4);
+    // 3 - position, 2 - UV
+    int attributeSizes[2] = {3, 2};
+    spriteMesh = new Mesh();
+    spriteMesh->setupFloatsArray(spriteData, 4, 2, attributeSizes);
 
-    screenMesh = resourceController->addMesh();
-    screenMesh->setupByArray8f(screenData, 8 * 4);
+    screenMesh = new Mesh();
+    screenMesh->setupFloatsArray(screenData, 4, 2, attributeSizes);
 
     logger->logff("base meshes compiled\n");
 
@@ -94,22 +93,21 @@ Mesh *CommonShaders::getSpriteMesh()
 }
 
 float spriteData[] = {
-    0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 1.0f, 0.0f, 1.0f,
-    1.0f, 0.0f, 0.0f, 0.0f, 0.0f, 1.0f, 1.0f, 1.0f,
-    1.0f, 1.0f, 0.0f, 0.0f, 0.0f, 1.0f, 1.0f, 0.0f,
-    0.0f, 1.0f, 0.0f, 0.0f, 0.0f, 1.0f, 0.0f, 0.0f};
+    0.0f, 0.0f, 0.0f, 0.0f, 1.0f,
+    1.0f, 0.0f, 0.0f, 1.0f, 1.0f,
+    1.0f, 1.0f, 0.0f, 1.0f, 0.0f,
+    0.0f, 1.0f, 0.0f, 0.0f, 0.0f};
 
 float screenData[] = {
-    -1.0f, -1.0f, 0.0f, 0.0f, 0.0f, 1.0f, 0.0f, 0.0f,
-    1.0f, -1.0f, 0.0f, 0.0f, 0.0f, 1.0f, 1.0f, 0.0f,
-    1.0f, 1.0f, 0.0f, 0.0f, 0.0f, 1.0f, 1.0f, 1.0f,
-    -1.0f, 1.0f, 0.0f, 0.0f, 0.0f, 1.0f, 0.0f, 1.0f};
+    -1.0f, -1.0f, 0.0f, 0.0f, 0.0f,
+    1.0f, -1.0f, 0.0f, 1.0f, 0.0f,
+    1.0f, 1.0f, 0.0f, 1.0f, 1.0f,
+    -1.0f, 1.0f, 0.0f, 0.0f, 1.0f};
 
 const char *spriteVertexShader =
     "#version 400\n"
     "layout (location = 0) in vec3 aPos;\n"
-    "layout (location = 1) in vec3 aNormals;\n"
-    "layout (location = 2) in vec2 aTexCoord;\n"
+    "layout (location = 1) in vec2 aTexCoord;\n"
     "out vec2 texCoord;\n"
     "uniform mat4 mTransform;\n"
     "uniform mat4 mViewProjection;\n"
@@ -121,8 +119,7 @@ const char *spriteVertexShader =
 const char *spriteFramedVertexShader =
     "#version 400\n"
     "layout (location = 0) in vec3 aPos;\n"
-    "layout (location = 1) in vec3 aNormals;\n"
-    "layout (location = 2) in vec2 aTexCoord;\n"
+    "layout (location = 1) in vec2 aTexCoord;\n"
     "out vec2 texCoord;\n"
     "uniform mat4 mTransform;\n"
     "uniform mat4 mViewProjection;\n"
@@ -147,8 +144,7 @@ const char *spriteFragmentShader =
 const char *screenVertexShader =
     "#version 400\n"
     "layout (location = 0) in vec3 aPos;\n"
-    "layout (location = 1) in vec3 aNormals;\n"
-    "layout (location = 2) in vec2 aTexCoord;\n"
+    "layout (location = 1) in vec2 aTexCoord;\n"
     "out vec2 texCoord;\n"
     "void main() {\n"
     "   gl_Position = vec4(aPos, 1.0);\n"
@@ -170,29 +166,6 @@ const char *clearFragmentShader =
     "uniform vec3 clearColor;\n"
     "void main() {\n"
     "   fragColor = vec4(clearColor, 1.0);\n"
-    "}\n";
-
-const char *meshVertexShader =
-    "#version 400\n"
-    "layout (location = 0) in vec3 aPos;\n"
-    "layout (location = 1) in vec3 aNormals;\n"
-    "layout (location = 2) in vec2 aTexCoord;\n"
-    "out vec2 texCoord;\n"
-    "uniform mat4 mTransform;\n"
-    "uniform mat4 mViewProjection;\n"
-    "void main() {\n"
-    "   gl_Position = mViewProjection * mTransform * vec4(aPos, 1.0);\n"
-    "   texCoord = aTexCoord;\n"
-    "}\n";
-
-const char *meshFragmentShader =
-    "#version 400\n"
-    "out vec4 fragColor;\n"
-    "in vec2 texCoord;\n"
-    "uniform sampler2D t;\n"
-    "void main() {\n"
-    "   vec4 color = texture(t, texCoord);\n"
-    "   fragColor = color;\n"
     "}\n";
 
 const char *initialLightningFragmentCode =

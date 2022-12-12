@@ -70,21 +70,14 @@ Font *ResourceController::getFontByPath(std::string path, int size)
     return nullptr;
 }
 
-Mesh *ResourceController::addMesh()
+ResourceMesh *ResourceController::addMesh(std::string path)
 {
-    auto mesh = new Mesh();
+    auto mesh = new ResourceMesh(path);
     meshes.push_back(mesh);
     return mesh;
 }
 
-Mesh *ResourceController::addMesh(std::string path)
-{
-    auto mesh = new Mesh(path);
-    meshes.push_back(mesh);
-    return mesh;
-}
-
-Mesh *ResourceController::getMeshByPath(std::string path)
+ResourceMesh *ResourceController::getMeshByPath(std::string path)
 {
     for (auto it = meshes.begin(); it != meshes.end(); ++it)
     {

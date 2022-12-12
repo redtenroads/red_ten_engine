@@ -3,10 +3,10 @@
 
 #pragma once
 #include "common/utils.h"
+#include "common/mesh.h"
 #include "component/component.h"
 #include "resource/texture.h"
 #include "shaders/shader.h"
-#include "resource/mesh.h"
 
 class ComponentMesh : public Component
 {
@@ -22,6 +22,8 @@ public:
     EXPORT Matrix4 getLocalspaceMatrix();
 
 protected:
+    void clearMeshBasedPhysics();
+
     Mesh *mesh = nullptr;
     Shader *shader = nullptr;
 };

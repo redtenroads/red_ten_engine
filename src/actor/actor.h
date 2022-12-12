@@ -72,6 +72,10 @@ public:
     EXPORT void setVisible(bool state);
     EXPORT bool hasBlended() { return bHasBlended; };
 
+    EXPORT void assignCollisionChannel(int channelId);
+    EXPORT void removeCollisionChannel(int channelId);
+    EXPORT bool hasCollisionChannel(int channelId);
+
     EXPORT const std::string getName();
     EXPORT const std::string getClass();
     EXPORT bool is(std::string name);
@@ -103,6 +107,7 @@ protected:
     float friction = 1.0f;
 
     std::list<Component *> components;
+    std::vector<int> collisionChannels;
 
     static PhysicsController *physicsController;
 

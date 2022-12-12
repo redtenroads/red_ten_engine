@@ -8,3 +8,5 @@
 
 EXPORT float randf();
 EXPORT float randf(float from, float to);
+
+EXPORT void calcTangets(const float *v1, const float *v2, const float *v3, float *out);

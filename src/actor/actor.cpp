@@ -128,13 +128,16 @@ void Actor::updatePhysics()
                     for (auto physicsEntitie = pEntities->begin(); physicsEntitie != pEntities->end(); physicsEntitie++)
                     {
                         Shape *shape = (Shape *)(*physicsEntitie)->getShape(scale);
-                        compoundRoot->AddShape(
-                            Vec3(
-                                (relativePosition.x + (*physicsEntitie)->x) * SIZE_MULTIPLIER * scale.x,
-                                (relativePosition.y + (*physicsEntitie)->y) * SIZE_MULTIPLIER * scale.y,
-                                (relativePosition.z + (*physicsEntitie)->z) * SIZE_MULTIPLIER * scale.z),
-                            Quat(relativeRotation.x, relativeRotation.y, relativeRotation.z, 1.0f),
-                            shape);
+                        if (shape)
+                        {
+                            compoundRoot->AddShape(
+                                Vec3(
+                                    (relativePosition.x + (*physicsEntitie)->x) * SIZE_MULTIPLIER * scale.x,
+                                    (relativePosition.y + (*physicsEntitie)->y) * SIZE_MULTIPLIER * scale.y,
+                                    (relativePosition.z + (*physicsEntitie)->z) * SIZE_MULTIPLIER * scale.z),
+                                Quat(relativeRotation.x, relativeRotation.y, relativeRotation.z, 1.0f),
+                                shape);
+                        }
                     }
                 }
             }
@@ -301,7 +304,7 @@ void Actor::lookAt(Vector3 v)
     float len = sqrtf(dif.x * dif.x + dif.z * dif.z);
     float x = atan2(len, dif.y);
 
-    transform.setRotation(- JPH_PI / 2.0f + x, -y - JPH_PI / 2.0f, 0.0f);
+    transform.setRotation(-JPH_PI / 2.0f + x, -y - JPH_PI / 2.0f, 0.0f);
 }
 
 void Actor::lookAt(float x, float y, float z)
@@ -392,6 +395,38 @@ bool Actor::isVisible()
 void Actor::setVisible(bool state)
 {
     bIsVisible = state;
+}
+
+void Actor::assignCollisionChannel(int channelId)
+{
+    if (!hasCollisionChannel(channelId))
+    {
+        collisionChannels.push_back(channelId);
+    }
+}
+
+void Actor::removeCollisionChannel(int channelId)
+{
+    for (auto channel = collisionChannels.begin(); channel != collisionChannels.end(); ++channel)
+    {
+        if (*channel == channelId)
+        {
+            collisionChannels.erase(channel);
+            break;
+        }
+    }
+}
+
+bool Actor::hasCollisionChannel(int channelId)
+{
+    if (channelId == 0)
+        return true;
+    for (auto channel = collisionChannels.begin(); channel != collisionChannels.end(); ++channel)
+    {
+        if (*channel == channelId)
+            return true;
+    }
+    return false;
 }
 
 const std::string Actor::getName()
