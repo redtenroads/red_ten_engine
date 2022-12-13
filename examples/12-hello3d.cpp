@@ -97,13 +97,13 @@ public:
         textSprite->setColor(200, 200, 200);
     }
 
-    static Font *font;
+    static ResourceFont *font;
 
 protected:
     ComponentText *textSprite;
     int color = 170;
 };
-Font *GUISimpleButton::font = nullptr;
+ResourceFont *GUISimpleButton::font = nullptr;
 
 int main()
 {

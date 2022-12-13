@@ -5,7 +5,7 @@
 #include "common/utils.h"
 #include "resource/texture.h"
 #include "resource/sound.h"
-#include "resource/font.h"
+#include "resource/resourceFont.h"
 #include "resource/resourceMesh.h"
 #include <vector>
 
@@ -20,8 +20,9 @@ public:
     EXPORT Sound *addSound(std::string path);
     EXPORT Sound *getSoundByPath(std::string path);
 
-    EXPORT Font *addFont(std::string path, int size);
-    EXPORT Font *getFontByPath(std::string path, int size);
+    EXPORT ResourceFont *addFont(int size);
+    EXPORT ResourceFont *addFont(std::string path, int size);
+    EXPORT ResourceFont *getFontByPath(std::string path, int size);
 
     EXPORT ResourceMesh *addMesh(std::string path);
     EXPORT ResourceMesh *getMeshByPath(std::string path);
@@ -31,6 +32,6 @@ public:
 protected:
     std::vector<Texture *> textures;
     std::vector<Sound *> sounds;
-    std::vector<Font *> fonts;
+    std::vector<ResourceFont *> fonts;
     std::vector<ResourceMesh *> meshes;
 };

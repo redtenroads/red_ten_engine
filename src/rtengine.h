@@ -7,7 +7,7 @@
 #include "common/soundPlayer.h"
 #include "common/mesh.h"
 #include "resource/resourceMesh.h"
-#include "resource/font.h"
+#include "resource/resourceFont.h"
 #include "resource/sound.h"
 #include "resource/texture.h"
 #include "actor/actor.h"

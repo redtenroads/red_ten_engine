@@ -49,18 +49,29 @@ Sound *ResourceController::getSoundByPath(std::string path)
     return nullptr;
 }
 
-Font *ResourceController::addFont(std::string path, int size)
+ResourceFont *ResourceController::addFont(int size)
 {
-    Font *font = getFontByPath(path, size);
+    ResourceFont *font = getFontByPath(std::string("default"), size);
     if (!font)
     {
-        font = new Font(path, size);
+        font = new ResourceFont("default", size);
         fonts.push_back(font);
     }
     return font;
 }
 
-Font *ResourceController::getFontByPath(std::string path, int size)
+ResourceFont *ResourceController::addFont(std::string path, int size)
+{
+    ResourceFont *font = getFontByPath(path, size);
+    if (!font)
+    {
+        font = new ResourceFont(path, size);
+        fonts.push_back(font);
+    }
+    return font;
+}
+
+ResourceFont *ResourceController::getFontByPath(std::string path, int size)
 {
     for (auto it = fonts.begin(); it != fonts.end(); ++it)
     {

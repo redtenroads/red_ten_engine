@@ -70,7 +70,7 @@ void ComponentText::setAnchor(Vector2 &anchor)
     mAnchor = glm::translate(Matrix4(1.0f), Vector3(-anchor.x, -anchor.y, 0.0f));
 }
 
-void ComponentText::setFont(Font *font)
+void ComponentText::setFont(ResourceFont *font)
 {
     if (this->font != font)
     {

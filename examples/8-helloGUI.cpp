@@ -74,7 +74,7 @@ public:
         textSprite->setColor(170, 170, 170);
     }
 
-    static Font *font;
+    static ResourceFont *font;
 
 protected:
     float counter;
@@ -82,7 +82,7 @@ protected:
     static int index;
     int color = 170;
 };
-Font *GUIButton::font = nullptr;
+ResourceFont *GUIButton::font = nullptr;
 int GUIButton::index = 0;
 
 // Btw, Jojo belongs to it's owner and has no relation to Red Ten Roads
@@ -182,9 +182,10 @@ int main()
     CratePlate::crateTexture = resourceController->addTexture("./data/crate.jpg");
     CratePlate::plateTexture = resourceController->addTexture("./data/plate.png");
 
-    // To create texts we first need to load font
-    auto font = resourceController->addFont("./data/BebasNeue-Regular.ttf", 72);
-    GUIButton::font = resourceController->addFont("./data/BebasNeue-Regular.ttf", 48);
+    // To create texts we first need to setup font
+    // You can both load TTF font from file or use internal TTF font
+    auto font = resourceController->addFont(72);
+    GUIButton::font = resourceController->addFont(48);
 
     // Just a background for better look
     auto backgroundActor = layerActors->createActor<Actor>();

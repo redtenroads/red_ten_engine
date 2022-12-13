@@ -7,7 +7,7 @@
 #include "common/withLogger.h"
 #include "component/component.h"
 #include "resource/texture.h"
-#include "resource/font.h"
+#include "resource/resourceFont.h"
 
 class ComponentText : public Component, WithLogger
 {
@@ -23,7 +23,7 @@ public:
     EXPORT void setAnchor(float x, float y);
     EXPORT void setAnchor(Vector2 &anchor);
 
-    EXPORT void setFont(Font *font);
+    EXPORT void setFont(ResourceFont *font);
     EXPORT void setColor(unsigned char r, unsigned char g, unsigned char b);
     EXPORT void setText(std::string string);
     EXPORT std::string getText();
@@ -41,7 +41,7 @@ protected:
     float opacity = 1.0f;
     unsigned int textureID = 0;
     Matrix4 mAnchor;
-    Font *font = nullptr;
+    ResourceFont *font = nullptr;
 
     int textTextureWidth = 0, textTextureHeight = 0;
 };

@@ -25,7 +25,7 @@ OBJ_FILES = ${OBJDIR}/rtengine.o ${OBJDIR}/view.o ${OBJDIR}/viewController.o ${O
 			${OBJDIR}/transformation.o ${OBJDIR}/inputController.o ${OBJDIR}/logController.o ${OBJDIR}/configController.o \
 			${OBJDIR}/physicsEntity.o ${OBJDIR}/physicsEntityBox.o ${OBJDIR}/physicsEntitySphere.o ${OBJDIR}/physicsEntityGeometry.o \
 			${OBJDIR}/actor.o  ${OBJDIR}/actorPawn.o ${OBJDIR}/actorGUIElement.o \
-			${OBJDIR}/sound.o ${OBJDIR}/texture.o ${OBJDIR}/font.o ${OBJDIR}/resourceMesh.o \
+			${OBJDIR}/sound.o ${OBJDIR}/texture.o ${OBJDIR}/resourceFont.o ${OBJDIR}/resourceMesh.o \
 			${OBJDIR}/component.o ${OBJDIR}/componentSprite.o ${OBJDIR}/componentSoundPlayer.o \
 			${OBJDIR}/componentText.o ${OBJDIR}/componentLight.o \
 			${OBJDIR}/componentMesh.o ${OBJDIR}/meshDescriptor.o ${OBJDIR}/renderer.o \
@@ -33,7 +33,7 @@ OBJ_FILES = ${OBJDIR}/rtengine.o ${OBJDIR}/view.o ${OBJDIR}/viewController.o ${O
 			${OBJDIR}/destroyable.o ${OBJDIR}/commonShaders.o ${OBJDIR}/utils.o \
 			${OBJDIR}/phongShader.o ${OBJDIR}/rawShader.o ${OBJDIR}/shader.o ${OBJDIR}/lightningShader.o \
 			${OBJDIR}/withLogger.o ${OBJDIR}/soundPlayer.o ${OBJDIR}/childProcess.o \
-			${OBJDIR}/config.o ${OBJDIR}/mesh.o ${OBJDIR}/geometry.o
+			${OBJDIR}/config.o ${OBJDIR}/mesh.o ${OBJDIR}/geometry.o ${OBJDIR}/dm_sans.o
 
 EXAMPLES = 	${BINDIR}/1-helloWorld.exe ${BINDIR}/2-helloActors.exe ${BINDIR}/3-helloPhysics.exe ${BINDIR}/4-helloSorting.exe \
 			${BINDIR}/5-helloInput.exe ${BINDIR}/6-helloBytemap.exe ${BINDIR}/7-helloSound.exe ${BINDIR}/8-helloGUI.exe \
@@ -90,8 +90,8 @@ ${OBJDIR}/texture.o: ${SRCDIR}/resource/texture.cpp
 ${OBJDIR}/sound.o: ${SRCDIR}/resource/sound.cpp
 	$(CC) $(CFLAGS) -o ${OBJDIR}/sound.o ${SRCDIR}/resource/sound.cpp
 
-${OBJDIR}/font.o: ${SRCDIR}/resource/font.cpp
-	$(CC) $(CFLAGS) -o ${OBJDIR}/font.o ${SRCDIR}/resource/font.cpp
+${OBJDIR}/resourceFont.o: ${SRCDIR}/resource/resourceFont.cpp
+	$(CC) $(CFLAGS) -o ${OBJDIR}/resourceFont.o ${SRCDIR}/resource/resourceFont.cpp
 
 ${OBJDIR}/resourceMesh.o: ${SRCDIR}/resource/resourceMesh.cpp
 	$(CC) $(CFLAGS) -o ${OBJDIR}/resourceMesh.o ${SRCDIR}/resource/resourceMesh.cpp
@@ -219,8 +219,12 @@ ${OBJDIR}/shader.o: ${SRCDIR}/shaders/shader.cpp
 ${OBJDIR}/glew.o: ${SRCDIR}/opengl/glew.c
 	$(CC) $(CFLAGS) -o ${OBJDIR}/glew.o ${SRCDIR}/opengl/glew.c
 
+${OBJDIR}/dm_sans.o: ${SRCDIR}/static/dm_sans.cpp
+	$(CC) $(CFLAGS) -o ${OBJDIR}/dm_sans.o ${SRCDIR}/static/dm_sans.cpp
+
 $(BINDIR)/$(TARGET).dll: ${OBJ_FILES}
 	$(LD) ${LFLAGS} ${LIBRARIES} ${OBJ_FILES} -o $(BINDIR)/$(TARGET).dll
+
 
 examples: ${EXAMPLES} engine
 ${OBJDIR}/1-helloWorld.o: ${EXMDIR}/1-helloWorld.cpp

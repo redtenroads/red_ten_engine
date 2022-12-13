@@ -92,7 +92,7 @@ public:
         textSprite->setColor(170, 170, 170);
     }
 
-    static Font *font;
+    static ResourceFont *font;
 
 protected:
     float counter;
@@ -100,7 +100,7 @@ protected:
     static int index;
     int color = 170;
 };
-Font *GUIButton::font = nullptr;
+ResourceFont *GUIButton::font = nullptr;
 int GUIButton::index = 0;
 
 class CratePlate : public Actor
