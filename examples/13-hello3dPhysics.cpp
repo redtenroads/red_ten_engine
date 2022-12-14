@@ -101,8 +101,8 @@ int main()
 
     auto camera = layerActors->createActor<CameraPerspective>();
     camera->setWidthBasedResolution(1280);
-    camera->transform.setPosition(2.0f, 8.0f, 8.0f);
-    camera->lookAt(0.0f, -1.0f, 0.0f);
+    camera->transform.setPosition(2.0f, 7.0f, 8.0f);
+    camera->lookAt(0.0f, -2.0f, 0.0f);
 
     // This factory is able to produce actors we need
     ActorFactory *actorFactory = new ActorFactory(engine->getResourceController(), layerActors);
@@ -111,7 +111,7 @@ int main()
     // Sun with shadow casting
     auto sun = layerActors->createActor<Actor>();
     auto sunComponent = sun->createComponent<ComponentLight>();
-    sunComponent->setupSunLight(Vector3(-1.0f, 1.0f, 1.0f), Vector3(0.9f, 0.9f, 0.9f), true);
+    sunComponent->setupSunLight(Vector3(-1.0f, 2.0f, 1.0f), Vector3(0.9f, 0.9f, 0.9f), true);
 
     float spawnCounter = 5.0f;
 

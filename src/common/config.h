@@ -62,5 +62,5 @@ protected:
     std::string videoDevice = "";
     std::string audioDevice = "";
 
-    RenderQuality shadowQuality = RenderQuality::Balanced;
+    RenderQuality shadowQuality = RenderQuality::High;
 };

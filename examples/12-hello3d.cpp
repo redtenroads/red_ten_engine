@@ -224,7 +224,7 @@ int main()
         camera->lookAt(0.0f, 0.0f, 0.0f);
 
         float effectiveLight = fmaxf(sinf(sunRotation), 0.0f);
-        layerActors->setAmbientColor(0.05f + effectiveLight * 0.1f, 0.05f + effectiveLight * 0.1f, 0.09f + effectiveLight * 0.1f);
+        layerActors->setAmbientColor(0.05f + effectiveLight * 0.4f, 0.05f + effectiveLight * 0.4f, 0.09f + effectiveLight * 0.4f);
         sunComponent->setupSunLight(
             Vector3(cosf(sunRotation) + 0.5f, sinf(sunRotation), cosf(sunRotation)),
             Vector3(0.7f + (1.0f - effectiveLight) * 0.4f, 0.7f, 0.7f) * effectiveLight,
