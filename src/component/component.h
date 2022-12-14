@@ -31,8 +31,12 @@ public:
 
     EXPORT PhysicsEntitySphere *addPhysics2dCircle(float radius);
     EXPORT PhysicsEntitySphere *addPhysics2dCircle(float radius, float px, float py, float pz);
+    EXPORT PhysicsEntitySphere *addPhysicsSphere(float radius);
+    EXPORT PhysicsEntitySphere *addPhysicsSphere(float radius, float px, float py, float pz);
     EXPORT PhysicsEntityBox *addPhysics2dBox(float width, float height);
     EXPORT PhysicsEntityBox *addPhysics2dBox(float width, float height, float px, float py, float pz);
+    EXPORT PhysicsEntityBox *addPhysics3dBox(float width, float height, float depth);
+    EXPORT PhysicsEntityBox *addPhysics3dBox(float width, float height, float depth, float px, float py, float pz);
     
     EXPORT PhysicsEntityGeometry *addPhysicsGeometry(Geometry *geometry);
 

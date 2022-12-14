@@ -76,6 +76,18 @@ PhysicsEntitySphere *Component::addPhysics2dCircle(float radius, float px, float
     return newPhysicsEntity;
 }
 
+PhysicsEntitySphere *Component::addPhysicsSphere(float radius)
+{
+    return addPhysicsSphere(radius, 0, 0, 0);
+}
+
+PhysicsEntitySphere *Component::addPhysicsSphere(float radius, float px, float py, float pz)
+{
+    auto newPhysicsEntity = new PhysicsEntitySphere(radius * SIZE_MULTIPLIER, px, py, pz);
+    physicsEntities.push_back(newPhysicsEntity);
+    return newPhysicsEntity;
+}
+
 PhysicsEntityBox *Component::addPhysics2dBox(float width, float height)
 {
     return addPhysics2dBox(width, height, 0, 0, 0);
@@ -88,9 +100,20 @@ PhysicsEntityBox *Component::addPhysics2dBox(float width, float height, float px
     return newPhysicsEntity;
 }
 
+PhysicsEntityBox *Component::addPhysics3dBox(float width, float height, float depth)
+{
+    return addPhysics3dBox(width, height, depth, 0, 0, 0);
+}
 
-    
-PhysicsEntityGeometry *Component::addPhysicsGeometry(Geometry *geometry){
+PhysicsEntityBox *Component::addPhysics3dBox(float width, float height, float depth, float px, float py, float pz)
+{
+    auto newPhysicsEntity = new PhysicsEntityBox(width * SIZE_MULTIPLIER, height * SIZE_MULTIPLIER, depth * SIZE_MULTIPLIER, px, py, pz);
+    physicsEntities.push_back(newPhysicsEntity);
+    return newPhysicsEntity;
+}
+
+PhysicsEntityGeometry *Component::addPhysicsGeometry(Geometry *geometry)
+{
     auto newPhysicsEntity = new PhysicsEntityGeometry(geometry);
     physicsEntities.push_back(newPhysicsEntity);
     return newPhysicsEntity;

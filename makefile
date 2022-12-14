@@ -37,7 +37,8 @@ OBJ_FILES = ${OBJDIR}/rtengine.o ${OBJDIR}/view.o ${OBJDIR}/viewController.o ${O
 
 EXAMPLES = 	${BINDIR}/1-helloWorld.exe ${BINDIR}/2-helloActors.exe ${BINDIR}/3-helloPhysics.exe ${BINDIR}/4-helloSorting.exe \
 			${BINDIR}/5-helloInput.exe ${BINDIR}/6-helloBytemap.exe ${BINDIR}/7-helloSound.exe ${BINDIR}/8-helloGUI.exe \
-			${BINDIR}/9-helloEffects.exe ${BINDIR}/10-helloAnimation.exe ${BINDIR}/11-helloMusic.exe ${BINDIR}/12-hello3d.exe
+			${BINDIR}/9-helloEffects.exe ${BINDIR}/10-helloAnimation.exe ${BINDIR}/11-helloMusic.exe ${BINDIR}/12-hello3d.exe \
+			${BINDIR}/13-hello3dPhysics.exe
 
 all: engine examples
 
@@ -299,6 +300,11 @@ ${OBJDIR}/12-hello3d.o: ${EXMDIR}/12-hello3d.cpp
 ${BINDIR}/12-hello3d.exe: ${OBJDIR}/12-hello3d.o
 	$(LD) -Wl ${OBJDIR}/12-hello3d.o -o ${BINDIR}/12-hello3d.exe
 
+${OBJDIR}/13-hello3dPhysics.o: ${EXMDIR}/13-hello3dPhysics.cpp
+	$(CC) $(CFLAGS) -o ${OBJDIR}/13-hello3dPhysics.o ${EXMDIR}/13-hello3dPhysics.cpp
+
+${BINDIR}/13-hello3dPhysics.exe: ${OBJDIR}/13-hello3dPhysics.o
+	$(LD) -Wl ${OBJDIR}/13-hello3dPhysics.o -o ${BINDIR}/13-hello3dPhysics.exe
 
 # llvm-objcopy
 clean:

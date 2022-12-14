@@ -6,7 +6,7 @@
 #include "controller/physicsController.h"
 #include "math/math.h"
 
-#define SIZE_MULTIPLIER 0.02f
+#define SIZE_MULTIPLIER 0.5f
 
 enum class MotionType : unsigned char
 {

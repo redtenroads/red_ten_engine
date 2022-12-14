@@ -132,20 +132,17 @@ void Transformation::update()
     {
         mModel *= glm::scale(Matrix4(1.0f), Vector3(scale.x, scale.y, scale.z));
     }
-
+    if (rotation.z != 0.0f)
+    {
+        mModel *= glm::rotate(Matrix4(1.0f), rotation.z, glm::vec3(0, 0, 1.0f));
+    }
     if (rotation.y != 0.0f)
     {
         mModel *= glm::rotate(Matrix4(1.0f), rotation.y, glm::vec3(0, 1.0f, 0));
     }
-
     if (rotation.x != 0.0f)
     {
         mModel *= glm::rotate(Matrix4(1.0f), rotation.x, glm::vec3(1.0f, 0, 0));
-    }
-
-    if (rotation.z != 0.0f)
-    {
-        mModel *= glm::rotate(Matrix4(1.0f), rotation.z, glm::vec3(0, 0, 1.0f));
     }
 }
 

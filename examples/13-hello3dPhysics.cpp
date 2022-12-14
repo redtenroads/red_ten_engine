@@ -5,6 +5,72 @@
 #include <math.h>
 #pragma comment(lib, "bin/rtengine.lib")
 
+class ActorFactory
+{
+public:
+    ActorFactory(ResourceController *resourceController, LayerActors *layer)
+    {
+        this->layer = layer;
+        sphereMesh = resourceController->addMesh("./data/3d/concrete_ball.fbx");
+        platformMesh = resourceController->addMesh("./data/3d/platform.fbx");
+
+        auto sphereAlbedoTexture = resourceController->addTexture("./data/3d/concrete_ball_albedo.jpg");
+        auto sphereNormalTexture = resourceController->addTexture("./data/3d/concrete_ball_normal.jpg");
+
+        auto platformAlbedoTexture = resourceController->addTexture("./data/3d/platform_albedo.jpg");
+
+        sphereShader = new PhongShader();
+        sphereShader->setTexture(TextureType::Albedo, sphereAlbedoTexture);
+        sphereShader->setTexture(TextureType::Normal, sphereNormalTexture);
+
+        platformShader = new PhongShader();
+        platformShader->setTexture(TextureType::Albedo, platformAlbedoTexture);
+    }
+
+    Actor *spawnSphere(float x, float y, float z)
+    {
+        Actor *sphere = layer->createActor<Actor>();
+
+        auto sphereComponent = sphere->createComponent<ComponentMesh>();
+        sphereComponent->setMesh(sphereMesh);
+        sphereComponent->setShader(sphereShader);
+        sphereComponent->addPhysicsSphere(0.4f);
+
+        sphere->setFrictionAndRestitution(0.8f, 0.1f);
+        sphere->setPhysicsMotionType(MotionType::Dynamic);
+        sphere->transform.setPosition(x, y, z);
+
+        sphere->updatePhysics();
+
+        return sphere;
+    }
+
+    Actor *spawnPlatform(float x, float y, float z)
+    {
+        Actor *platform = layer->createActor<Actor>();
+
+        auto platformComponent = platform->createComponent<ComponentMesh>();
+        platformComponent->setMesh(platformMesh);
+        platformComponent->setShader(platformShader);
+        platformComponent->addPhysics3dBox(8.0f, 0.2f, 8.0f);
+
+        platform->setFrictionAndRestitution(0.6f, 0.1f);
+        platform->setPhysicsMotionType(MotionType::Static);
+        platform->transform.setPosition(x, y, z);
+
+        platform->updatePhysics();
+
+        return platform;
+    }
+
+protected:
+    LayerActors *layer = nullptr;
+    PhongShader *sphereShader = nullptr;
+    PhongShader *platformShader = nullptr;
+    Mesh *sphereMesh = nullptr;
+    Mesh *platformMesh = nullptr;
+};
+
 int main()
 {
     // Engine setup
@@ -29,46 +95,37 @@ int main()
     auto stage = stageController->createStage("Hello 3D Physics");
 
     // Layers and camera setup
+    // Also enabling physics for the layer
     auto layerActors = stage->createLayerActors("Hello 3D Layer", 0);
+    layerActors->enablePhisics(Vector3(0.0f, -5.0f, 0.0f));
 
     auto camera = layerActors->createActor<CameraPerspective>();
     camera->setWidthBasedResolution(1280);
-    camera->transform.setPosition(6.0f, 6.0f, 6.0f);
-    camera->lookAt(0.0f, 0.0f, 0.0f);
+    camera->transform.setPosition(2.0f, 8.0f, 8.0f);
+    camera->lookAt(0.0f, -1.0f, 0.0f);
 
-    // Resources
-    auto resourceController = engine->getResourceController();
-    auto concreteAlbedoTexture = resourceController->addTexture("./data/3d/concrete_albedo.jpg");
-    auto concreteNormalTexture = resourceController->addTexture("./data/3d/concrete_normal.jpg");
-
-    // our floor
-    auto plainMesh = new Mesh();
-    const float array[] = {-1, 0, -1, 0, 1, 0, 0, 0,
-                           -1, 0, 1, 0, 1, 0, 0, 3,
-                           1, 0, -1, 0, 1, 0, 3, 0,
-                           1, 0, -1, 0, 1, 0, 3, 0,
-                           -1, 0, 1, 0, 1, 0, 0, 3,
-                           1, 0, 1, 0, 1, 0, 3, 3};
-
-    // 3 - position, 3 - normal, 2 - UV
-    int attributeSizes[3] = {3, 3, 2};
-    plainMesh->setupFloatsArray(array, 6, 3, attributeSizes);
+    // This factory is able to produce actors we need
+    ActorFactory *actorFactory = new ActorFactory(engine->getResourceController(), layerActors);
+    actorFactory->spawnPlatform(0.0f, 0.0f, 0.0f);
 
     // Sun with shadow casting
     auto sun = layerActors->createActor<Actor>();
     auto sunComponent = sun->createComponent<ComponentLight>();
-    sunComponent->setupSunLight(Vector3(-1.0f, 1.0f, -0.5f), Vector3(0.9f, 0.9f, 0.9f), true);
+    sunComponent->setupSunLight(Vector3(-1.0f, 1.0f, 1.0f), Vector3(0.9f, 0.9f, 0.9f), true);
 
-    float spawnCounter = 10.0f;
+    float spawnCounter = 5.0f;
 
     while (!engine->isTerminationIntended())
     {
         float delta = engine->syncFrame();
         viewController->processEvents();
 
-        while (spawnCounter > 1.0f){
-            spawnCounter--;
-            // Spawn new obstacle
+        spawnCounter += delta * 5.0f;
+        while (spawnCounter > 1.0f)
+        {
+            spawnCounter -= 1.0f;
+            // Spawn new sphere
+            actorFactory->spawnSphere(randf(-1.0f, 1.0f), randf(6.0f, 9.0f), randf(-1.0f, 1.0f));
         }
 
         stage->process(delta);
