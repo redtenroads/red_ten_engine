@@ -26,7 +26,7 @@ public:
 
 protected:
     bool bLoaded = false;
-    Geometry *geometry;
+    Geometry *geometry = nullptr;
 
     std::string meshPath;
 };

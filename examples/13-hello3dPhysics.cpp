@@ -52,7 +52,7 @@ public:
         auto platformComponent = platform->createComponent<ComponentMesh>();
         platformComponent->setMesh(platformMesh);
         platformComponent->setShader(platformShader);
-        platformComponent->addPhysics3dBox(8.0f, 0.2f, 8.0f);
+        platformComponent->addPhysicsGeometry(platformMesh->getGeometry());
 
         platform->setFrictionAndRestitution(0.6f, 0.1f);
         platform->setPhysicsMotionType(MotionType::Static);
@@ -67,8 +67,8 @@ protected:
     LayerActors *layer = nullptr;
     PhongShader *sphereShader = nullptr;
     PhongShader *platformShader = nullptr;
-    Mesh *sphereMesh = nullptr;
-    Mesh *platformMesh = nullptr;
+    ResourceMesh *sphereMesh = nullptr;
+    ResourceMesh *platformMesh = nullptr;
 };
 
 int main()

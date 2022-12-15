@@ -62,6 +62,12 @@ bool ResourceMesh::isPath(std::string meshPath)
     return this->meshPath == meshPath;
 }
 
+Geometry *ResourceMesh::getGeometry()
+{
+    reload();
+    return geometry;
+}
+
 void ResourceMesh::setupByArray8f(const float *data, int amount)
 {
     // calculating tangents and bitangents

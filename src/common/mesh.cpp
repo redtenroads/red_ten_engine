@@ -35,7 +35,7 @@ bool Mesh::isReady()
     return vao != 0;
 }
 
-void Mesh::setupFloatsArray(const float *data, int vertexAmount, int attributesAmount, int *attributeSize, bool buildTantents)
+void Mesh::setupFloatsArray(const float *data, int vertexAmount, int attributesAmount, int *attributeSize, bool buildTangents)
 {
     clear();
 
@@ -45,7 +45,7 @@ void Mesh::setupFloatsArray(const float *data, int vertexAmount, int attributesA
 
     this->vertexAmount = vertexAmount;
 
-    if (buildTantents)
+    if (buildTangents)
     {
         int newFloatsPerVertex = floatsPerVertex + 6;
         float *newData = (float *)malloc(newFloatsPerVertex * vertexAmount * sizeof(float));
@@ -75,7 +75,7 @@ void Mesh::setupFloatsArray(const float *data, int vertexAmount, int attributesA
         }
 
         int newAttributeAmount = attributesAmount + 2;
-        int *newAttributeSize = (int *)malloc(newAttributeAmount);
+        int *newAttributeSize = (int *)malloc(newAttributeAmount * sizeof(int));
         for (int i = 0; i < attributesAmount; i++)
         {
             newAttributeSize[i] = attributeSize[i];

@@ -16,7 +16,7 @@ public:
     EXPORT int getAttributesAmount();
     EXPORT bool isReady();
 
-    EXPORT void setupFloatsArray(const float *data, int vertexAmount, int attributesAmount, int *attributeSize, bool buildTantents = false);
+    EXPORT void setupFloatsArray(const float *data, int vertexAmount, int attributesAmount, int *attributeSize, bool buildTangents = false);
 
     EXPORT virtual void use();
     EXPORT virtual void clear();

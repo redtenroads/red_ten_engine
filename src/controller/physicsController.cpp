@@ -174,8 +174,8 @@ public:
         Actor *actor2 = (Actor *)inBody2.GetUserData();
         if (actor1 && actor2)
         {
-            auto point1 = inManifold.mWorldSpaceContactPointsOn1.begin();
-            auto point2 = inManifold.mWorldSpaceContactPointsOn2.begin();
+            auto point1 = inManifold.mRelativeContactPointsOn1.begin();
+            auto point2 = inManifold.mRelativeContactPointsOn2.begin();
 
             actor1->onCollide(actor2, Vector3(point1->GetX(), point1->GetY(), point1->GetZ()));
             actor2->onCollide(actor1, Vector3(point2->GetX(), point2->GetY(), point2->GetZ()));
@@ -188,8 +188,8 @@ public:
         Actor *actor2 = (Actor *)inBody2.GetUserData();
         if (actor1 && actor2)
         {
-            auto point1 = inManifold.mWorldSpaceContactPointsOn1.begin();
-            auto point2 = inManifold.mWorldSpaceContactPointsOn2.begin();
+            auto point1 = inManifold.mRelativeContactPointsOn1.begin();
+            auto point2 = inManifold.mRelativeContactPointsOn2.begin();
 
             actor1->onCollidePersisted(actor2, Vector3(point1->GetX(), point1->GetY(), point1->GetZ()));
             actor2->onCollidePersisted(actor1, Vector3(point2->GetX(), point2->GetY(), point2->GetZ()));

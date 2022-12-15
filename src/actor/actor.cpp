@@ -116,6 +116,7 @@ void Actor::updatePhysics()
             PhysicsSystem *physicsSystem = (PhysicsSystem *)system->system;
             BodyInterface &bodyInterface = physicsSystem->GetBodyInterface();
             StaticCompoundShapeSettings *compoundRoot = new StaticCompoundShapeSettings;
+            int shapesAdded = 0;
 
             for (auto component = components.begin(); component != components.end(); component++)
             {
@@ -127,9 +128,11 @@ void Actor::updatePhysics()
                     auto relativeRotation = transform->getRotation();
                     for (auto physicsEntitie = pEntities->begin(); physicsEntitie != pEntities->end(); physicsEntitie++)
                     {
-                        Shape *shape = (Shape *)(*physicsEntitie)->getShape(scale);
+                        ShapeSettings *shape = (ShapeSettings *)(*physicsEntitie)->getShape(scale);
+                        
                         if (shape)
                         {
+                            shapesAdded++;
                             compoundRoot->AddShape(
                                 Vec3(
                                     (relativePosition.x + (*physicsEntitie)->x) * SIZE_MULTIPLIER * scale.x,
@@ -142,6 +145,12 @@ void Actor::updatePhysics()
                 }
             }
 
+            if (shapesAdded == 0)
+            {
+                delete compoundRoot;
+                return;
+            }
+
             Body *body = bodyInterface.CreateBody(
                 BodyCreationSettings(compoundRoot,
                                      Vec3(position.x * SIZE_MULTIPLIER, position.y * SIZE_MULTIPLIER, position.z * SIZE_MULTIPLIER),
@@ -152,10 +161,8 @@ void Actor::updatePhysics()
             bodyInterface.AddBody(body->GetID(), EActivation::Activate);
             bodyInterface.SetRestitution(body->GetID(), restitution);
             bodyInterface.SetFriction(body->GetID(), friction);
-
             body->SetUserData((unsigned long long)this);
             processPhysicsContraints(body);
-
             physicsSystem->OptimizeBroadPhase();
             physicsRoot = body;
         }

@@ -44,5 +44,5 @@ float PhysicsEntitySphere::getRadius()
 
 const void *PhysicsEntitySphere::getShape(Vector3 scale)
 {
-    return new SphereShape(radius * scale.x); // why not
+    return new SphereShapeSettings(radius * scale.x); // why not
 }

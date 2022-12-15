@@ -56,5 +56,5 @@ Vector3 PhysicsEntityBox::getSize()
 
 const void *PhysicsEntityBox::getShape(Vector3 scale)
 {
-    return new BoxShape(Vec3(size.x / 2.0f * scale.x, size.y / 2.0f * scale.y, size.z / 2.0f * scale.z));
+    return new BoxShapeSettings(Vec3(size.x / 2.0f * scale.x, size.y / 2.0f * scale.y, size.z / 2.0f * scale.z));
 }
