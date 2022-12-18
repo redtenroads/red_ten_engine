@@ -197,6 +197,11 @@ void ViewController::processEvents()
             case SDL_JOYBUTTONUP:
                 inputController->provideInput(InputType::GAMEPAD_BUTTON, event.jbutton.which, event.jbutton.button, 0.0f);
                 break;
+
+            case SDL_MOUSEMOTION:
+                inputController->provideInput(InputType::MOUSE, -1, 0, event.motion.x);
+                inputController->provideInput(InputType::MOUSE, -1, 1, event.motion.y);
+                break;
             }
         }
     }

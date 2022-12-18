@@ -97,12 +97,12 @@ int main()
     // Layers and camera setup
     // Also enabling physics for the layer
     auto layerActors = stage->createLayerActors("Hello 3D Layer", 0);
-    layerActors->enablePhisics(Vector3(0.0f, -5.0f, 0.0f));
+    layerActors->enablePhisics(Vector3(0.0f, -4.0f, 0.0f));
 
     auto camera = layerActors->createActor<CameraPerspective>();
     camera->setWidthBasedResolution(1280);
     camera->transform.setPosition(2.0f, 7.0f, 8.0f);
-    camera->lookAt(0.0f, -2.0f, 0.0f);
+    camera->lookAt(0.0f, 0.0f, 0.0f);
 
     // This factory is able to produce actors we need
     ActorFactory *actorFactory = new ActorFactory(engine->getResourceController(), layerActors);

@@ -17,19 +17,29 @@ unsigned int PhongShader::tBlack = 0;
 unsigned int PhongShader::tGrey = 0;
 unsigned int PhongShader::tZeroNormal = 0;
 
+PhongShader::PhongShader()
+{
+    setShaderCode(gShaderVertexCode, gShaderFragmentCode, gShaderShadowVertexCode, gShaderShadowFragmentCode);
+}
+
+PhongShader::PhongShader(const char *vertexCode, const char *fragCode, const char *shadowVertexCode, const char *shadowFragCode)
+{
+    setShaderCode(vertexCode, fragCode, shadowVertexCode, shadowFragCode);
+}
+
 bool PhongShader::build()
 {
     unsigned int vertexShader = 0, fragmentShader = 0, shadowVertexShader = 0, shadowFragmentShader = 0;
-    if (!compile(GL_VERTEX_SHADER, gShaderVertexCode, &vertexShader))
+    if (!compile(GL_VERTEX_SHADER, vertexCode, &vertexShader))
         return false;
 
-    if (!compile(GL_FRAGMENT_SHADER, gShaderFragmentCode, &fragmentShader))
+    if (!compile(GL_FRAGMENT_SHADER, fragCode, &fragmentShader))
         return false;
 
-    if (!compile(GL_VERTEX_SHADER, gShaderShadowVertexCode, &shadowVertexShader))
+    if (!compile(GL_VERTEX_SHADER, shadowVertexCode, &shadowVertexShader))
         return false;
 
-    if (!compile(GL_FRAGMENT_SHADER, gShaderShadowFragmentCode, &shadowFragmentShader))
+    if (!compile(GL_FRAGMENT_SHADER, shadowFragCode, &shadowFragmentShader))
         return false;
 
     // Building usual pass programm
@@ -184,6 +194,14 @@ bool PhongShader::useShadow(Matrix4 mViewProjection, Matrix4 mModel)
         glUniformMatrix4fv(locShadowMTransform, 1, GL_FALSE, value_ptr(mModel));
 
     return true;
+}
+
+void PhongShader::setShaderCode(const char *vertexCode, const char *fragCode, const char *shadowVertexCode, const char *shadowFragCode)
+{
+    this->vertexCode = vertexCode;
+    this->fragCode = fragCode;
+    this->shadowVertexCode = shadowVertexCode;
+    this->shadowFragCode = shadowFragCode;
 }
 
 // Straight go shader

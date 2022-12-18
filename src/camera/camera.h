@@ -22,7 +22,9 @@ public:
     EXPORT virtual int getHeight();
     EXPORT virtual float getWidthViewProportion();
     EXPORT virtual float getHeightViewProportion();
-    
+
+    EXPORT virtual PointWithDirection screenToWorld(float x, float y);
+
     EXPORT void onProcess(float delta);
 
     EXPORT void setAsListenerCamera();

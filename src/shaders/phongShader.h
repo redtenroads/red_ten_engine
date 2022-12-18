@@ -16,12 +16,21 @@ enum TextureType
 class PhongShader : public Shader
 {
 public:
+    EXPORT PhongShader();
+    EXPORT PhongShader(const char *vertexCode, const char *fragCode, const char *shadowVertexCode, const char *shadowFragCode);
     EXPORT bool build();
     EXPORT void setTexture(TextureType type, Texture *texture);
     EXPORT bool use(Matrix4 mViewProjection, Matrix4 mModel);
     EXPORT bool useShadow(Matrix4 mViewProjection, Matrix4 mModel);
 
 protected:
+    void setShaderCode(const char *vertexCode, const char *fragCode, const char *shadowVertexCode, const char *shadowFragCode);
+
+    const char *vertexCode = nullptr;
+    const char *fragCode = nullptr;
+    const char *shadowVertexCode = nullptr;
+    const char *shadowFragCode = nullptr;
+
     unsigned int locMViewProjection = 0;
     unsigned int locMTransform = 0;
     unsigned int locMNormal = 0;

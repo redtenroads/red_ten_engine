@@ -22,9 +22,7 @@ enum class InputTypeMouse
     RIGHT_BUTTON = 3,
     BACK_BUTTON = 4,
     FRONT_BUTTON = 5,
-    WHEEL_AXIS = 6,
-    MOVE_HORIZONTAL = 7,
-    MOVE_VERTICAL = 8
+    WHEEL_AXIS = 6
 };
 
 struct Binding
@@ -65,10 +63,10 @@ public:
     {
         auto it = states.begin();
         while (it != states.end())
-            if (
-                (it->type == type || it->type == InputType::ANY) &&
-                (it->deviceIndex == deviceIndex || it->deviceIndex == -1) &&
-                (it->code == code || it->code == -1))
+            if (((it->type == type || it->type == InputType::ANY) &&
+                 (it->deviceIndex == deviceIndex || it->deviceIndex == -1) &&
+                 (it->code == code || it->code == -1)) ||
+                (it->type == InputType::MOUSE && type == InputType::MOUSE))
                 it = states.erase(it);
             else
                 ++it;
@@ -88,7 +86,6 @@ public:
             for (auto it = states.begin(); it != states.end(); it++)
                 if (fabsf(it->state) > fabsf(output))
                     output = it->state;
-                
 
         if (output != axisState)
             setOutputState(type, deviceIndex, code, output);

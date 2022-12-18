@@ -7,3 +7,9 @@ typedef glm::vec3 Vector3;
 typedef glm::vec2 Vector2;
 
 typedef glm::mat4x4 Matrix4;
+
+struct PointWithDirection
+{
+    Vector3 vPosition;
+    Vector3 vDirection;
+};

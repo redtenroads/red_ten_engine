@@ -13,7 +13,7 @@ public:
     {
         registerName("Ball");
         setPhysicsMotionType(MotionType::Dynamic);
-        transform.setScale(0.5f);
+        transform.setScale(0.1f);
         sprite = createComponent<ComponentSprite>();
         sprite->setTexture(ballTexture);
 
@@ -27,7 +27,7 @@ public:
     void onProcess(float delta)
     {
         // If entity fall too low under the screen destroy it
-        if (transform.getPosition().y < -500)
+        if (transform.getPosition().y < -300)
             destroy();
     }
 
@@ -46,7 +46,7 @@ public:
     {
         registerName("Crate");
         setPhysicsMotionType(MotionType::Dynamic);
-        transform.setScale(0.5f);
+        transform.setScale(0.1f);
         sprite = createComponent<ComponentSprite>();
         sprite->setTexture(crateTexture);
         sprite->addPhysics2dBox(256.0f, 256.0f);
@@ -55,7 +55,7 @@ public:
     }
     void onProcess(float delta)
     {
-        if (transform.getPosition().y < -500)
+        if (transform.getPosition().y < -300)
             destroy();
     }
 
@@ -74,7 +74,7 @@ public:
     {
         registerName("DoubleCrate");
         setPhysicsMotionType(MotionType::Dynamic);
-        transform.setScale(0.5f);
+        transform.setScale(0.1f);
         spriteLeft = createComponent<ComponentSprite>();
         spriteLeft->setTexture(crateTexture);
 
@@ -90,7 +90,7 @@ public:
     }
     void onProcess(float delta)
     {
-        if (transform.getPosition().y < -500)
+        if (transform.getPosition().y < -300)
             destroy();
     }
 
@@ -152,12 +152,12 @@ int main()
     // Layers and camera setup
     auto layerActors = stage->createLayerActors("Hello Physics", 0);
     auto camera = layerActors->createActor<CameraOrto>();
-    camera->setWidthBasedResolution(1280);
+    camera->setWidthBasedResolution(240);
 
     // We need to enable phisics on layer and provide gravity level.
     // That's enough to make physics work - layer will provide all nessary data to existing actors
     // All new actors will be created with initialized physics
-    layerActors->enablePhisics(Vector3(0.0f, -6.0f, 0.0f));
+    layerActors->enablePhisics(Vector3(0.0f, -20.0f, 0.0f));
 
     // Textures setup
     auto resourceController = engine->getResourceController();
@@ -168,20 +168,20 @@ int main()
 
     // Just a background for better look
     auto backgroundActor = layerActors->createActor<Actor>();
-    backgroundActor->transform.setScale(2.0f);
+    backgroundActor->transform.setScale(0.25f);
     auto backgroundActorSprite = backgroundActor->createComponent<ComponentSprite>();
     backgroundActorSprite->setTexture(background);
 
     // Here we make a static invisible walls. Actors can't have collision descriptions themselves,
     // So we need to create an empty sprite and put collisions on the component.
     Wall *bottomWall = layerActors->createActor<Wall>();
-    bottomWall->setup(0, -400.0f, 1280.0f, 60.0f);
+    bottomWall->setup(0, -80.0f, 320.0f, 20.0f);
 
     Wall *leftWall = layerActors->createActor<Wall>();
-    leftWall->setup(-640.0f, -300.0f, 60.0f, 200.0f);
+    leftWall->setup(-120.0f, -100.0f, 10.0f, 120.0f);
 
     Wall *rightWall = layerActors->createActor<Wall>();
-    rightWall->setup(640.0f, -300.0f, 60.0f, 200.0f);
+    rightWall->setup(120.0f, -100.0f, 10.0f, 120.0f);
 
     float counter = 1.0f;
     while (!engine->isTerminationIntended())
@@ -201,7 +201,7 @@ int main()
                 spawn = layerActors->createActor<DoubleCrate>();
 
             if (spawn)
-                spawn->transform.setPosition((float)(rand() % 600 - 300), 600.0f);
+                spawn->transform.setPosition((float)((rand() % 200) - 100), 200.0f);
         }
         viewController->processEvents();
         stage->process(delta);

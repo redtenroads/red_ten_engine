@@ -34,12 +34,7 @@ Matrix4 *Camera::getProjectionMatrix()
 
 Matrix4 *Camera::getViewMatrix()
 {
-    Vector3 position = transform.getPosition();
-    Vector3 rotation = transform.getRotation();
-
-    Vector3 lookPoint(position.x + sin(rotation.y), position.y + sin(rotation.x), position.z + cos(rotation.y));
-    
-    viewMatrix = glm::lookAt(lookPoint, position, Vector3(0.0f, 1.0f, 0.0f));
+    viewMatrix = glm::inverse(*transform.getModelMatrix());
     return &viewMatrix;
 }
 
@@ -61,6 +56,14 @@ float Camera::getWidthViewProportion()
 float Camera::getHeightViewProportion()
 {
     return 0;
+}
+
+PointWithDirection Camera::screenToWorld(float x, float y)
+{
+    PointWithDirection s;
+    s.vPosition = Vector3({0.0f, 0.0f, 0.0f});
+    s.vDirection = Vector3({0.0f, 0.0f, 0.0f});
+    return s;
 }
 
 void Camera::onProcess(float delta)

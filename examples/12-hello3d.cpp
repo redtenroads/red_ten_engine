@@ -218,8 +218,8 @@ int main()
         cameraRotation += delta * 0.3f;
         sunRotation += delta * 0.1f;
 
-        const float cameraDistance = 3.6f;
-        const float cameraHeight = 2.8f;
+        const float cameraDistance = 4.8f;
+        const float cameraHeight = 3.6f;
         camera->transform.setPosition(sinf(cameraRotation) * cameraDistance, cameraHeight, cosf(cameraRotation) * cameraDistance);
         camera->lookAt(0.0f, 0.0f, 0.0f);
 

@@ -24,8 +24,10 @@ public:
     EXPORT void setFarDistance(float farDistance);
     EXPORT void setNearDistance(float nearDistance);
     EXPORT void setFov(float fov);
+    
+    EXPORT PointWithDirection screenToWorld(float x, float y);
 
-    View *view;
+    View *view = nullptr;
 
 protected:
     Layer *layer;
@@ -34,4 +36,5 @@ protected:
     float farDistance = 5600.0f;
     float nearDistance = 1.0f;
     float fov = 45.0f;
+    float distance = 45.0f;
 };

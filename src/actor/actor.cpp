@@ -129,7 +129,7 @@ void Actor::updatePhysics()
                     for (auto physicsEntitie = pEntities->begin(); physicsEntitie != pEntities->end(); physicsEntitie++)
                     {
                         ShapeSettings *shape = (ShapeSettings *)(*physicsEntitie)->getShape(scale);
-                        
+
                         if (shape)
                         {
                             shapesAdded++;
@@ -311,7 +311,7 @@ void Actor::lookAt(Vector3 v)
     float len = sqrtf(dif.x * dif.x + dif.z * dif.z);
     float x = atan2(len, dif.y);
 
-    transform.setRotation(-JPH_PI / 2.0f + x, -y - JPH_PI / 2.0f, 0.0f);
+    transform.setRotation(JPH_PI / 2 - x, -y - JPH_PI / 2.0f, 0.0f);
 }
 
 void Actor::lookAt(float x, float y, float z)

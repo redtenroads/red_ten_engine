@@ -2,15 +2,16 @@
 // SPDX-License-Identifier: MIT
 
 #pragma once
+#include "common/utils.h"
 
 class Geometry
 {
 public:
-    Geometry(const float *data, int vertexAmount, int floatsPerVertex, int inVertexShiftToPosition = 0);
-    ~Geometry();
+    EXPORT Geometry(const float *data, int vertexAmount, int floatsPerVertex, int inVertexShiftToPosition = 0);
+    EXPORT ~Geometry();
 
-    const float *getData();
-    int getVertexAmount();
+    EXPORT const float *getData();
+    EXPORT int getVertexAmount();
 
 protected:
     float *geometry = nullptr;
