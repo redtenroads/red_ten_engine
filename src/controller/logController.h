@@ -10,11 +10,11 @@
 class LogController
 {
 public:
-    LogController(std::string filePath);
-    bool isReady();
-    void logf(const char *format, ...);
-    void logff(const char *format, ...);
-    void logConsole(const char *format, ...);
+    EXPORT LogController(std::string filePath);
+    EXPORT bool isReady();
+    EXPORT void logf(const char *format, ...);
+    EXPORT void logff(const char *format, ...);
+    EXPORT void logConsole(const char *format, ...);
 
 private:
     bool bReady = false;

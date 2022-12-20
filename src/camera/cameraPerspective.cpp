@@ -33,7 +33,7 @@ void CameraPerspective::finishRender()
 
 int CameraPerspective::getWidth()
 {
-    if (view)
+    if (view && view->getHeight() > 0 && view->getWidth() > 0)
     {
         float aspect = (float)view->getWidth() / (float)view->getHeight();
         return (int)(useWidthBasedProportion ? mainLine : mainLine * aspect);
@@ -43,7 +43,7 @@ int CameraPerspective::getWidth()
 
 int CameraPerspective::getHeight()
 {
-    if (view)
+    if (view && view->getHeight() > 0 && view->getWidth() > 0)
     {
         float aspect = (float)view->getWidth() / (float)view->getHeight();
         return (int)(useWidthBasedProportion ? mainLine / aspect : mainLine);

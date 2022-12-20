@@ -17,22 +17,22 @@ EXMDIR = examples
 OBJDIR = objects
 BINDIR = bin
  
-OBJ_FILES = ${OBJDIR}/rtengine.o ${OBJDIR}/view.o ${OBJDIR}/viewController.o ${OBJDIR}/layer.o ${OBJDIR}/glew.o \
-			${OBJDIR}/layerActors.o ${OBJDIR}/layerEffects.o  \
-			${OBJDIR}/stage.o ${OBJDIR}/stageController.o ${OBJDIR}/effect.o  \
+OBJ_FILES = ${OBJDIR}/rtengine.o ${OBJDIR}/view.o ${OBJDIR}/stage.o ${OBJDIR}/glew.o ${OBJDIR}/effect.o ${OBJDIR}/transformation.o \
+			${OBJDIR}/layer.o ${OBJDIR}/layerActors.o ${OBJDIR}/layerEffects.o  ${OBJDIR}/layerDebug.o  \
 			${OBJDIR}/camera.o ${OBJDIR}/cameraOrto.o ${OBJDIR}/cameraPerspective.o  \
+			${OBJDIR}/viewController.o ${OBJDIR}/stageController.o ${OBJDIR}/debugController.o  \
 			${OBJDIR}/physicsController.o ${OBJDIR}/soundController.o ${OBJDIR}/resourceController.o \
-			${OBJDIR}/transformation.o ${OBJDIR}/inputController.o ${OBJDIR}/logController.o ${OBJDIR}/configController.o \
+			${OBJDIR}/inputController.o ${OBJDIR}/logController.o ${OBJDIR}/configController.o \
 			${OBJDIR}/physicsEntity.o ${OBJDIR}/physicsEntityBox.o ${OBJDIR}/physicsEntitySphere.o ${OBJDIR}/physicsEntityGeometry.o \
 			${OBJDIR}/actor.o  ${OBJDIR}/actorPawn.o ${OBJDIR}/actorGUIElement.o \
 			${OBJDIR}/sound.o ${OBJDIR}/texture.o ${OBJDIR}/resourceFont.o ${OBJDIR}/resourceMesh.o \
 			${OBJDIR}/component.o ${OBJDIR}/componentSprite.o ${OBJDIR}/componentSoundPlayer.o \
-			${OBJDIR}/componentText.o ${OBJDIR}/componentLight.o \
+			${OBJDIR}/componentText.o ${OBJDIR}/componentLight.o ${OBJDIR}/color.o \
 			${OBJDIR}/componentMesh.o ${OBJDIR}/meshDescriptor.o ${OBJDIR}/renderer.o \
 			${OBJDIR}/stb_image.o ${OBJDIR}/fbx_loader.o ${OBJDIR}/stb_vorbis.o \
 			${OBJDIR}/destroyable.o ${OBJDIR}/commonShaders.o ${OBJDIR}/utils.o \
 			${OBJDIR}/phongShader.o ${OBJDIR}/rawShader.o ${OBJDIR}/shader.o ${OBJDIR}/lightningShader.o \
-			${OBJDIR}/withLogger.o ${OBJDIR}/soundPlayer.o ${OBJDIR}/childProcess.o \
+			${OBJDIR}/withLogger.o ${OBJDIR}/withDebug.o ${OBJDIR}/soundPlayer.o ${OBJDIR}/childProcess.o \
 			${OBJDIR}/config.o ${OBJDIR}/mesh.o ${OBJDIR}/geometry.o ${OBJDIR}/dm_sans.o
 
 EXAMPLES = 	${BINDIR}/1-helloWorld.exe ${BINDIR}/2-helloActors.exe ${BINDIR}/3-helloPhysics.exe ${BINDIR}/4-helloSorting.exe \
@@ -70,17 +70,23 @@ ${OBJDIR}/logController.o: ${SRCDIR}/controller/logController.cpp
 ${OBJDIR}/configController.o: ${SRCDIR}/controller/configController.cpp
 	$(CC) $(CFLAGS) -o ${OBJDIR}/configController.o ${SRCDIR}/controller/configController.cpp
 
+${OBJDIR}/debugController.o: ${SRCDIR}/controller/debugController.cpp
+	$(CC) $(CFLAGS) -o ${OBJDIR}/debugController.o ${SRCDIR}/controller/debugController.cpp
+
 ${OBJDIR}/view.o: ${SRCDIR}/os/view.cpp
 	$(CC) $(CFLAGS) -o ${OBJDIR}/view.o ${SRCDIR}/os/view.cpp
+
+${OBJDIR}/layer.o: ${SRCDIR}/stage/layer.cpp
+	$(CC) $(CFLAGS) -o ${OBJDIR}/layer.o ${SRCDIR}/stage/layer.cpp
 
 ${OBJDIR}/layerActors.o: ${SRCDIR}/stage/layerActors.cpp
 	$(CC) $(CFLAGS) -o ${OBJDIR}/layerActors.o ${SRCDIR}/stage/layerActors.cpp
 
 ${OBJDIR}/layerEffects.o: ${SRCDIR}/stage/layerEffects.cpp
 	$(CC) $(CFLAGS) -o ${OBJDIR}/layerEffects.o ${SRCDIR}/stage/layerEffects.cpp
-	
-${OBJDIR}/layer.o: ${SRCDIR}/stage/layer.cpp
-	$(CC) $(CFLAGS) -o ${OBJDIR}/layer.o ${SRCDIR}/stage/layer.cpp
+
+${OBJDIR}/layerDebug.o: ${SRCDIR}/stage/layerDebug.cpp
+	$(CC) $(CFLAGS) -o ${OBJDIR}/layerDebug.o ${SRCDIR}/stage/layerDebug.cpp
 
 ${OBJDIR}/stage.o: ${SRCDIR}/stage/stage.cpp
 	$(CC) $(CFLAGS) -o ${OBJDIR}/stage.o ${SRCDIR}/stage/stage.cpp
@@ -169,6 +175,9 @@ ${OBJDIR}/physicsEntityBox.o: ${SRCDIR}/physics/physicsEntityBox.cpp
 ${OBJDIR}/physicsEntity.o: ${SRCDIR}/physics/physicsEntity.cpp
 	$(CC) $(CFLAGS) -o ${OBJDIR}/physicsEntity.o ${SRCDIR}/physics/physicsEntity.cpp
 
+${OBJDIR}/color.o: ${SRCDIR}/common/color.cpp
+	$(CC) $(CFLAGS) -o ${OBJDIR}/color.o ${SRCDIR}/common/color.cpp
+
 ${OBJDIR}/utils.o: ${SRCDIR}/common/utils.cpp
 	$(CC) $(CFLAGS) -o ${OBJDIR}/utils.o ${SRCDIR}/common/utils.cpp
 
@@ -186,6 +195,9 @@ ${OBJDIR}/renderer.o: ${SRCDIR}/common/renderer.cpp
 
 ${OBJDIR}/withLogger.o: ${SRCDIR}/common/withLogger.cpp
 	$(CC) $(CFLAGS) -o ${OBJDIR}/withLogger.o ${SRCDIR}/common/withLogger.cpp
+
+${OBJDIR}/withDebug.o: ${SRCDIR}/common/withDebug.cpp
+	$(CC) $(CFLAGS) -o ${OBJDIR}/withDebug.o ${SRCDIR}/common/withDebug.cpp
 
 ${OBJDIR}/soundPlayer.o: ${SRCDIR}/common/soundPlayer.cpp
 	$(CC) $(CFLAGS) -o ${OBJDIR}/soundPlayer.o ${SRCDIR}/common/soundPlayer.cpp

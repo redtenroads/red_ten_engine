@@ -3,9 +3,14 @@
 
 #include "withLogger.h"
 
-LogController *WithLogger::logger = nullptr;
+LogController *WithLogger::logController = nullptr;
 
-void WithLogger::setLogController(LogController *newLogger)
+WithLogger::WithLogger()
 {
-    logger = newLogger;
+    this->logger = WithLogger::logController;
+}
+
+void WithLogger::setLogController(LogController *logController)
+{
+    WithLogger::logController = logController;
 }

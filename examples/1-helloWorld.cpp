@@ -22,7 +22,7 @@ int main()
     // Stage is where your game actores are presented
     auto stageController = engine->getStageController();
     auto stage = stageController->createStage("Hello World");
-    stage->setClearColor(0, 0, 0);
+    stage->setClearColor(Color(0.0f, 0.0f, 0.0f));
 
     // Layer with actors contain sprites and camera to view them
     // To make 2d games you should use ortographic camera that has no perspective distorsion

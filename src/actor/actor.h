@@ -5,6 +5,8 @@
 #include "actor/watchable.h"
 #include "common/utils.h"
 #include "common/destroyable.h"
+#include "common/withDebug.h"
+#include "common/withLogger.h"
 #include "math/math.h"
 #include "math/transformation.h"
 #include "component/component.h"
@@ -14,7 +16,7 @@
 #include <list>
 #include <vector>
 
-class Actor : public Watchable<Actor>, public Destroyable
+class Actor : public Watchable<Actor>, public Destroyable, public WithDebug, public WithLogger
 {
 public:
     EXPORT Actor();

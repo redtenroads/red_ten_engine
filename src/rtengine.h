@@ -4,6 +4,7 @@
 #pragma once
 #include "common/utils.h"
 #include "common/withLogger.h"
+#include "common/withDebug.h"
 #include "common/soundPlayer.h"
 #include "common/mesh.h"
 #include "resource/resourceMesh.h"
@@ -24,6 +25,7 @@
 #include "controller/soundController.h"
 #include "controller/logController.h"
 #include "controller/configController.h"
+#include "controller/debugController.h"
 #include "component/component.h"
 #include "component/componentSprite.h"
 #include "component/componentSoundPlayer.h"
@@ -51,6 +53,7 @@ protected:
     static SoundController *soundController;
     static LogController *logController;
     static ConfigController *configController;
+    static DebugController *debugController;
 
     static bool isSDLInitDone;
 
@@ -70,6 +73,7 @@ public:
     EXPORT static InputController *getInputController();
     EXPORT static LogController *getLogController();
     EXPORT static ConfigController *getConfigController();
+    EXPORT static DebugController *getDebugController();
 
     EXPORT void openUrl(const char *url);
 

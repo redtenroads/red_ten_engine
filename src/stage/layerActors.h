@@ -45,6 +45,8 @@ public:
     EXPORT void setProcessingEnabled(bool state) { bProcessingEnabled = state; }
     EXPORT bool isProcessingEnabled() { return bProcessingEnabled; }
 
+    EXPORT Camera *getActiveCamera() { return activeCamera; }
+
     EXPORT void setAmbientColor(float r, float g, float b)
     {
         ambientColor[0] = r;

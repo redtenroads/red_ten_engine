@@ -2,12 +2,12 @@
 // SPDX-License-Identifier: MIT
 
 #include "actor/actorGUIElement.h"
+#include "stage/layerActors.h"
 #include "math/math.h"
 #include <SDL.h>
 
 std::list<ActorGUIElement *> ActorGUIElement::selectives;
 std::list<int> ActorGUIElement::pressIDStack;
-Camera *ActorGUIElement::camera = nullptr;
 
 ActorGUIElement::ActorGUIElement()
 {
@@ -52,7 +52,12 @@ bool ActorGUIElement::isFocues()
 
 void ActorGUIElement::onProcess(float delta)
 {
-    if (!camera)
+    LayerActors *ownerLayer = (LayerActors *)layer;
+    if (!layer)
+        return;
+
+    Camera *camera = ownerLayer->getActiveCamera();
+    if (!camera || camera->getWidth() == 0 || camera->getHeight() == 0)
         return;
 
     int x, y;

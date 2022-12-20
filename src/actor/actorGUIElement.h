@@ -31,8 +31,6 @@ public:
     EXPORT static void clearPressIDStack();
     EXPORT static int getFirstPressID();
 
-    static Camera *camera;
-
 protected:
     void onPressCheck(InputType type, int deviceIndex, int index, bool state);
     void sortSelectives();

@@ -38,7 +38,7 @@ LightningShader *CommonShaders::omniShader = nullptr;
 
 void CommonShaders::build()
 {
-    logger->logff("compiling base meshes ...");
+    logController->logff("compiling base meshes ...");
 
     // 3 - position, 2 - UV
     int attributeSizes[2] = {3, 2};
@@ -48,43 +48,43 @@ void CommonShaders::build()
     screenMesh = new Mesh();
     screenMesh->setupFloatsArray(screenData, 4, 2, attributeSizes);
 
-    logger->logff("base meshes compiled\n");
+    logController->logff("base meshes compiled\n");
 
-    logger->logff("compiling shaders ...");
+    logController->logff("compiling shaders ...");
 
-    logger->logff("compiling sprite shader ...");
+    logController->logff("compiling sprite shader ...");
     spriteShader = new RawShader(spriteVertexShader, spriteFragmentShader);
     spriteShader->build();
 
-    logger->logff("compiling framed sprite shader ...");
+    logController->logff("compiling framed sprite shader ...");
     spriteFrameShader = new RawShader(spriteFramedVertexShader, spriteFragmentShader);
     spriteFrameShader->build();
 
-    logger->logff("compiling sun shader ...");
+    logController->logff("compiling sun shader ...");
     sunShader = new LightningShader(screenVertexShader, sunFragmentCode);
     sunShader->build();
 
-    logger->logff("compiling sun with shadow shader ...");
+    logController->logff("compiling sun with shadow shader ...");
     sunWithShadowShader = new LightningShader(screenVertexShader, sunWithShadowFragmentCode);
     sunWithShadowShader->build();
 
-    logger->logff("compiling omni shader ...");
+    logController->logff("compiling omni shader ...");
     omniShader = new LightningShader(screenVertexShader, omniFragmentCode);
     sunShader->build();
 
-    logger->logff("compiling screen shader ...");
+    logController->logff("compiling screen shader ...");
     screenShader = new RawShader(screenVertexShader, screenFragmentShader);
     screenShader->build();
 
-    logger->logff("compiling effect shader ...");
+    logController->logff("compiling effect shader ...");
     effectShader = new RawShader(screenVertexShader, spriteFragmentShader);
     effectShader->build();
 
-    logger->logff("compiling initial lightning shader ...");
+    logController->logff("compiling initial lightning shader ...");
     initialLightningShader = new RawShader(screenVertexShader, initialLightningFragmentCode);
     initialLightningShader->build();
 
-    logger->logff("shaders compiled\n");
+    logController->logff("shaders compiled\n");
 }
 
 Mesh *CommonShaders::getSpriteMesh()

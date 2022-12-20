@@ -120,7 +120,6 @@ void LayerActors::render(View *view)
 
     // G Buffer phase
     activeCamera->prepareToRender(view);
-    ActorGUIElement::camera = activeCamera;
 
     for (auto actor = actors.begin(); actor != actors.end(); ++actor)
     {

@@ -22,7 +22,9 @@ enum class InputTypeMouse
     RIGHT_BUTTON = 3,
     BACK_BUTTON = 4,
     FRONT_BUTTON = 5,
-    WHEEL_AXIS = 6
+    WHEEL_AXIS = 6,
+    MOVE_HORIZONTAL = 7,
+    MOVE_VERTICAL = 8
 };
 
 struct Binding
@@ -61,25 +63,31 @@ public:
 
     void provideInput(InputType type, int deviceIndex, int code, float value)
     {
-        auto it = states.begin();
-        while (it != states.end())
-            if (((it->type == type || it->type == InputType::ANY) &&
-                 (it->deviceIndex == deviceIndex || it->deviceIndex == -1) &&
-                 (it->code == code || it->code == -1)) ||
-                (it->type == InputType::MOUSE && type == InputType::MOUSE))
-                it = states.erase(it);
-            else
-                ++it;
+        if (states.size() > 0)
+        {
+            auto it = states.begin();
+            while (it != states.end())
+                if (((it->type == type || it->type == InputType::ANY) &&
+                     (it->deviceIndex == deviceIndex || it->deviceIndex == -1) &&
+                     (it->code == code || it->code == -1)) ||
+                    (it->type == InputType::MOUSE && type == InputType::MOUSE && (code == (int)InputTypeMouse::MOVE_HORIZONTAL || code == (int)InputTypeMouse::MOVE_VERTICAL)))
+                    it = states.erase(it);
+                else
+                    ++it;
+        }
 
         if (type == InputType::GAMEPAD_AXIS && fabsf(value) < deadZone)
             value = 0.0f;
 
-        for (auto it = bindings.begin(); it != bindings.end(); it++)
-            if (
-                (it->type == type || it->type == InputType::ANY) &&
-                (it->deviceIndex == deviceIndex || it->deviceIndex == -1) &&
-                (it->code == code || it->code == -1))
-                states.push_back(BindingState({type, deviceIndex, code, value * it->modifier}));
+        if (bindings.size() > 0)
+        {
+            for (auto it = bindings.begin(); it != bindings.end(); it++)
+                if (
+                    (it->type == type || it->type == InputType::ANY) &&
+                    (it->deviceIndex == deviceIndex || it->deviceIndex == -1) &&
+                    (it->code == code || it->code == -1))
+                    states.push_back(BindingState({type, deviceIndex, code, value * it->modifier}));
+        }
 
         float output = 0.0f;
         if (states.size() > 0)
@@ -87,7 +95,19 @@ public:
                 if (fabsf(it->state) > fabsf(output))
                     output = it->state;
 
-        if (output != axisState)
+        bool provided = false;
+        if (bindings.size() > 0)
+        {
+            for (auto it = bindings.begin(); it != bindings.end(); it++)
+                if ((*it).type == InputType::ANY)
+                {
+                    provided = true;
+                    setOutputState(type, deviceIndex, code, value * it->modifier);
+                    break;
+                }
+        }
+
+        if (!provided && output != axisState)
             setOutputState(type, deviceIndex, code, output);
     }
 

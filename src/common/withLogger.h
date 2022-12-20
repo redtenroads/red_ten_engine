@@ -7,8 +7,10 @@
 class WithLogger
 {
 public:
-    static void setLogController(LogController *newLogger);
+    WithLogger();
+    static void setLogController(LogController *logController);
 
 protected:
-    static LogController *logger;
+    LogController *logger;
+    static LogController *logController;
 };

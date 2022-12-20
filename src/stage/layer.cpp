@@ -19,6 +19,11 @@ void Layer::render(View *view)
 {
 }
 
+int Layer::getIndex()
+{
+    return index;
+}
+
 void Layer::setPhysicsController(PhysicsController *physicsController)
 {
     Layer::physicsController = physicsController;

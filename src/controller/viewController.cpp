@@ -199,8 +199,8 @@ void ViewController::processEvents()
                 break;
 
             case SDL_MOUSEMOTION:
-                inputController->provideInput(InputType::MOUSE, -1, 0, event.motion.x);
-                inputController->provideInput(InputType::MOUSE, -1, 1, event.motion.y);
+                inputController->provideInput(InputType::MOUSE, -1, (int)InputTypeMouse::MOVE_HORIZONTAL, event.motion.x);
+                inputController->provideInput(InputType::MOUSE, -1, (int)InputTypeMouse::MOVE_VERTICAL, event.motion.y);
                 break;
             }
         }

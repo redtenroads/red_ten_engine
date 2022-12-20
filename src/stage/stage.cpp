@@ -11,6 +11,10 @@
 Stage::Stage(std::string name)
 {
     this->name = name;
+
+    debugLayer = new LayerDebug(debugLayerIndex);
+    layers.push_back(debugLayer);
+    sortLayers();
 }
 
 LayerActors *Stage::createLayerActors(std::string name, int index)
@@ -40,7 +44,7 @@ void Stage::process(float delta)
 void Stage::present(View *view)
 {
     view->useFrameBuffer();
-    glClearColor(clearColor[0], clearColor[1], clearColor[2], 1.0f);
+    glClearColor(clearColor.r, clearColor.g, clearColor.b, 1.0f);
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
     Matrix4 m;
@@ -68,4 +72,6 @@ void Stage::present(View *view)
 
 void Stage::sortLayers()
 {
+    layers.sort([](Layer *layer1, Layer *layer2)
+                { return layer1->getIndex() < layer2->getIndex(); });
 }

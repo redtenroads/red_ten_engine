@@ -19,7 +19,8 @@ bool Config::loadConfig()
                 configPairs.push_back(pair);
         }
 
-        if (!feof(cfgFile)){
+        if (!feof(cfgFile))
+        {
             fclose(cfgFile);
             return false;
         }
@@ -73,7 +74,10 @@ bool Config::saveConfig()
         fclose(cfgFile);
         return true;
     }
-    logger->logff("Error %i happend on conf file open\n", err);
+    else if (err == 2)
+        logger->logff("Configuration file does not exist\n");
+    else
+        logger->logff("Error %i happend on conf file open\n", err);
     return false;
 }
 

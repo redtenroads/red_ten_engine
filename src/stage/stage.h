@@ -3,10 +3,13 @@
 
 #pragma once
 #include "common/utils.h"
+#include "common/color.h"
 #include "stage/layer.h"
 #include "stage/layerActors.h"
 #include "stage/layerEffects.h"
+#include "stage/layerDebug.h"
 #include "os/view.h"
+#include "controller/debugController.h"
 #include <list>
 
 class Stage
@@ -17,15 +20,17 @@ public:
     EXPORT LayerActors *createLayerActors(std::string name, int index);
     EXPORT LayerEffects *createLayerEffects(std::string name, int index);
 
+    EXPORT void updateDebugLayer();
+
     EXPORT void process(float delta);
     EXPORT void present(View *view);
 
-    EXPORT void setClearColor(float r, float g, float b)
+    EXPORT void setClearColor(Color color)
     {
-        clearColor[0] = r;
-        clearColor[1] = g;
-        clearColor[2] = b;
+        clearColor = color;
     }
+
+    const int debugLayerIndex = 9999;
 
 protected:
     void sortLayers();
@@ -34,5 +39,7 @@ protected:
     std::string name;
     std::list<Layer *> layers;
 
-    float clearColor[3] = {0.15f, 0.15f, 0.15f};
+    Color clearColor{0.15f, 0.15f, 0.15f};
+
+    LayerDebug *debugLayer;
 };

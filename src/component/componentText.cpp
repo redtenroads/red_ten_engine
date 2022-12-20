@@ -113,7 +113,7 @@ void ComponentText::rebuildString()
 
     if (font && font->getFont() && string.length() > 0)
     {
-        SDL_Color color = {r, g, b};
+        SDL_Color color = {b, g, r};
         SDL_Surface *surface = TTF_RenderUTF8_Blended((TTF_Font *)font->getFont(), string.c_str(), color);
 
         if (!surface)

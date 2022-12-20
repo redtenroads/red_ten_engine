@@ -39,21 +39,33 @@ void CameraOrto::finishRender()
 
 int CameraOrto::getWidth()
 {
-    float aspect = (float)view->getWidth() / (float)view->getHeight();
-    return (int)(useWidthBasedProportion ? mainLine : mainLine * aspect);
+    if (view && view->getHeight() > 0 && view->getWidth() > 0)
+    {
+        float aspect = (float)view->getWidth() / (float)view->getHeight();
+        return (int)(useWidthBasedProportion ? mainLine : mainLine * aspect);
+    }
+    return 0;
 }
 
 int CameraOrto::getHeight()
 {
-    float aspect = (float)view->getWidth() / (float)view->getHeight();
-    return (int)(useWidthBasedProportion ? mainLine / aspect : mainLine);
+    if (view && view->getHeight() && view->getWidth() > 0)
+    {
+        float aspect = (float)view->getWidth() / (float)view->getHeight();
+        return (int)(useWidthBasedProportion ? mainLine / aspect : mainLine);
+    }
+    return 0;
 }
 
 float CameraOrto::getWidthViewProportion()
 {
-    float aspect = (float)view->getWidth() / (float)view->getHeight();
-    float targetWidth = useWidthBasedProportion ? mainLine : mainLine * aspect;
-    return targetWidth / (float)view->getWidth();
+    if (view)
+    {
+        float aspect = (float)view->getWidth() / (float)view->getHeight();
+        float targetWidth = useWidthBasedProportion ? mainLine : mainLine * aspect;
+        return targetWidth / (float)view->getWidth();
+    }
+    return 0;
 }
 
 float CameraOrto::getHeightViewProportion()

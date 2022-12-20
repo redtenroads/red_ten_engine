@@ -3,6 +3,7 @@
 
 #include "rtengine.h"
 #include "common/commonShaders.h"
+#include "stage/layerDebug.h"
 #include <SDL.h>
 #include <SDL_ttf.h>
 #include <cmath>
@@ -20,6 +21,7 @@ InputController *RTEngine::inputController = nullptr;
 SoundController *RTEngine::soundController = nullptr;
 LogController *RTEngine::logController = nullptr;
 ConfigController *RTEngine::configController = nullptr;
+DebugController *RTEngine::debugController = nullptr;
 
 bool RTEngine::isSDLInitDone = false;
 
@@ -30,6 +32,12 @@ RTEngine::RTEngine(std::string configFilePath)
     {
         logController = new LogController("log.txt");
         WithLogger::setLogController(logController);
+    }
+    if (!debugController)
+    {
+        debugController = new DebugController();
+        LayerDebug::setDebugController(debugController);
+        WithDebug::setDebugController(debugController);
     }
     if (!configController)
     {
@@ -64,6 +72,7 @@ RTEngine::RTEngine(std::string configFilePath)
     {
         resourceController = new ResourceController();
         CommonShaders::resourceController = resourceController;
+        LayerDebug::setFont(resourceController->addFont(28));
     }
 
     if (!soundController)
@@ -130,6 +139,11 @@ ConfigController *RTEngine::getConfigController()
     return configController;
 }
 
+DebugController *RTEngine::getDebugController()
+{
+    return debugController;
+}
+
 void RTEngine::openUrl(const char *url)
 {
     SDL_OpenURL(url);
@@ -151,6 +165,7 @@ float RTEngine::syncFrame()
     }
 
     soundController->process(delta);
+    debugController->process(delta);
     return delta;
 }
 

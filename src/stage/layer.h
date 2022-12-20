@@ -19,5 +19,7 @@ public:
     virtual void process(float delta);
     virtual void render(View *view);
 
+    int getIndex();
+
     static void setPhysicsController(PhysicsController *physicsController);
 };

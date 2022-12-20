@@ -80,6 +80,9 @@ public:
 
     void all(InputType type, int deviceIndex, int index, float state)
     {
+        if (type == InputType::MOUSE && (index == (int)InputTypeMouse::MOVE_HORIZONTAL || index == (int)InputTypeMouse::MOVE_VERTICAL))
+            return;
+
         std::string str = "Input ";
         if (type == InputType::MOUSE)
             str += std::string("from mouse, ");
@@ -92,7 +95,8 @@ public:
 
         str += std::string("code: ") + std::to_string(index);
         str += std::string(", value: ") + std::to_string(state);
-        printf("%s\n", str.c_str());
+
+        debug->print(500, str);
     }
 
     static Texture *crateTexture;
