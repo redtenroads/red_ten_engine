@@ -74,9 +74,7 @@ bool Config::saveConfig()
         fclose(cfgFile);
         return true;
     }
-    else if (err == 2)
-        logger->logff("Configuration file does not exist\n");
-    else
+    else if (err != 2)
         logger->logff("Error %i happend on conf file open\n", err);
     return false;
 }
