@@ -278,41 +278,45 @@ void LayerActors::disableSorting()
     bUseSorting = false;
 }
 
-std::list<Actor *> LayerActors::castRayCollision(Vector3 v1, Vector3 v2, int channelId)
+RayCollision LayerActors::castSingleRayCollision(Vector3 v1, Vector3 v2, int channelId)
 {
-    std::list<Actor *> list;
     if (physicsSystem)
     {
         PhysicsSystem *pSystem = (PhysicsSystem *)physicsSystem->system;
-        const BroadPhaseQuery *mBroadPhase = &pSystem->GetBroadPhaseQuery();
+        const NarrowPhaseQuery *mNarrowPhase = &pSystem->GetNarrowPhaseQuery();
 
         // Create ray
-        RayCast ray{
+        RRayCast ray{
             Vec3(v1.x * SIZE_MULTIPLIER, v1.y * SIZE_MULTIPLIER, v1.z * SIZE_MULTIPLIER),
             Vec3(v2.x * SIZE_MULTIPLIER, v2.y * SIZE_MULTIPLIER, v2.z * SIZE_MULTIPLIER)};
 
+        RayCastSettings ray_settings;
+        ClosestHitCollisionCollector<CastRayCollector> collector;
+        IgnoreMultipleBodiesFilter body_filter;
+
         // Raycast before update
-        AllHitCollisionCollector<RayCastBodyCollector> ioCollector;
-        mBroadPhase->CastRay(ray, ioCollector);
-        if (ioCollector.mHits.size())
-            for (auto item = ioCollector.mHits.begin(); item != ioCollector.mHits.end(); ++item)
+        mNarrowPhase->CastRay(ray, ray_settings, collector, {}, {}, body_filter);
+
+        if (collector.HadHit())
+        {
+            BodyLockRead lock(pSystem->GetBodyLockInterface(), collector.mHit.mBodyID);
+            const Body &body = lock.GetBody();
+            Actor *actor = (Actor *)body.GetUserData();
+            if (actor && actor->hasCollisionChannel(channelId))
             {
-                BodyLockRead lock(pSystem->GetBodyLockInterface(), item->mBodyID);
-                const Body &body = lock.GetBody();
-                Actor *actor = (Actor *)body.GetUserData();
-                if (actor && actor->hasCollisionChannel(channelId))
-                {
-                    list.push_back((Actor *)body.GetUserData());
-                    lock.ReleaseLock();
-                }
+                auto v = ray.GetPointOnRay(collector.mHit.mFraction);
+                RayCollision collision({Vector3(v.GetX() / SIZE_MULTIPLIER, v.GetY() / SIZE_MULTIPLIER, v.GetZ() / SIZE_MULTIPLIER), (Actor *)body.GetUserData(), true});
+                lock.ReleaseLock();
+                return collision;
             }
+        }
     }
-    return list;
+    return RayCollision({Vector3(0), nullptr, false});
 }
 
-std::list<Actor *> LayerActors::castSphereCollision(Vector3 p, float radius, int channelId)
+std::list<RayCollision> LayerActors::castSphereCollision(Vector3 p, float radius, int channelId)
 {
-    std::list<Actor *> list;
+    std::list<RayCollision> list;
     if (physicsSystem && physicsSystem->system)
     {
         PhysicsSystem *pSystem = (PhysicsSystem *)physicsSystem->system;
@@ -337,8 +341,9 @@ std::list<Actor *> LayerActors::castSphereCollision(Vector3 p, float radius, int
                     Actor *actor = (Actor *)body.GetUserData();
                     if (actor && actor->hasCollisionChannel(channelId))
                     {
+                        RayCollision collision({p, (Actor *)body.GetUserData()});
                         if ((Actor *)body.GetUserData())
-                            list.push_back((Actor *)body.GetUserData());
+                            list.push_back(collision);
                         lock.ReleaseLock();
                     }
                 }
@@ -348,9 +353,9 @@ std::list<Actor *> LayerActors::castSphereCollision(Vector3 p, float radius, int
     return list;
 }
 
-std::list<Actor *> LayerActors::castPointCollision(Vector3 v1, int channelId)
+std::list<RayCollision> LayerActors::castPointCollision(Vector3 v1, int channelId)
 {
-    std::list<Actor *> list;
+    std::list<RayCollision> list;
     if (physicsSystem)
     {
         PhysicsSystem *pSystem = (PhysicsSystem *)physicsSystem->system;
@@ -368,7 +373,8 @@ std::list<Actor *> LayerActors::castPointCollision(Vector3 v1, int channelId)
                 Actor *actor = (Actor *)body.GetUserData();
                 if (actor && actor->hasCollisionChannel(channelId))
                 {
-                    list.push_back((Actor *)body.GetUserData());
+                    RayCollision collision({v1, (Actor *)body.GetUserData()});
+                    list.push_back(collision);
                     lock.ReleaseLock();
                 }
             }

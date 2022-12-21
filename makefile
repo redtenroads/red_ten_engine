@@ -38,7 +38,7 @@ OBJ_FILES = ${OBJDIR}/rtengine.o ${OBJDIR}/view.o ${OBJDIR}/stage.o ${OBJDIR}/gl
 EXAMPLES = 	${BINDIR}/1-helloWorld.exe ${BINDIR}/2-helloActors.exe ${BINDIR}/3-helloPhysics.exe ${BINDIR}/4-helloSorting.exe \
 			${BINDIR}/5-helloInput.exe ${BINDIR}/6-helloBytemap.exe ${BINDIR}/7-helloSound.exe ${BINDIR}/8-helloGUI.exe \
 			${BINDIR}/9-helloEffects.exe ${BINDIR}/10-helloAnimation.exe ${BINDIR}/11-helloMusic.exe ${BINDIR}/12-hello3d.exe \
-			${BINDIR}/13-hello3dPhysics.exe
+			${BINDIR}/13-hello3dPhysics.exe ${BINDIR}/14-helloMushrooms.exe
 
 all: engine examples
 
@@ -317,6 +317,13 @@ ${OBJDIR}/13-hello3dPhysics.o: ${EXMDIR}/13-hello3dPhysics.cpp
 
 ${BINDIR}/13-hello3dPhysics.exe: ${OBJDIR}/13-hello3dPhysics.o
 	$(LD) -Wl ${OBJDIR}/13-hello3dPhysics.o -o ${BINDIR}/13-hello3dPhysics.exe
+
+${OBJDIR}/14-helloMushrooms.o: ${EXMDIR}/14-helloMushrooms.cpp
+	$(CC) $(CFLAGS) -o ${OBJDIR}/14-helloMushrooms.o ${EXMDIR}/14-helloMushrooms.cpp
+
+${BINDIR}/14-helloMushrooms.exe: ${OBJDIR}/14-helloMushrooms.o
+	$(LD) -Wl ${OBJDIR}/14-helloMushrooms.o -o ${BINDIR}/14-helloMushrooms.exe
+
 
 # llvm-objcopy
 clean:

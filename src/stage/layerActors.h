@@ -11,6 +11,13 @@
 #include "math/math.h"
 #include <list>
 
+struct RayCollision
+{
+    Vector3 point;
+    Actor *actor;
+    bool hadHit;
+};
+
 class LayerActors : public Layer
 {
 public:
@@ -32,9 +39,9 @@ public:
     EXPORT void enableSorting();
     EXPORT void disableSorting();
 
-    EXPORT std::list<Actor *> castRayCollision(Vector3 v1, Vector3 v2, int channelId = 0);
-    EXPORT std::list<Actor *> castSphereCollision(Vector3 v1, float radius, int channelId = 0);
-    EXPORT std::list<Actor *> castPointCollision(Vector3 v1, int channelId = 0);
+    EXPORT RayCollision castSingleRayCollision(Vector3 v1, Vector3 v2, int channelId = 0);
+    EXPORT std::list<RayCollision> castSphereCollision(Vector3 v1, float radius, int channelId = 0);
+    EXPORT std::list<RayCollision> castPointCollision(Vector3 v1, int channelId = 0);
 
     EXPORT std::list<Actor *> *getActorsList();
     EXPORT void clear(bool destroyCameras = true);

@@ -28,7 +28,7 @@ public:
     EXPORT bool hasIndex(int index);
 
     const int defaultShowTimeMS = 3000;
-    const Color defaultColor{0.6f, 0.9f, 0.6f};
+    const Color defaultColor{0.5f, 0.9f, 0.5f};
 
     bool isVisible();
     void enableVisibility();
