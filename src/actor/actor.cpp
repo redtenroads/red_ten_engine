@@ -171,7 +171,7 @@ void Actor::updatePhysics()
 
 void Actor::preSyncPhysics()
 {
-    if (system && physicsRoot && mType != MotionType::Static && transform.isDirty())
+    if (system && physicsRoot && transform.isDirty())
     {
         PhysicsSystem *physicsSystem = (PhysicsSystem *)system->system;
         BodyInterface &bodyInterface = physicsSystem->GetBodyInterface();
@@ -401,7 +401,14 @@ bool Actor::isVisible()
 
 void Actor::setVisible(bool state)
 {
-    bIsVisible = state;
+    if (bIsVisible != state)
+    {
+        bIsVisible = state;
+        if (system && physicsRoot)
+        {
+            // disable
+        }
+    }
 }
 
 void Actor::assignCollisionChannel(int channelId)
