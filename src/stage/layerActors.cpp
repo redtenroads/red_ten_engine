@@ -57,7 +57,7 @@ void LayerActors::process(float delta)
 
     for (auto actor = actors.begin(); actor != actors.end(); ++actor)
     {
-        (*actor)->onProcess(delta);
+        (*actor)->process(delta);
         (*actor)->preSyncPhysics();
     }
 
@@ -241,12 +241,16 @@ void LayerActors::prepareNewActor(Actor *actor)
     actors.push_back(actor);
     actor->setCurrentLayer(this);
     actor->onSpawned();
-    actor->updatePhysics();
 
     if (!activeCamera && actor->implements("Camera"))
     {
         activeCamera = (Camera *)actor;
     }
+}
+
+void LayerActors::enableCollisions()
+{
+    enablePhisics(Vector3(0.0f, 0.0f, 0.0f));
 }
 
 void LayerActors::enablePhisics(Vector3 gravity)
@@ -257,10 +261,8 @@ void LayerActors::enablePhisics(Vector3 gravity)
         auto newPhysicsSystem = physicsController->createSystem(gravity, 20 * 1024 * 1024);
 
         for (auto actor = actors.begin(); actor != actors.end(); ++actor)
-        {
             (*actor)->providePhysicsSystem(newPhysicsSystem);
-            (*actor)->updatePhysics();
-        }
+
         this->physicsSystem = newPhysicsSystem;
     }
 }

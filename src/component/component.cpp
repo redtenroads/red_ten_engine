@@ -14,12 +14,13 @@ Component::~Component()
 {
 }
 
-void Component::prepare()
+void Component::process(float delta)
 {
 }
 
-void Component::process(float delta)
+void Component::prepare(Entity *owner)
 {
+    this->owner = owner;
 }
 
 void Component::render(Matrix4 &vpMatrix, Transformation *tf)
@@ -76,6 +77,9 @@ PhysicsEntitySphere *Component::addPhysics2dCircle(float radius)
 
 PhysicsEntitySphere *Component::addPhysics2dCircle(float radius, float px, float py, float pz)
 {
+    if (owner)
+        owner->childUpdated();
+
     auto newPhysicsEntity = new PhysicsEntitySphere(radius * SIZE_MULTIPLIER, px, py, pz);
     physicsEntities.push_back(newPhysicsEntity);
     return newPhysicsEntity;
@@ -88,14 +92,19 @@ PhysicsEntityBox *Component::addPhysics2dBox(float width, float height)
 
 PhysicsEntityBox *Component::addPhysics2dBox(float width, float height, float px, float py, float pz)
 {
+    if (owner)
+        owner->childUpdated();
+
     auto newPhysicsEntity = new PhysicsEntityBox(width * SIZE_MULTIPLIER, height * SIZE_MULTIPLIER, px, py, pz);
     physicsEntities.push_back(newPhysicsEntity);
     return newPhysicsEntity;
 }
 
+PhysicsEntityGeometry *Component::addPhysicsGeometry(Geometry *geometry)
+{
+    if (owner)
+        owner->childUpdated();
 
-    
-PhysicsEntityGeometry *Component::addPhysicsGeometry(Geometry *geometry){
     auto newPhysicsEntity = new PhysicsEntityGeometry(geometry);
     PhysicsEntity.push_back(newPhysicsEntity);
     return newPhysicsEntity;

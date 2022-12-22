@@ -62,6 +62,11 @@ void Actor::setPhysicsMotionType(MotionType mType)
     this->mType = mType;
 }
 
+void Actor::markPhysicsUpdateNeeded()
+{
+    bPhysicsNeedsToBeRebuild = true;
+}
+
 std::list<Actor *> *Actor::getLayerActorsList()
 {
     if (layer)
@@ -81,17 +86,23 @@ void Actor::removeComponents()
 void Actor::prepareNewComponent(Component *component)
 {
     this->components.push_back(component);
-    component->prepare();
+    component->prepare(this);
+    bPhysicsNeedsToBeRebuild = true;
 }
 
 void Actor::providePhysicsSystem(PhysicsDescriptor *system)
 {
     this->system = system;
+    bPhysicsNeedsToBeRebuild = true;
 }
 
 void Actor::setZAxisLocked(bool state)
 {
     bIsZAxisLocked = state;
+    if (state)
+    {
+        zLockedPosition = transform.getPosition().z;
+    }
 }
 
 void Actor::setZAxisRotationLocked(bool state)
@@ -99,72 +110,12 @@ void Actor::setZAxisRotationLocked(bool state)
     bIsZRotationLocked = state;
 }
 
-void Actor::updatePhysics()
-{
-    if (system && !physicsRoot && components.size() > 0)
-    {
-        int collisionsAmount = 0;
-        for (auto component = components.begin(); component != components.end(); component++)
-            collisionsAmount += (*component)->physicsEntities.size();
-
-        if (collisionsAmount > 0)
-        {
-            auto position = transform.getPosition();
-            auto rotation = transform.getRotation();
-            auto scale = transform.getScale();
-
-            PhysicsSystem *physicsSystem = (PhysicsSystem *)system->system;
-            BodyInterface &bodyInterface = physicsSystem->GetBodyInterface();
-            StaticCompoundShapeSettings *compoundRoot = new StaticCompoundShapeSettings;
-
-            for (auto component = components.begin(); component != components.end(); component++)
-            {
-                auto pEntities = &(*component)->physicsEntities;
-                if (pEntities->size() > 0)
-                {
-                    auto transform = &(*component)->transform;
-                    auto relativePosition = transform->getPosition();
-                    auto relativeRotation = transform->getRotation();
-                    for (auto physicsEntitie = pEntities->begin(); physicsEntitie != pEntities->end(); physicsEntitie++)
-                    {
-                        Shape *shape = (Shape *)(*physicsEntitie)->getShape(scale);
-                        if (shape)
-                        {
-                            compoundRoot->AddShape(
-                                Vec3(
-                                    (relativePosition.x + (*physicsEntitie)->x) * SIZE_MULTIPLIER * scale.x,
-                                    (relativePosition.y + (*physicsEntitie)->y) * SIZE_MULTIPLIER * scale.y,
-                                    (relativePosition.z + (*physicsEntitie)->z) * SIZE_MULTIPLIER * scale.z),
-                                Quat(relativeRotation.x, relativeRotation.y, relativeRotation.z, 1.0f),
-                                shape);
-                        }
-                    }
-                }
-            }
-
-            Body *body = bodyInterface.CreateBody(
-                BodyCreationSettings(compoundRoot,
-                                     Vec3(position.x * SIZE_MULTIPLIER, position.y * SIZE_MULTIPLIER, position.z * SIZE_MULTIPLIER),
-                                     Quat(rotation.x, rotation.y, rotation.z, 1.0f),
-                                     (EMotionType)mType,
-                                     physicsController->getMovingLayerId()));
-
-            bodyInterface.AddBody(body->GetID(), EActivation::Activate);
-            bodyInterface.SetRestitution(body->GetID(), restitution);
-            bodyInterface.SetFriction(body->GetID(), friction);
-
-            body->SetUserData((unsigned long long)this);
-            processPhysicsContraints(body);
-
-            physicsSystem->OptimizeBroadPhase();
-            physicsRoot = body;
-        }
-    }
-}
-
 void Actor::preSyncPhysics()
 {
-    if (system && physicsRoot && mType != MotionType::Static && transform.isDirty())
+    if (bPhysicsNeedsToBeRebuild)
+        updatePhysics();
+
+    if (system && physicsRoot && transform.isDirty())
     {
         PhysicsSystem *physicsSystem = (PhysicsSystem *)system->system;
         BodyInterface &bodyInterface = physicsSystem->GetBodyInterface();
@@ -174,9 +125,11 @@ void Actor::preSyncPhysics()
         auto rotation = transform.getRotation();
         bodyInterface.SetPositionAndRotation(
             rootId,
-            Vec3(position.x * SIZE_MULTIPLIER, position.y * SIZE_MULTIPLIER, position.z * SIZE_MULTIPLIER),
+            Vec3(position.x * SIZE_MULTIPLIER, position.y * SIZE_MULTIPLIER, (bIsZAxisLocked ? zLockedPosition : position.z) * SIZE_MULTIPLIER),
             Quat::sEulerAngles(Vec3(rotation.x, rotation.y, rotation.z)),
             EActivation::DontActivate);
+
+        transform.update();
     }
 }
 
@@ -201,6 +154,7 @@ void Actor::afterSyncPhysics()
 void Actor::setRestitution(float newValue)
 {
     this->restitution = newValue;
+    bPhysicsNeedsToBeRebuild = true;
 }
 
 float Actor::getRestitution()
@@ -211,6 +165,7 @@ float Actor::getRestitution()
 void Actor::setFriction(float newValue)
 {
     this->friction = newValue;
+    bPhysicsNeedsToBeRebuild = true;
 }
 
 float Actor::getFriction()
@@ -222,6 +177,7 @@ void Actor::setFrictionAndRestitution(float newFrictionValue, float newRestituti
 {
     this->friction = newFrictionValue;
     this->restitution = newRestitutionValue;
+    bPhysicsNeedsToBeRebuild = true;
 }
 
 Vector3 Actor::getLinearVelocity()
@@ -294,30 +250,9 @@ void Actor::addAngularVelocity(Vector3 v)
     }
 }
 
-void Actor::lookAt(Vector3 v)
+void Actor::process(float delta)
 {
-    Vector3 position = transform.getPosition();
-    Vector3 dif = glm::normalize(Vector3(v.x - position.x, v.y - position.y, v.z - position.z));
-
-    float y = atan2f(dif.z, dif.x);
-
-    float len = sqrtf(dif.x * dif.x + dif.z * dif.z);
-    float x = atan2(len, dif.y);
-
-    transform.setRotation(-JPH_PI / 2.0f + x, -y - JPH_PI / 2.0f, 0.0f);
-}
-
-void Actor::lookAt(float x, float y, float z)
-{
-    lookAt(Vector3(x, y, z));
-}
-
-void Actor::onSpawned()
-{
-}
-
-void Actor::onProcess(float delta)
-{
+    onProcess(delta);
     if (components.size() > 0)
     {
         auto it = components.begin();
@@ -328,11 +263,20 @@ void Actor::onProcess(float delta)
             {
                 delete (*it);
                 it = components.erase(it);
+                bPhysicsNeedsToBeRebuild = true;
             }
             else
                 ++it;
         }
     }
+}
+
+void Actor::onSpawned()
+{
+}
+
+void Actor::onProcess(float delta)
+{
 }
 
 void Actor::onRender(Matrix4 &vpMatrix, std::vector<Component *> *lights)
@@ -387,16 +331,6 @@ void Actor::onCollidePersisted(Actor *hitWith, Vector3 v)
 {
 }
 
-bool Actor::isVisible()
-{
-    return bIsVisible;
-}
-
-void Actor::setVisible(bool state)
-{
-    bIsVisible = state;
-}
-
 void Actor::assignCollisionChannel(int channelId)
 {
     if (!hasCollisionChannel(channelId))
@@ -429,43 +363,88 @@ bool Actor::hasCollisionChannel(int channelId)
     return false;
 }
 
-const std::string Actor::getName()
+void Actor::childUpdated()
 {
-    return className;
-}
-
-const std::string Actor::getClass()
-{
-    return *(classChierarchy.end() - 1);
-}
-
-bool Actor::is(std::string name)
-{
-    return className == name;
-}
-
-bool Actor::implements(std::string name)
-{
-    for (auto it = classChierarchy.begin(); it != classChierarchy.end(); it++)
-        if (*it == name)
-            return true;
-    return false;
-}
-
-void Actor::setCurrentLayer(void *layer)
-{
-    this->layer = layer;
-}
-
-void Actor::registerName(std::string name)
-{
-    className = name;
-    classChierarchy.push_back(className);
+    bPhysicsNeedsToBeRebuild = true;
 }
 
 void Actor::setPhysicsController(PhysicsController *physicsController)
 {
     Actor::physicsController = physicsController;
+}
+
+void Actor::updatePhysics()
+{
+    bPhysicsNeedsToBeRebuild = false;
+
+    if (system && physicsRoot)
+    {
+        PhysicsSystem *physicsSystem = (PhysicsSystem *)system->system;
+        auto body = (Body *)physicsRoot;
+        body->SetUserData(0);
+        physicsSystem->GetBodyInterface().RemoveBody(body->GetID());
+        physicsRoot = nullptr;
+    }
+
+    if (system && components.size() > 0)
+    {
+        int collisionsAmount = 0;
+        for (auto component = components.begin(); component != components.end(); component++)
+            collisionsAmount += (*component)->physicsEntities.size();
+
+        if (collisionsAmount > 0)
+        {
+            auto position = transform.getPosition();
+            auto rotation = transform.getRotation();
+            auto scale = transform.getScale();
+
+            PhysicsSystem *physicsSystem = (PhysicsSystem *)system->system;
+            BodyInterface &bodyInterface = physicsSystem->GetBodyInterface();
+            StaticCompoundShapeSettings *compoundRoot = new StaticCompoundShapeSettings;
+
+            for (auto component = components.begin(); component != components.end(); component++)
+            {
+                auto pEntities = &(*component)->physicsEntities;
+                if (pEntities->size() > 0)
+                {
+                    auto transform = &(*component)->transform;
+                    auto relativePosition = transform->getPosition();
+                    auto relativeRotation = transform->getRotation();
+                    for (auto physicsEntitie = pEntities->begin(); physicsEntitie != pEntities->end(); physicsEntitie++)
+                    {
+                        Shape *shape = (Shape *)(*physicsEntitie)->getShape(scale);
+                        if (shape)
+                        {
+                            compoundRoot->AddShape(
+                                Vec3(
+                                    (relativePosition.x + (*physicsEntitie)->x) * SIZE_MULTIPLIER * scale.x,
+                                    (relativePosition.y + (*physicsEntitie)->y) * SIZE_MULTIPLIER * scale.y,
+                                    (relativePosition.z + (*physicsEntitie)->z) * SIZE_MULTIPLIER * scale.z),
+                                Quat(relativeRotation.x, relativeRotation.y, relativeRotation.z, 1.0f),
+                                shape);
+                        }
+                    }
+                }
+            }
+
+            Body *body = bodyInterface.CreateBody(
+                BodyCreationSettings(compoundRoot,
+                                     Vec3(position.x * SIZE_MULTIPLIER, position.y * SIZE_MULTIPLIER, position.z * SIZE_MULTIPLIER),
+                                     Quat(rotation.x, rotation.y, rotation.z, 1.0f),
+                                     (EMotionType)mType,
+                                     physicsController->getMovingLayerId()));
+
+            bodyInterface.AddBody(body->GetID(), EActivation::Activate);
+            bodyInterface.SetRestitution(body->GetID(), restitution);
+            bodyInterface.SetFriction(body->GetID(), friction);
+
+            body->SetUserData((unsigned long long)this);
+            processPhysicsContraints(body);
+
+            physicsSystem->OptimizeBroadPhase();
+            physicsRoot = body;
+        }
+    }
 }
 
 void Actor::processPhysicsContraints(void *body)

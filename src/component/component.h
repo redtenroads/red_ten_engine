@@ -11,6 +11,7 @@
 #include "physics/physicsEntityGeometry.h"
 #include "common/destroyable.h"
 #include "common/renderer.h"
+#include "common/entity.h"
 #include <list>
 
 class Component : public Destroyable
@@ -18,8 +19,9 @@ class Component : public Destroyable
 public:
     EXPORT Component();
     EXPORT virtual ~Component();
-    EXPORT virtual void prepare();
     EXPORT virtual void process(float delta);
+
+    EXPORT void prepare(Entity *owner);
     
     EXPORT void render(Matrix4 &vpMatrix, Transformation *tf);
     EXPORT void shadowRender(Matrix4 &vpMatrix, Transformation *tf);
@@ -53,4 +55,6 @@ protected:
     bool bUseLightPhase = false;
     bool bUseShadowPhase = false;
     bool bIsVisible = true;
+
+    Entity *owner = nullptr;
 };
