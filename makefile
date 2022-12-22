@@ -18,7 +18,7 @@ OBJDIR = objects
 BINDIR = bin
  
 OBJ_FILES = ${OBJDIR}/rtengine.o ${OBJDIR}/view.o ${OBJDIR}/stage.o ${OBJDIR}/glew.o ${OBJDIR}/effect.o ${OBJDIR}/transformation.o \
-			${OBJDIR}/layer.o ${OBJDIR}/layerActors.o ${OBJDIR}/layerEffects.o  ${OBJDIR}/layerDebug.o  \
+			${OBJDIR}/layer.o ${OBJDIR}/layerActors.o ${OBJDIR}/layerEffects.o  ${OBJDIR}/layerDebug.o ${OBJDIR}/input.o \
 			${OBJDIR}/camera.o ${OBJDIR}/cameraOrto.o ${OBJDIR}/cameraPerspective.o  \
 			${OBJDIR}/viewController.o ${OBJDIR}/stageController.o ${OBJDIR}/debugController.o  \
 			${OBJDIR}/physicsController.o ${OBJDIR}/soundController.o ${OBJDIR}/resourceController.o \
@@ -75,6 +75,9 @@ ${OBJDIR}/debugController.o: ${SRCDIR}/controller/debugController.cpp
 
 ${OBJDIR}/view.o: ${SRCDIR}/os/view.cpp
 	$(CC) $(CFLAGS) -o ${OBJDIR}/view.o ${SRCDIR}/os/view.cpp
+
+${OBJDIR}/input.o: ${SRCDIR}/os/input.cpp
+	$(CC) $(CFLAGS) -o ${OBJDIR}/input.o ${SRCDIR}/os/input.cpp
 
 ${OBJDIR}/layer.o: ${SRCDIR}/stage/layer.cpp
 	$(CC) $(CFLAGS) -o ${OBJDIR}/layer.o ${SRCDIR}/stage/layer.cpp

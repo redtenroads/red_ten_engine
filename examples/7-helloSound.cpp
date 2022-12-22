@@ -25,10 +25,10 @@ public:
         sprite->setTexture(jojoTexture);
 
         auto inputX = registerAxisCallback(&JoJo::controlX);
-        inputX->addInputBinding(InputType::KEYBOARD, 7, 400.0f);
-        inputX->addInputBinding(InputType::KEYBOARD, 4, -400.0f);
-        inputX->addInputBinding(InputType::KEYBOARD, 79, 400.0f);
-        inputX->addInputBinding(InputType::KEYBOARD, 80, -400.0f);
+        inputX->addKeyboardBinding(7, 400.0f);
+        inputX->addKeyboardBinding(4, -400.0f);
+        inputX->addKeyboardBinding(79, 400.0f);
+        inputX->addKeyboardBinding(80, -400.0f);
     }
 
     void onProcess(float delta)

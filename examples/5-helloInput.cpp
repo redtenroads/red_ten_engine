@@ -30,28 +30,28 @@ public:
         // Second parameter is a multiplier of device input making it here in range from -400 to 400
         // Note that keyboard usually have input of 0 to 1, but axises have input from -1 to 1.
         // Also some gamepad axises may have -1 in their rest position, like triggers
-        inputX->addInputBinding(InputType::KEYBOARD, 7, 400.0f);
-        inputX->addInputBinding(InputType::KEYBOARD, 4, -400.0f);
-        inputX->addInputBinding(InputType::KEYBOARD, 79, 400.0f);
-        inputX->addInputBinding(InputType::KEYBOARD, 80, -400.0f);
-        inputX->addInputBinding(InputType::GAMEPAD_AXIS, 0, 400.0f);
+        inputX->addKeyboardBinding(7, 400.0f);
+        inputX->addKeyboardBinding(4, -400.0f);
+        inputX->addKeyboardBinding(79, 400.0f);
+        inputX->addKeyboardBinding(80, -400.0f);
+        inputX->addGamepadAxisBinding(0, 400.0f);
 
         auto inputY = registerAxisCallback(&CratePlayer::controlY);
-        inputY->addInputBinding(InputType::KEYBOARD, 22, -400.0f);
-        inputY->addInputBinding(InputType::KEYBOARD, 26, 400.0f);
-        inputY->addInputBinding(InputType::KEYBOARD, 81, -400.0f);
-        inputY->addInputBinding(InputType::KEYBOARD, 82, 400.0f);
-        inputY->addInputBinding(InputType::GAMEPAD_AXIS, 1, -400.0f);
+        inputY->addKeyboardBinding(22, -400.0f);
+        inputY->addKeyboardBinding(26, 400.0f);
+        inputY->addKeyboardBinding(81, -400.0f);
+        inputY->addKeyboardBinding(82, 400.0f);
+        inputY->addGamepadAxisBinding(1, -400.0f);
 
         auto inputHide = registerButtonCallback(&CratePlayer::hideSurrounding);
-        inputHide->addInputBinding(InputType::KEYBOARD, 11, 1.0f);
-        inputHide->addInputBinding(InputType::GAMEPAD_BUTTON, 0, 1.0f);
+        inputHide->addKeyboardBinding(11, 1.0f);
+        inputHide->addGamepadButtonBinding(0, 1.0f);
 
         // It's not nessary to provide exact source of input, you can simply register all inputs for some action.
         // It's could be usefull for detection of button ids or to know which input method user prefers
         // But you still need to provide multiplier
-        auto inputAll = registerAxisCallback(&CratePlayer::all);
-        inputAll->addInputBinding(1.0f);
+        // auto inputAll = registerAxisCallback(&CratePlayer::all);
+        // inputAll->addInputBinding(1.0f);
     }
 
     void onProcess(float delta)
@@ -80,7 +80,7 @@ public:
 
     void all(InputType type, int deviceIndex, int index, float state)
     {
-        if (type == InputType::MOUSE && (index == (int)InputTypeMouse::MOVE_HORIZONTAL || index == (int)InputTypeMouse::MOVE_VERTICAL))
+        if (type == InputType::MOUSE && (deviceIndex == (int)InputTypeMouse::MOVEMENT))
             return;
 
         std::string str = "Input ";

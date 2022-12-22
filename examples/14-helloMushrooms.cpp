@@ -76,11 +76,10 @@ public:
     Pointer()
     {
         auto mousePressInput = registerButtonCallback(&Pointer::mousePress);
-        mousePressInput->addInputBinding(InputType::MOUSE, -1, (int)InputTypeMouse::LEFT_BUTTON, 1.0f);
+        mousePressInput->addMouseButtonBinding(InputTypeMouse::LEFT_BUTTON, 1.0f);
 
         auto mouseMoveInput = registerAxisCallback(&Pointer::mouseMove);
-        mouseMoveInput->addInputBinding(InputType::MOUSE, -1, (int)InputTypeMouse::MOVE_HORIZONTAL, 1.0f);
-        mouseMoveInput->addInputBinding(InputType::MOUSE, -1, (int)InputTypeMouse::MOVE_VERTICAL, 1.0f);
+        mouseMoveInput->addMouseMoveBinding(1.0f);
     }
 
     void setup(Camera *camera)
@@ -116,9 +115,9 @@ public:
 
     void mouseMove(InputType type, int deviceIndex, int index, float state)
     {
-        if (index == (int)InputTypeMouse::MOVE_HORIZONTAL)
+        if (index == (int)InputTypeMouseMove::MOVE_HORIZONTAL)
             mouseX = state;
-        if (index == (int)InputTypeMouse::MOVE_VERTICAL)
+        if (index == (int)InputTypeMouseMove::MOVE_VERTICAL)
             mouseY = state;
     }
 

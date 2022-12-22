@@ -26,7 +26,7 @@ void CameraOrto::prepareToRender(View *view)
     float l = -r;
     float b = -targetHeight / 2.0f;
     float t = -b;
-    float f = 8000.0f;
+    float f = 5000.0f;
     float n = -1.0f;
 
     projectionMatrix = glm::ortho(l, r, b, t, n, f);
