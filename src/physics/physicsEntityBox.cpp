@@ -38,7 +38,7 @@ PhysicsEntityBox::PhysicsEntityBox(float sizeX, float sizeY, float sizeZ, float 
 }
 PhysicsEntityBox::PhysicsEntityBox(float sizeX, float sizeY, float x, float y, float z) : PhysicsEntity(x, y, z)
 {
-    this->size = Vector3(sizeX, sizeY, 2.0f);
+    this->size = Vector3(sizeX, sizeY, 8.0f);
 }
 PhysicsEntityBox::PhysicsEntityBox(Vector3 size, float x, float y, float z) : PhysicsEntity(x, y, z)
 {
@@ -46,7 +46,7 @@ PhysicsEntityBox::PhysicsEntityBox(Vector3 size, float x, float y, float z) : Ph
 }
 PhysicsEntityBox::PhysicsEntityBox(Vector2 size, float x, float y, float z) : PhysicsEntity(x, y, z)
 {
-    this->size = Vector3(size.x, size.y, 2.0f);
+    this->size = Vector3(size.x, size.y, 8.0f);
 }
 
 Vector3 PhysicsEntityBox::getSize()

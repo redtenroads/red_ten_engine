@@ -144,8 +144,8 @@ void Actor::afterSyncPhysics()
         Quat rotationQuat = bodyInterface.GetRotation(rootId);
         Vec3 r = rotationQuat.GetEulerAngles();
 
-        transform.setPosition(position.GetX() / SIZE_MULTIPLIER, position.GetY() / SIZE_MULTIPLIER, position.GetZ() / SIZE_MULTIPLIER);
-        transform.setRotation(r.GetX(), r.GetY(), r.GetZ());
+        transform.setPosition(position.GetX() / SIZE_MULTIPLIER, position.GetY() / SIZE_MULTIPLIER, bIsZAxisLocked ? zLockedPosition : position.GetZ() / SIZE_MULTIPLIER);
+        transform.setRotation(bIsZAxisLocked ? 0.0f : r.GetX(), bIsZAxisLocked ? 0.0f : r.GetY(), r.GetZ());
         transform.update();
     }
 }
@@ -272,6 +272,7 @@ void Actor::addAngularVelocity(Vector3 v)
 
 void Actor::onSpawned()
 {
+    updatePhysics();
 }
 
 void Actor::onProcess(float delta)
@@ -360,6 +361,11 @@ bool Actor::hasCollisionChannel(int channelId)
             return true;
     }
     return false;
+}
+
+void Actor::childUpdated()
+{
+    bPhysicsNeedsToBeRebuild = true;
 }
 
 void Actor::setPhysicsController(PhysicsController *physicsController)

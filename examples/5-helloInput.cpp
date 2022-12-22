@@ -46,18 +46,17 @@ public:
         auto inputHide = registerButtonCallback(&CratePlayer::hideSurrounding);
         inputHide->addKeyboardBinding(11, 1.0f);
         inputHide->addGamepadButtonBinding(0, 1.0f);
-
-        // It's not nessary to provide exact source of input, you can simply register all inputs for some action.
-        // It's could be usefull for detection of button ids or to know which input method user prefers
-        // But you still need to provide multiplier
-        // auto inputAll = registerAxisCallback(&CratePlayer::all);
-        // inputAll->addInputBinding(1.0f);
     }
 
     void onProcess(float delta)
     {
-        transform.translate(Vector2(moveX * delta, moveY * delta));
-        transform.setRotation(0);
+        addLinearVelocity(Vector3(moveX * delta * 2.0f, moveY * delta * 2.0f, 0.0f));
+        counter += delta;
+        while (counter > 0.10f)
+        {
+            counter -= 0.10f;
+            setLinearVelocity(getLinearVelocity() * 0.8f);
+        }
     }
 
     void controlX(InputType type, int deviceIndex, int index, float axis)
@@ -78,30 +77,9 @@ public:
                 (*it)->setVisible(state);
     }
 
-    void all(InputType type, int deviceIndex, int index, float state)
-    {
-        if (type == InputType::MOUSE && (deviceIndex == (int)InputTypeMouse::MOVEMENT))
-            return;
-
-        std::string str = "Input ";
-        if (type == InputType::MOUSE)
-            str += std::string("from mouse, ");
-        if (type == InputType::KEYBOARD)
-            str += std::string("from keyboard, ");
-        if (type == InputType::GAMEPAD_BUTTON)
-            str += std::string("from gamepad button, ");
-        if (type == InputType::GAMEPAD_AXIS)
-            str += std::string("from gamepad axis, ");
-
-        str += std::string("code: ") + std::to_string(index);
-        str += std::string(", value: ") + std::to_string(state);
-
-        debug->print(500, str);
-    }
-
     static Texture *crateTexture;
     float moveX = 0.0f, moveY = 0.0f;
-
+    float counter = 0.0f;
 protected:
     ComponentSprite *sprite;
 };
@@ -116,6 +94,7 @@ public:
         transform.setScale(0.5f);
         sprite = createComponent<ComponentSprite>();
         sprite->setTexture(crateTexture);
+        setPhysicsMotionType(MotionType::Static);
         setZAxisLocked(true);
         setFrictionAndRestitution(0.9f, 0.1f);
         setVisible(false);

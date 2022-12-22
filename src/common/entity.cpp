@@ -19,7 +19,7 @@ void Entity::lookAt(Vector3 v)
     float len = sqrtf(dif.x * dif.x + dif.z * dif.z);
     float x = atan2(len, dif.y);
 
-    transform.setRotation(-M_PI / 2.0f + x, -y - M_PI / 2.0f, 0.0f);
+    transform.setRotation(CONST_PI / 2 - x, -y - CONST_PI / 2.0f, 0.0f);
 }
 
 void Entity::lookAt(float x, float y, float z)
