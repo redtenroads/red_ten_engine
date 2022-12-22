@@ -125,7 +125,6 @@ public:
     {
         transform.setPosition(x, y);
         sprite->addPhysics2dBox(256.0f, 256.0f);
-        updatePhysics();
     }
 
     static Texture *crateTexture;
@@ -152,7 +151,6 @@ public:
         auto emptyComponent = createComponent<ComponentSprite>();
         emptyComponent->addPhysics2dBox(width, height);
         setFrictionAndRestitution(1.0f, 0.1f);
-        updatePhysics();
     }
 };
 

@@ -34,6 +34,7 @@ public:
     EXPORT void process(float delta);
     EXPORT void render(View *view);
     EXPORT void prepareNewActor(Actor *actor);
+    EXPORT void enableCollisions();
     EXPORT void enablePhisics(Vector3 gravity);
     EXPORT void disablePhysics();
     EXPORT void enableSorting();

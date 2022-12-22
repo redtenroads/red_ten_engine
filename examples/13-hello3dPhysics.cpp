@@ -40,8 +40,6 @@ public:
         sphere->setPhysicsMotionType(MotionType::Dynamic);
         sphere->transform.setPosition(x, y, z);
 
-        sphere->updatePhysics();
-
         return sphere;
     }
 
@@ -57,8 +55,6 @@ public:
         platform->setFrictionAndRestitution(0.6f, 0.1f);
         platform->setPhysicsMotionType(MotionType::Static);
         platform->transform.setPosition(x, y, z);
-
-        platform->updatePhysics();
 
         return platform;
     }

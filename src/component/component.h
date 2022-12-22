@@ -3,6 +3,7 @@
 
 #pragma once
 #include "common/utils.h"
+#include "common/entity.h"
 #include "math/math.h"
 #include "math/transformation.h"
 #include "physics/physicsEntity.h"
@@ -18,7 +19,7 @@ class Component : public Destroyable
 public:
     EXPORT Component();
     EXPORT virtual ~Component();
-    EXPORT virtual void prepare();
+    EXPORT void prepare(Entity *owner);
     EXPORT virtual void process(float delta);
     
     EXPORT void render(Matrix4 &vpMatrix, Transformation *tf);
@@ -57,4 +58,6 @@ protected:
     bool bUseLightPhase = false;
     bool bUseShadowPhase = false;
     bool bIsVisible = true;
+
+    Entity *owner = nullptr;
 };

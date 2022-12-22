@@ -7,6 +7,7 @@
 #include "common/destroyable.h"
 #include "common/withDebug.h"
 #include "common/withLogger.h"
+#include "common/entity.h"
 #include "math/math.h"
 #include "math/transformation.h"
 #include "component/component.h"
@@ -16,15 +17,14 @@
 #include <list>
 #include <vector>
 
-class Actor : public Watchable<Actor>, public Destroyable, public WithDebug, public WithLogger
+class Actor : public Entity, public Watchable<Actor>, public Destroyable, public WithDebug, public WithLogger
 {
 public:
     EXPORT Actor();
     EXPORT virtual ~Actor();
 
-    EXPORT void enable2dCollisions(void *world, float collisionMultiplier);
-
     EXPORT void setPhysicsMotionType(MotionType mType);
+    EXPORT void markPhysicsUpdateNeeded();
     EXPORT std::list<Actor *> *getLayerActorsList();
 
     template <class T, typename std::enable_if<std::is_base_of<Component, T>::value>::type * = nullptr>
@@ -39,10 +39,11 @@ public:
     EXPORT void providePhysicsSystem(PhysicsDescriptor *system);
     EXPORT void setZAxisLocked(bool state);
     EXPORT void setZAxisRotationLocked(bool state);
-    EXPORT void updatePhysics();
 
     EXPORT virtual void preSyncPhysics();
     EXPORT virtual void afterSyncPhysics();
+    
+    EXPORT void process(float delta);
 
     EXPORT void setRestitution(float newValue);
     EXPORT float getRestitution();
@@ -58,8 +59,6 @@ public:
     EXPORT void setAngularVelocity(Vector3 v);
     EXPORT void addAngularVelocity(Vector3 v);
 
-    EXPORT void lookAt(Vector3 v);
-    EXPORT void lookAt(float x, float y, float z);
 
     EXPORT virtual void onSpawned();
     EXPORT virtual void onProcess(float delta);
@@ -70,50 +69,37 @@ public:
     EXPORT virtual void onCollide(Actor *hitWith, Vector3 v);
     EXPORT virtual void onCollidePersisted(Actor *hitWith, Vector3 v);
 
-    EXPORT bool isVisible();
-    EXPORT void setVisible(bool state);
     EXPORT bool hasBlended() { return bHasBlended; };
 
     EXPORT void assignCollisionChannel(int channelId);
     EXPORT void removeCollisionChannel(int channelId);
     EXPORT bool hasCollisionChannel(int channelId);
 
-    EXPORT const std::string getName();
-    EXPORT const std::string getClass();
-    EXPORT bool is(std::string name);
-    EXPORT bool implements(std::string name);
-    EXPORT void setCurrentLayer(void *layer);
+    EXPORT void childUpdated();
 
     static void setPhysicsController(PhysicsController *physicsController);
 
-    Transformation transform;
-
-    int zDepth = 0;
-
 protected:
+    void updatePhysics();
     void processPhysicsContraints(void *body);
-    EXPORT void registerName(std::string name);
 
     bool bIsZAxisLocked = false;
     bool bIsZRotationLocked = false;
     bool bIsVisible = true;
     bool bHasBlended = false;
+    bool bPhysicsNeedsToBeRebuild = false;
 
     MotionType mType = MotionType::Static;
 
     PhysicsDescriptor *system = nullptr;
     void *physicsRoot = nullptr;
-    void *layer = nullptr;
 
     float restitution = 0.5f;
     float friction = 1.0f;
+    float zLockedPosition = 0.0f;
 
     std::list<Component *> components;
     std::vector<int> collisionChannels;
 
     static PhysicsController *physicsController;
-
-private:
-    std::string className = "";
-    std::vector<std::string> classChierarchy;
 };

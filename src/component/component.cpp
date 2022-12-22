@@ -14,8 +14,9 @@ Component::~Component()
 {
 }
 
-void Component::prepare()
+void Component::prepare(Entity *owner)
 {
+    this->owner = owner;
 }
 
 void Component::process(float delta)
@@ -73,6 +74,8 @@ PhysicsEntitySphere *Component::addPhysics2dCircle(float radius, float px, float
 {
     auto newPhysicsEntity = new PhysicsEntitySphere(radius * SIZE_MULTIPLIER, px, py, pz);
     physicsEntities.push_back(newPhysicsEntity);
+    if (owner)
+        owner->childUpdated();
     return newPhysicsEntity;
 }
 
@@ -85,6 +88,8 @@ PhysicsEntitySphere *Component::addPhysicsSphere(float radius, float px, float p
 {
     auto newPhysicsEntity = new PhysicsEntitySphere(radius * SIZE_MULTIPLIER, px, py, pz);
     physicsEntities.push_back(newPhysicsEntity);
+    if (owner)
+        owner->childUpdated();
     return newPhysicsEntity;
 }
 
@@ -97,6 +102,8 @@ PhysicsEntityBox *Component::addPhysics2dBox(float width, float height, float px
 {
     auto newPhysicsEntity = new PhysicsEntityBox(width * SIZE_MULTIPLIER, height * SIZE_MULTIPLIER, px, py, pz);
     physicsEntities.push_back(newPhysicsEntity);
+    if (owner)
+        owner->childUpdated();
     return newPhysicsEntity;
 }
 
@@ -109,6 +116,8 @@ PhysicsEntityBox *Component::addPhysics3dBox(float width, float height, float de
 {
     auto newPhysicsEntity = new PhysicsEntityBox(width * SIZE_MULTIPLIER, height * SIZE_MULTIPLIER, depth * SIZE_MULTIPLIER, px, py, pz);
     physicsEntities.push_back(newPhysicsEntity);
+    if (owner)
+        owner->childUpdated();
     return newPhysicsEntity;
 }
 
@@ -116,6 +125,8 @@ PhysicsEntityGeometry *Component::addPhysicsGeometry(Geometry *geometry)
 {
     auto newPhysicsEntity = new PhysicsEntityGeometry(geometry);
     physicsEntities.push_back(newPhysicsEntity);
+    if (owner)
+        owner->childUpdated();
     return newPhysicsEntity;
 }
 

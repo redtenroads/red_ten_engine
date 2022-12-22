@@ -30,7 +30,12 @@ int ComponentMesh::getVertexAmount()
 
 void ComponentMesh::setMesh(Mesh *mesh)
 {
-    this->mesh = mesh;
+    if (this->mesh != mesh)
+    {
+        this->mesh = mesh;
+        if (owner)
+            owner->childUpdated();
+    }
 }
 
 void ComponentMesh::setShader(Shader *shader)

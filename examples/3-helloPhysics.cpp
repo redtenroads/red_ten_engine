@@ -121,11 +121,6 @@ public:
         auto emptyComponent = createComponent<ComponentSprite>();
         emptyComponent->addPhysics2dBox(width, height);
         setFrictionAndRestitution(1.0f, 0.1f);
-
-        // Usually when we create components in constructor of class inherited from Actor this function called automatically
-        // But since we contructed Actor manually we should manually update collision bodies here.
-        // Adding physics to components only adding descriptions of physics for them, but not the actual physics bodies
-        updatePhysics();
     }
 };
 

@@ -17,7 +17,6 @@ public:
         landComponent->setShader(landShader);
 
         landComponent->addPhysicsGeometry(landMesh->getGeometry());
-        updatePhysics();
     }
 
     static ResourceMesh *landMesh;
@@ -37,7 +36,6 @@ public:
         mushroomComponent->setShader(mushroomShader);
 
         mushroomComponent->addPhysicsGeometry(mushroomMesh->getGeometry());
-        updatePhysics();
     }
 
     void onProcess(float delta)
