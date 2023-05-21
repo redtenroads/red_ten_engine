@@ -11,6 +11,7 @@ std::list<int> ActorGUIElement::pressIDStack;
 
 ActorGUIElement::ActorGUIElement()
 {
+    registerClassName("ActorGUIElement");
     auto inputPress = registerButtonCallback<ActorGUIElement>(this, &ActorGUIElement::onPressCheck);
     inputPress->addMouseButtonBinding(InputTypeMouse::LEFT_BUTTON, 1.0f);
 }

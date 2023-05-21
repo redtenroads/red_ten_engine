@@ -389,6 +389,42 @@ std::list<Actor *> *LayerActors::getActorsList()
     return &actors;
 }
 
+std::list<Actor *> LayerActors::getActorsByName(std::string name)
+{
+    std::list<Actor *> list;
+
+    if (actors.size() > 0)
+    {
+        for (auto actor = actors.begin(); actor != actors.end(); ++actor)
+        {
+            if (*(*actor)->getActorName() == name)
+            {
+                list.push_back(*actor);
+            }
+        }
+    }
+
+    return list;
+}
+
+std::list<Actor *> LayerActors::getActorsByPartName(std::string partOfName)
+{
+    std::list<Actor *> list;
+
+    if (actors.size() > 0)
+    {
+        for (auto actor = actors.begin(); actor != actors.end(); ++actor)
+        {
+            if ((*actor)->getActorName()->find(name) != std::string::npos)
+            {
+                list.push_back(*actor);
+            }
+        }
+    }
+
+    return list;
+}
+
 void LayerActors::clear(bool destroyCameras)
 {
     if (actors.size() > 0)

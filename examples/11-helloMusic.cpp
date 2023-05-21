@@ -15,7 +15,7 @@ class JoJo : public ActorPawn
 public:
     JoJo() : ActorPawn()
     {
-        registerName("JoJo");
+        registerClassName("JoJo");
         transform.setScale(0.8);
         transform.setPosition(0.0f, -50.0f);
 

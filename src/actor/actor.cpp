@@ -41,7 +41,7 @@ PhysicsController *Actor::physicsController = nullptr;
 
 Actor::Actor()
 {
-    registerName("Actor");
+    registerClassName("Actor");
 }
 
 Actor::~Actor()
@@ -55,6 +55,16 @@ Actor::~Actor()
         physicsSystem->GetBodyInterface().RemoveBody(body->GetID());
         delete body;
     }
+}
+
+void Actor::setActorName(std::string name)
+{
+    this->name = name;
+}
+
+const std::string *Actor::getActorName()
+{
+    return &this->name;
 }
 
 void Actor::setPhysicsMotionType(MotionType mType)
@@ -266,7 +276,18 @@ void Actor::addAngularVelocity(Vector3 v)
         PhysicsSystem *physicsSystem = (PhysicsSystem *)system->system;
         BodyInterface &bodyInterface = physicsSystem->GetBodyInterface();
         BodyID rootId = ((Body *)physicsRoot)->GetID();
-        bodyInterface.AddAngularImpulse(rootId, Vec3(v.x, v.y, v.z));
+        bodyInterface.AddLinearAndAngularVelocity(rootId, Vec3(0.0f, 0.0f, 0.0f), Vec3(v.x, v.y, v.z));
+    }
+}
+
+void Actor::AddLinearAndAngularVelocity(Vector3 vv, Vector3 av)
+{
+    if (system && physicsRoot)
+    {
+        PhysicsSystem *physicsSystem = (PhysicsSystem *)system->system;
+        BodyInterface &bodyInterface = physicsSystem->GetBodyInterface();
+        BodyID rootId = ((Body *)physicsRoot)->GetID();
+        bodyInterface.AddLinearAndAngularVelocity(rootId, Vec3(vv.x, vv.y, vv.z), Vec3(av.x, av.y, av.z));
     }
 }
 

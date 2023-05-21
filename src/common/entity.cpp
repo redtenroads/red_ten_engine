@@ -2,7 +2,7 @@
 
 Entity::Entity()
 {
-    registerName("Entity");
+    registerClassName("Entity");
 }
 
 Entity::~Entity()
@@ -37,7 +37,7 @@ void Entity::setVisible(bool state)
     bIsVisible = state;
 }
 
-const std::string Entity::getName()
+const std::string Entity::getClassName()
 {
     return className;
 }
@@ -69,8 +69,8 @@ void Entity::childUpdated()
 {
 }
 
-void Entity::registerName(std::string name)
+void Entity::registerClassName(std::string className)
 {
-    className = name;
+    this->className = className;
     classChierarchy.push_back(className);
 }

@@ -72,7 +72,7 @@ class GUISimpleButton : public ActorGUIElement
 public:
     GUISimpleButton() : ActorGUIElement()
     {
-        registerName("Gui Button");
+        registerClassName("Gui Button");
         setActiveArea(0.0f, 320.0f, -32.0f, 32.0f);
 
         textSprite = createComponent<ComponentText>();

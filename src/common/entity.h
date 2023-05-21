@@ -22,7 +22,7 @@ public:
     EXPORT bool isVisible();
     EXPORT void setVisible(bool state);
 
-    EXPORT const std::string getName();
+    EXPORT const std::string getClassName();
     EXPORT const std::string getClass();
     EXPORT bool is(std::string name);
     EXPORT bool implements(std::string name);
@@ -34,7 +34,7 @@ public:
     int zDepth = 0;
 
 protected:
-    EXPORT void registerName(std::string name);
+    EXPORT void registerClassName(std::string name);
 
     bool bIsVisible = true;
     void *layer = nullptr;

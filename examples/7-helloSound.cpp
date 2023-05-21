@@ -13,7 +13,7 @@ class JoJo : public ActorPawn
 public:
     JoJo() : ActorPawn()
     {
-        registerName("JoJo");
+        registerClassName("JoJo");
         transform.setScale(0.8);
         // Note: here we use z position of an actor, because that's the way to control sound pan in 3d space
         transform.setPosition(0.0f, -50.0f, frontDistance);

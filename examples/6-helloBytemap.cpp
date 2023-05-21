@@ -10,7 +10,7 @@ class Star : public Actor
 public:
     Star() : Actor()
     {
-        registerName("Star");
+        registerClassName("Star");
         sprite = createComponent<ComponentSprite>();
         sprite->setTexture(starTexture);
     }
@@ -37,7 +37,7 @@ class JoJo : public Actor
 public:
     JoJo() : Actor()
     {
-        registerName("JoJo");
+        registerClassName("JoJo");
         transform.setScale(0.8);
         transform.setPosition(0.0f, -50.0f);
 

@@ -20,7 +20,7 @@ class JoJo : public Actor
 public:
     JoJo() : Actor()
     {
-        registerName("JoJo");
+        registerClassName("JoJo");
         transform.setScale(0.8);
         transform.setPosition(80.0f, -100.0f);
 
@@ -40,7 +40,7 @@ class GUIButton : public ActorGUIElement
 public:
     GUIButton() : ActorGUIElement()
     {
-        registerName("Gui Button");
+        registerClassName("Gui Button");
         setActiveArea(200.0f, 48.0f);
         setSelectiveIndex(index++);
 
@@ -108,7 +108,7 @@ class CratePlate : public Actor
 public:
     CratePlate() : Actor()
     {
-        registerName("CratePlate");
+        registerClassName("CratePlate");
         transform.setScale(0.8);
         sprite = createComponent<ComponentSprite>();
     }

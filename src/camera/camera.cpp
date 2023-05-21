@@ -12,7 +12,7 @@ SoundController *Camera::soundController = nullptr;
 
 Camera::Camera()
 {
-    registerName("Camera");
+    registerClassName("Camera");
     if (!soundController->getListenerCamera())
     {
         setAsListenerCamera();

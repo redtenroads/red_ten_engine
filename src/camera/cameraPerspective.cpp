@@ -7,7 +7,7 @@
 
 CameraPerspective::CameraPerspective() : Camera()
 {
-    registerName("CameraPerspective");
+    registerClassName("CameraPerspective");
 }
 
 void CameraPerspective::prepareToRender(View *view)

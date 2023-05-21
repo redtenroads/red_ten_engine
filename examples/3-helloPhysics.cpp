@@ -11,7 +11,7 @@ class Ball : public Actor
 public:
     Ball() : Actor()
     {
-        registerName("Ball");
+        registerClassName("Ball");
         setPhysicsMotionType(MotionType::Dynamic);
         transform.setScale(0.1f);
         sprite = createComponent<ComponentSprite>();
@@ -44,7 +44,7 @@ class Crate : public Actor
 public:
     Crate() : Actor()
     {
-        registerName("Crate");
+        registerClassName("Crate");
         setPhysicsMotionType(MotionType::Dynamic);
         transform.setScale(0.1f);
         sprite = createComponent<ComponentSprite>();
@@ -72,7 +72,7 @@ class DoubleCrate : public Actor
 public:
     DoubleCrate() : Actor()
     {
-        registerName("DoubleCrate");
+        registerClassName("DoubleCrate");
         setPhysicsMotionType(MotionType::Dynamic);
         transform.setScale(0.1f);
         spriteLeft = createComponent<ComponentSprite>();
@@ -108,7 +108,7 @@ class Wall : public Actor
 public:
     Wall() : Actor()
     {
-        registerName("Wall");
+        registerClassName("Wall");
         // Wall is static, it can't be moved, neither checked for collisions with other walls. By default actors are dynamic but not this one
         setPhysicsMotionType(MotionType::Static);
         setZAxisLocked(true);

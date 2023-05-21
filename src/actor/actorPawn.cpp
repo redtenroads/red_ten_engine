@@ -5,5 +5,5 @@
 
 ActorPawn::ActorPawn()
 {
-    registerName("ActorPawn");
+    registerClassName("ActorPawn");
 }

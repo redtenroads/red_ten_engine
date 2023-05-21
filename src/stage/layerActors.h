@@ -45,6 +45,8 @@ public:
     EXPORT std::list<RayCollision> castPointCollision(Vector3 v1, int channelId = 0);
 
     EXPORT std::list<Actor *> *getActorsList();
+    EXPORT std::list<Actor *> getActorsByName(std::string name);
+    EXPORT std::list<Actor *> getActorsByPartName(std::string partOfName);
     EXPORT void clear(bool destroyCameras = true);
 
     EXPORT void setVisible(bool state) { bIsVisible = state; }

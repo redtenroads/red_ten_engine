@@ -10,7 +10,7 @@ class Land : public Actor
 public:
     Land()
     {
-        registerName("Land");
+        registerClassName("Land");
 
         auto landComponent = createComponent<ComponentMesh>();
         landComponent->setMesh(landMesh);
@@ -30,7 +30,7 @@ class Mushroom : public Actor
 public:
     Mushroom()
     {
-        registerName("Mushroom");
+        registerClassName("Mushroom");
         mushroomComponent = createComponent<ComponentMesh>();
         mushroomComponent->setMesh(mushroomMesh);
         mushroomComponent->setShader(mushroomShader);

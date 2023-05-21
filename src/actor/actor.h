@@ -23,6 +23,9 @@ public:
     EXPORT Actor();
     EXPORT virtual ~Actor();
 
+    EXPORT void setActorName(std::string name);
+    EXPORT const std::string *getActorName();
+
     EXPORT void setPhysicsMotionType(MotionType mType);
     EXPORT void markPhysicsUpdateNeeded();
     EXPORT std::list<Actor *> *getLayerActorsList();
@@ -42,7 +45,7 @@ public:
 
     EXPORT virtual void preSyncPhysics();
     EXPORT virtual void afterSyncPhysics();
-    
+
     EXPORT void process(float delta);
 
     EXPORT void setRestitution(float newValue);
@@ -58,7 +61,7 @@ public:
     EXPORT Vector3 getAngularVelocity();
     EXPORT void setAngularVelocity(Vector3 v);
     EXPORT void addAngularVelocity(Vector3 v);
-
+    EXPORT void AddLinearAndAngularVelocity(Vector3 vv, Vector3 av);
 
     EXPORT virtual void onSpawned();
     EXPORT virtual void onProcess(float delta);
@@ -102,4 +105,5 @@ protected:
     std::vector<int> collisionChannels;
 
     static PhysicsController *physicsController;
+    std::string name = "actor";
 };

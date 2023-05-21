@@ -11,7 +11,7 @@ class CratePlayer : public ActorPawn
 public:
     CratePlayer() : ActorPawn()
     {
-        registerName("CratePlayer");
+        registerClassName("CratePlayer");
 
         setPhysicsMotionType(MotionType::Dynamic);
         transform.setScale(0.5f);
@@ -90,7 +90,7 @@ class HiddenCrate : public Actor
 public:
     HiddenCrate() : Actor()
     {
-        registerName("HiddenCrate");
+        registerClassName("HiddenCrate");
         transform.setScale(0.5f);
         sprite = createComponent<ComponentSprite>();
         sprite->setTexture(crateTexture);
@@ -119,7 +119,7 @@ class Wall : public Actor
 public:
     Wall() : Actor()
     {
-        registerName("Wall");
+        registerClassName("Wall");
         setPhysicsMotionType(MotionType::Static);
         setZAxisLocked(true);
     }

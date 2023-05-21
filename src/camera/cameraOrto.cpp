@@ -8,7 +8,7 @@
 
 CameraOrto::CameraOrto() : Camera()
 {
-    registerName("CameraOrto");
+    registerClassName("CameraOrto");
 }
 
 void CameraOrto::prepareToRender(View *view)
