@@ -1,12 +1,18 @@
 CC = clang++
 LD = clang++
-CFLAGS = -I../JoltPhysics -I../openal/include -Isrc \
-	     -I../SDL2-2.0.14/include -I../SDL2_ttf-2.0.15/include \
+
+JOLT_LIB_PATH = "../JoltPhysics"
+OPENAL_LIB_PATH = "../openal"
+SDL_LIB_PATH = "../SDL2-2.0.14"
+SDL_TTF_LIB_PATH = "../SDL2_ttf-2.0.15"
+
+CFLAGS = -I${JOLT_LIB_PATH} -I${OPENAL_LIB_PATH}/include -Isrc \
+	     -I${SDL_LIB_PATH}/include -I${SDL_TTF_LIB_PATH}/include \
 		 -Wall -c  -std=c++17 -mfpmath=sse -mavx -g
 
 LFLAGS = -shared -Wall -g 
-LIBRARIES = -L../SDL2-2.0.14/lib/x64/ -L../openal/libs/Win64 -L../JoltPhysics/Build/VS2019_CL/Release \
-			-L../SDL2_ttf-2.0.15/lib/x64 \
+LIBRARIES = -L${SDL_LIB_PATH}/lib/x64/ -L${OPENAL_LIB_PATH}/libs/Win64 -L${JOLT_LIB_PATH}/Build/VS2019_CL/Release \
+			-L${SDL_TTF_LIB_PATH}/lib/x64 \
 			-lSDL2 -lSDL2main -lkernel32 -luser32 -lgdi32 -lwinspool -lSDL2_ttf.lib \
 			-lshell32 -lole32 -loleaut32 -luuid -lcomdlg32 -ladvapi32 -lopengl32 -lJolt.lib -lOpenAL32.lib
 
