@@ -18,7 +18,7 @@ OBJDIR = objects
 BINDIR = bin
  
 OBJ_FILES = ${OBJDIR}/rtengine.o ${OBJDIR}/view.o ${OBJDIR}/stage.o ${OBJDIR}/glew.o ${OBJDIR}/effect.o ${OBJDIR}/transformation.o \
-			${OBJDIR}/layer.o ${OBJDIR}/layerActors.o ${OBJDIR}/layerEffects.o  ${OBJDIR}/layerDebug.o ${OBJDIR}/input.o ${OBJDIR}/entity.o \
+			${OBJDIR}/layer.o ${OBJDIR}/layerActors.o ${OBJDIR}/layerEffects.o  ${OBJDIR}/layerDebug.o ${OBJDIR}/input.o ${OBJDIR}/entity.o ${OBJDIR}/pawn.o \
 			${OBJDIR}/camera.o ${OBJDIR}/cameraOrto.o ${OBJDIR}/cameraPerspective.o  \
 			${OBJDIR}/viewController.o ${OBJDIR}/stageController.o ${OBJDIR}/debugController.o  \
 			${OBJDIR}/physicsController.o ${OBJDIR}/soundController.o ${OBJDIR}/resourceController.o \
@@ -180,6 +180,9 @@ ${OBJDIR}/physicsEntity.o: ${SRCDIR}/physics/physicsEntity.cpp
 
 ${OBJDIR}/entity.o: ${SRCDIR}/common/entity.cpp
 	$(CC) $(CFLAGS) -o ${OBJDIR}/entity.o ${SRCDIR}/common/entity.cpp
+
+${OBJDIR}/pawn.o: ${SRCDIR}/common/pawn.cpp
+	$(CC) $(CFLAGS) -o ${OBJDIR}/pawn.o ${SRCDIR}/common/pawn.cpp
 
 ${OBJDIR}/color.o: ${SRCDIR}/common/color.cpp
 	$(CC) $(CFLAGS) -o ${OBJDIR}/color.o ${SRCDIR}/common/color.cpp

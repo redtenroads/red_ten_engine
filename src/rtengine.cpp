@@ -54,7 +54,6 @@ RTEngine::RTEngine(std::string configFilePath)
     {
         inputController = new InputController();
         ViewController::setInputController(inputController);
-        ActorPawn::setInputController(inputController);
     }
 
     if (!viewController)
@@ -132,6 +131,11 @@ ResourceController *RTEngine::getResourceController()
 PhysicsController *RTEngine::getPhysicsController()
 {
     return physicsController;
+}
+
+InputController *RTEngine::getInputController()
+{
+    return inputController;
 }
 
 ConfigController *RTEngine::getConfigController()

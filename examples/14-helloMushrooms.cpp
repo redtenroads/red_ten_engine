@@ -73,10 +73,10 @@ class Pointer : public ActorPawn
 public:
     Pointer()
     {
-        auto mousePressInput = registerButtonCallback(&Pointer::mousePress);
+        auto mousePressInput = registerButtonCallback(this, &Pointer::mousePress);
         mousePressInput->addMouseButtonBinding(InputTypeMouse::LEFT_BUTTON, 1.0f);
 
-        auto mouseMoveInput = registerAxisCallback(&Pointer::mouseMove);
+        auto mouseMoveInput = registerAxisCallback(this, &Pointer::mouseMove);
         mouseMoveInput->addMouseMoveBinding(1.0f);
     }
 

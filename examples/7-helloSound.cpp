@@ -24,7 +24,7 @@ public:
         sprite = createComponent<ComponentSprite>();
         sprite->setTexture(jojoTexture);
 
-        auto inputX = registerAxisCallback(&JoJo::controlX);
+        auto inputX = registerAxisCallback(this, &JoJo::controlX);
         inputX->addKeyboardBinding(7, 400.0f);
         inputX->addKeyboardBinding(4, -400.0f);
         inputX->addKeyboardBinding(79, 400.0f);

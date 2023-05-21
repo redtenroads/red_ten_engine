@@ -25,7 +25,7 @@ public:
         setZAxisRotationLocked(true);
 
         // First we create an input type with function to receive the input itself and make an action base on it
-        auto inputX = registerAxisCallback(&CratePlayer::controlX);
+        auto inputX = registerAxisCallback(this, &CratePlayer::controlX);
         // Second we will add the dependences of this input type around your gamepad, mouse, keyboard and other input devices
         // Second parameter is a multiplier of device input making it here in range from -400 to 400
         // Note that keyboard usually have input of 0 to 1, but axises have input from -1 to 1.
@@ -36,14 +36,14 @@ public:
         inputX->addKeyboardBinding(80, -400.0f);
         inputX->addGamepadAxisBinding(0, 400.0f);
 
-        auto inputY = registerAxisCallback(&CratePlayer::controlY);
+        auto inputY = registerAxisCallback(this, &CratePlayer::controlY);
         inputY->addKeyboardBinding(22, -400.0f);
         inputY->addKeyboardBinding(26, 400.0f);
         inputY->addKeyboardBinding(81, -400.0f);
         inputY->addKeyboardBinding(82, 400.0f);
         inputY->addGamepadAxisBinding(1, -400.0f);
 
-        auto inputHide = registerButtonCallback(&CratePlayer::hideSurrounding);
+        auto inputHide = registerButtonCallback(this, &CratePlayer::hideSurrounding);
         inputHide->addKeyboardBinding(11, 1.0f);
         inputHide->addGamepadButtonBinding(0, 1.0f);
     }

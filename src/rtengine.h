@@ -7,6 +7,7 @@
 #include "common/withDebug.h"
 #include "common/soundPlayer.h"
 #include "common/mesh.h"
+#include "common/pawn.h"
 #include "resource/resourceMesh.h"
 #include "resource/resourceFont.h"
 #include "resource/sound.h"
