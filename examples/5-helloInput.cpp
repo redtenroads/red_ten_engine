@@ -30,21 +30,21 @@ public:
         // Second parameter is a multiplier of device input making it here in range from -400 to 400
         // Note that keyboard usually have input of 0 to 1, but axises have input from -1 to 1.
         // Also some gamepad axises may have -1 in their rest position, like triggers
-        inputX->addKeyboardBinding(7, 400.0f);
-        inputX->addKeyboardBinding(4, -400.0f);
-        inputX->addKeyboardBinding(79, 400.0f);
-        inputX->addKeyboardBinding(80, -400.0f);
+        inputX->addKeyboardBinding(KeyboardCodes::D, 400.0f);
+        inputX->addKeyboardBinding(KeyboardCodes::A, -400.0f);
+        inputX->addKeyboardBinding(KeyboardCodes::RIGHT, 400.0f);
+        inputX->addKeyboardBinding(KeyboardCodes::LEFT, -400.0f);
         inputX->addGamepadAxisBinding(0, 400.0f);
 
         auto inputY = registerAxisCallback(this, &CratePlayer::controlY);
-        inputY->addKeyboardBinding(22, -400.0f);
-        inputY->addKeyboardBinding(26, 400.0f);
-        inputY->addKeyboardBinding(81, -400.0f);
-        inputY->addKeyboardBinding(82, 400.0f);
+        inputY->addKeyboardBinding(KeyboardCodes::S, -400.0f);
+        inputY->addKeyboardBinding(KeyboardCodes::W, 400.0f);
+        inputY->addKeyboardBinding(KeyboardCodes::DOWN, -400.0f);
+        inputY->addKeyboardBinding(KeyboardCodes::UP, 400.0f);
         inputY->addGamepadAxisBinding(1, -400.0f);
 
         auto inputHide = registerButtonCallback(this, &CratePlayer::hideSurrounding);
-        inputHide->addKeyboardBinding(11, 1.0f);
+        inputHide->addKeyboardBinding(KeyboardCodes::SPACE, 1.0f);
         inputHide->addGamepadButtonBinding(0, 1.0f);
     }
 

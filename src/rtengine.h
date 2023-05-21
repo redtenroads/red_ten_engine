@@ -8,6 +8,7 @@
 #include "common/soundPlayer.h"
 #include "common/mesh.h"
 #include "common/pawn.h"
+#include "common/keyboard.h"
 #include "resource/resourceMesh.h"
 #include "resource/resourceFont.h"
 #include "resource/sound.h"

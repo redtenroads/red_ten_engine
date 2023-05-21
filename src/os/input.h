@@ -3,6 +3,7 @@
 
 #pragma once
 #include "common/utils.h"
+#include "common/keyboard.h"
 #include <vector>
 
 enum class InputType
@@ -69,6 +70,7 @@ public:
 
     EXPORT void addKeyboardBinding(float modifier);
     EXPORT void addKeyboardBinding(int code, float modifier);
+    EXPORT void addKeyboardBinding(KeyboardCodes code, float modifier);
 
     EXPORT void addMouseButtonBinding(float modifier);
     EXPORT void addMouseButtonBinding(InputTypeMouse button, float modifier);

@@ -167,6 +167,11 @@ void InputBase::addKeyboardBinding(int code, float modifier)
     bindings.push_back(Binding({InputType::KEYBOARD, -1, code, modifier}));
 }
 
+void InputBase::addKeyboardBinding(KeyboardCodes code, float modifier)
+{
+    bindings.push_back(Binding({InputType::KEYBOARD, -1, (int)code, modifier}));
+}
+
 void InputBase::addMouseButtonBinding(float modifier)
 {
     bindings.push_back(Binding({InputType::MOUSE, (int)InputTypeMouse::ALL, -1, modifier}));
