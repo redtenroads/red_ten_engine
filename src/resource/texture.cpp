@@ -4,10 +4,20 @@
 #include "resource/texture.h"
 #include "opengl/glew.h"
 #include "loaders/stb_image.h"
+#include <algorithm>
 
 Texture::Texture(std::string path)
 {
     this->path = path;
+    list.push_back(this);
+}
+
+Texture::~Texture()
+{
+    unload();
+    std::vector<Texture *>::iterator position = std::find(list.begin(), list.end(), this);
+    if (position != list.end())
+        list.erase(position);
 }
 
 void Texture::bind()
@@ -27,10 +37,13 @@ void Texture::bind(int slot)
 
 void Texture::reload()
 {
-    logger->logf("Add texture %s", path.c_str());
+    if (bIsLoaded)
+        return;
+
     unsigned char *data = stbi_load(path.c_str(), &width, &height, &nrChannels, 4);
     if (data)
     {
+        logger->logf("Texture `%s` loaded", path.c_str());
         processBytemaps(data, width, height, nrChannels);
 
         glGenTextures(1, &textureID);
@@ -51,6 +64,32 @@ void Texture::reload()
     }
 }
 
+void Texture::unload()
+{
+    if (bIsLoaded)
+    {
+        if (glIsTexture(textureID))
+        {
+            glDeleteTextures(1, &textureID);
+            textureID = -1;
+        }
+
+        if (bMakeBytemapAlpha)
+        {
+            free(bytemapAlphaData);
+            bytemapAlphaData = nullptr;
+        }
+
+        if (bMakeFullBytemap)
+        {
+            free(bytemapFullData);
+            bytemapAlphaData = nullptr;
+        }
+
+        bIsLoaded = false;
+    }
+}
+
 void Texture::clear()
 {
 }
@@ -62,7 +101,7 @@ bool Texture::isLoaded()
 
 bool Texture::isPath(std::string path)
 {
-    return this->path == path;
+    return this->path.compare(path) == 0;
 }
 
 unsigned int Texture::getGLTextureId()

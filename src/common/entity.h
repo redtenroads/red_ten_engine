@@ -24,8 +24,9 @@ public:
 
     EXPORT const std::string getClassName();
     EXPORT const std::string getClass();
-    EXPORT bool is(std::string name);
-    EXPORT bool implements(std::string name);
+    EXPORT bool is(const std::string name);
+    EXPORT bool implements(const std::string name);
+    EXPORT Layer *getCurrentLayer();
     EXPORT void setCurrentLayer(Layer *layer);
 
     EXPORT virtual void childUpdated();
@@ -37,7 +38,7 @@ protected:
     EXPORT void registerClassName(std::string name);
 
     bool bIsVisible = true;
-    void *layer = nullptr;
+    Layer *layer = nullptr;
 
     float restitution = 0.5f;
     float friction = 1.0f;

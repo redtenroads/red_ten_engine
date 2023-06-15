@@ -30,6 +30,7 @@
 #include "controller/debugController.h"
 #include "component/component.h"
 #include "component/componentSprite.h"
+#include "component/componentFramedSprite.h"
 #include "component/componentSoundPlayer.h"
 #include "component/componentText.h"
 #include "component/componentMesh.h"

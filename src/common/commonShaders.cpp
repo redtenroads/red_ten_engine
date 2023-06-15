@@ -21,8 +21,6 @@ extern const char *sunFragmentCode;
 extern const char *sunWithShadowFragmentCode;
 extern const char *omniFragmentCode;
 
-ResourceController *CommonShaders::resourceController = nullptr;
-
 Mesh *CommonShaders::spriteMesh = nullptr;
 Mesh *CommonShaders::screenMesh = nullptr;
 

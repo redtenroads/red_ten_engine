@@ -77,7 +77,7 @@ public:
     static ResourceFont *font;
 
 protected:
-    float counter;
+    float counter = 0.0f;
     ComponentText *textSprite, *textShadowSprite;
     static int index;
     int color = 170;
@@ -271,12 +271,15 @@ int main()
 
             if (firstPressID == GUI_BUTTON::TOGGLE_FULLSCREEN)
             {
-                if (view->isFullscreen()){
+                if (view->isFullscreen())
+                {
                     config->setWindowWidth(1280);
                     config->setWindowHeight(800);
                     config->setFullscreenState(false);
                     configController->applyConfig();
-                }else{
+                }
+                else
+                {
                     config->setWindowWidth(screenWidth);
                     config->setWindowHeight(screenHeight);
                     config->setFullscreenState(true);

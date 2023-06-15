@@ -32,9 +32,10 @@ OBJ_FILES = ${OBJDIR}/rtengine.o ${OBJDIR}/view.o ${OBJDIR}/stage.o ${OBJDIR}/gl
 			${OBJDIR}/physicsEntity.o ${OBJDIR}/physicsEntityBox.o ${OBJDIR}/physicsEntitySphere.o ${OBJDIR}/physicsEntityGeometry.o \
 			${OBJDIR}/actor.o  ${OBJDIR}/actorPawn.o ${OBJDIR}/actorGUIElement.o \
 			${OBJDIR}/sound.o ${OBJDIR}/texture.o ${OBJDIR}/resourceFont.o ${OBJDIR}/resourceMesh.o \
-			${OBJDIR}/component.o ${OBJDIR}/componentSprite.o ${OBJDIR}/componentSoundPlayer.o \
+			${OBJDIR}/component.o ${OBJDIR}/componentSoundPlayer.o \
 			${OBJDIR}/componentText.o ${OBJDIR}/componentLight.o ${OBJDIR}/color.o \
 			${OBJDIR}/componentMesh.o ${OBJDIR}/meshDescriptor.o ${OBJDIR}/renderer.o \
+			${OBJDIR}/componentSprite.o ${OBJDIR}/componentFramedSprite.o \
 			${OBJDIR}/stb_image.o ${OBJDIR}/fbx_loader.o ${OBJDIR}/stb_vorbis.o \
 			${OBJDIR}/destroyable.o ${OBJDIR}/commonShaders.o ${OBJDIR}/utils.o \
 			${OBJDIR}/phongShader.o ${OBJDIR}/rawShader.o ${OBJDIR}/shader.o ${OBJDIR}/lightningShader.o \
@@ -159,6 +160,9 @@ ${OBJDIR}/component.o: ${SRCDIR}/component/component.cpp
 
 ${OBJDIR}/componentSprite.o: ${SRCDIR}/component/componentSprite.cpp
 	$(CC) $(CFLAGS) -o ${OBJDIR}/componentSprite.o ${SRCDIR}/component/componentSprite.cpp
+
+${OBJDIR}/componentFramedSprite.o: ${SRCDIR}/component/componentFramedSprite.cpp
+	$(CC) $(CFLAGS) -o ${OBJDIR}/componentFramedSprite.o ${SRCDIR}/component/componentFramedSprite.cpp
 
 ${OBJDIR}/componentSoundPlayer.o: ${SRCDIR}/component/componentSoundPlayer.cpp
 	$(CC) $(CFLAGS) -o ${OBJDIR}/componentSoundPlayer.o ${SRCDIR}/component/componentSoundPlayer.cpp

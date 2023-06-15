@@ -16,7 +16,7 @@ public:
         lifeSpan = (float)(rand() % 100) / 80.0f + 0.5f;
         transform.setPosition(-800, (rand() % 700) - 350);
 
-        sprite = createComponent<ComponentSprite>();
+        sprite = createComponent<ComponentFramedSprite>();
         sprite->setTexture(sonicTexture);
         // Here we have 9 frames horizontally and 7 in verticaly.
         // Each frame sizes will be calculated automaticaly
@@ -54,8 +54,8 @@ public:
     static Texture *sonicTexture;
 
 protected:
+    ComponentFramedSprite *sprite;
     float lifeSpan;
-    ComponentSprite *sprite;
     float frame = 4;
     float jump = 500.0f;
 };

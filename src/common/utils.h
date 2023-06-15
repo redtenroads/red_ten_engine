@@ -4,6 +4,7 @@
 #pragma once
 
 #define CONST_PI 3.1415926f
+#define CONST_PI2 6.2831853f
 #define EXPORT __declspec(dllexport)
 
 EXPORT float randf();

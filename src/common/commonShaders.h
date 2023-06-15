@@ -27,7 +27,5 @@ public:
     static LightningShader *sunWithShadowShader;
     static LightningShader *omniShader;
 
-    static ResourceController *resourceController;
-
     EXPORT static Mesh *getSpriteMesh();
 };

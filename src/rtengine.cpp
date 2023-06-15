@@ -70,7 +70,6 @@ RTEngine::RTEngine(std::string configFilePath)
     if (!resourceController)
     {
         resourceController = new ResourceController();
-        CommonShaders::resourceController = resourceController;
         LayerDebug::setFont(resourceController->addFont(28));
     }
 

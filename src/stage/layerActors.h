@@ -47,22 +47,18 @@ public:
     EXPORT std::list<Actor *> *getActorsList();
     EXPORT std::list<Actor *> getActorsByName(std::string name);
     EXPORT std::list<Actor *> getActorsByPartName(std::string partOfName);
+    EXPORT static LayerActors *getActorsLayer(Actor *actor);
     EXPORT void clear(bool destroyCameras = true);
 
-    EXPORT void setVisible(bool state) { bIsVisible = state; }
-    EXPORT bool isVisible() { return bIsVisible; }
+    EXPORT void setVisible(bool state);
+    EXPORT bool isVisible();
 
-    EXPORT void setProcessingEnabled(bool state) { bProcessingEnabled = state; }
-    EXPORT bool isProcessingEnabled() { return bProcessingEnabled; }
+    EXPORT void setProcessingEnabled(bool state);
+    EXPORT bool isProcessingEnabled();
 
-    EXPORT Camera *getActiveCamera() { return activeCamera; }
+    EXPORT Camera *getActiveCamera();
 
-    EXPORT void setAmbientColor(float r, float g, float b)
-    {
-        ambientColor[0] = r;
-        ambientColor[1] = g;
-        ambientColor[2] = b;
-    }
+    EXPORT void setAmbientColor(float r, float g, float b);
 
 protected:
     bool bIsVisible = true;

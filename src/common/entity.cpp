@@ -47,17 +47,21 @@ const std::string Entity::getClass()
     return *(classChierarchy.end() - 1);
 }
 
-bool Entity::is(std::string name)
+bool Entity::is(const std::string name)
 {
     return className == name;
 }
 
-bool Entity::implements(std::string name)
+bool Entity::implements(const std::string name)
 {
     for (auto it = classChierarchy.begin(); it != classChierarchy.end(); it++)
-        if (*it == name)
+        if (it->compare(name) == 0)
             return true;
     return false;
+}
+Layer *Entity::getCurrentLayer()
+{
+    return this->layer;
 }
 
 void Entity::setCurrentLayer(Layer *layer)

@@ -20,7 +20,7 @@ public:
     EXPORT void setWidthBasedResolution(float width);
     EXPORT void setHeightBasedResolution(float height);
 
-    View *view;
+    View *view = nullptr;
 
 protected:
     Layer *layer;

@@ -425,6 +425,11 @@ std::list<Actor *> LayerActors::getActorsByPartName(std::string partOfName)
     return list;
 }
 
+LayerActors *LayerActors::getActorsLayer(Actor *actor)
+{
+    return (LayerActors *)actor->getCurrentLayer();
+}
+
 void LayerActors::clear(bool destroyCameras)
 {
     if (actors.size() > 0)
@@ -437,4 +442,35 @@ void LayerActors::clear(bool destroyCameras)
             }
         }
     }
+}
+
+void LayerActors::setVisible(bool state)
+{
+    bIsVisible = state;
+}
+
+bool LayerActors::isVisible()
+{
+    return bIsVisible;
+}
+
+void LayerActors::setProcessingEnabled(bool state)
+{
+    bProcessingEnabled = state;
+}
+bool LayerActors::isProcessingEnabled()
+{
+    return bProcessingEnabled;
+}
+
+Camera *LayerActors::getActiveCamera()
+{
+    return activeCamera;
+}
+
+void LayerActors::setAmbientColor(float r, float g, float b)
+{
+    ambientColor[0] = r;
+    ambientColor[1] = g;
+    ambientColor[2] = b;
 }

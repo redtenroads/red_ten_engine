@@ -3,6 +3,7 @@
 
 #pragma once
 #include <string>
+#include <vector>
 #include "common/utils.h"
 #include "common/withLogger.h"
 
@@ -10,11 +11,13 @@ class Texture : public WithLogger
 {
 public:
     EXPORT Texture(std::string path);
+    EXPORT ~Texture();
 
     EXPORT void bind();
     EXPORT void bind(int slot);
-    
+
     EXPORT void reload();
+    EXPORT void unload();
     EXPORT void clear();
     EXPORT bool isLoaded();
     EXPORT bool isPath(std::string path);
@@ -34,6 +37,7 @@ public:
 
 protected:
     std::string path;
+    std::vector<Texture *> list;
 
     int width = 0, height = 0, nrChannels = 0;
     unsigned int textureID = 0;
