@@ -67,7 +67,6 @@ void LayerActors::process(float delta)
         const int cIntegrationSubSteps = 1;
 
         PhysicsSystem *pSystem = (PhysicsSystem *)physicsSystem->system;
-        BroadPhase *broadPhase = (BroadPhase *)physicsSystem->broadPhase;
 
         TempAllocatorImpl *temAllocator = (TempAllocatorImpl *)physicsSystem->tempAllocator;
         JobSystemThreadPool *JobSystem = (JobSystemThreadPool *)physicsSystem->JobSystem;
@@ -78,7 +77,6 @@ void LayerActors::process(float delta)
         for (auto actor = actors.begin(); actor != actors.end(); ++actor)
             (*actor)->afterSyncPhysics();
 
-        broadPhase->UpdatePrepare();
     }
 
     auto actor = actors.begin();

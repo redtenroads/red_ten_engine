@@ -53,6 +53,7 @@ Actor::~Actor()
         auto body = (Body *)physicsRoot;
         body->SetUserData(0);
         physicsSystem->GetBodyInterface().RemoveBody(body->GetID());
+        physicsSystem->GetBodyInterface().DestroyBody(body->GetID());
         delete body;
     }
 }

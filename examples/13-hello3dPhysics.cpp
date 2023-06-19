@@ -5,6 +5,20 @@
 #include <math.h>
 #pragma comment(lib, "bin/rtengine.lib")
 
+const int spawnPerSecond = 10;
+
+class Sphere : public Actor
+{
+public:
+    void onProcess(float delta)
+    {
+        // Removing spheres that fell from the platform
+        auto position = transform.getPosition();
+        if (position.y < -3.0f)
+            destroy();
+    }
+};
+
 class ActorFactory
 {
 public:
@@ -29,7 +43,7 @@ public:
 
     Actor *spawnSphere(float x, float y, float z)
     {
-        Actor *sphere = layer->createActor<Actor>();
+        Actor *sphere = layer->createActor<Sphere>();
 
         auto sphereComponent = sphere->createComponent<ComponentMesh>();
         sphereComponent->setMesh(sphereMesh);
@@ -109,14 +123,14 @@ int main()
     auto sunComponent = sun->createComponent<ComponentLight>();
     sunComponent->setupSunLight(Vector3(-1.0f, 2.0f, 1.0f), Vector3(0.9f, 0.9f, 0.9f), true);
 
-    float spawnCounter = 5.0f;
+    float spawnCounter = (float)spawnPerSecond;
 
     while (!engine->isTerminationIntended())
     {
         float delta = engine->syncFrame();
         viewController->processEvents();
 
-        spawnCounter += delta * 5.0f;
+        spawnCounter += delta * (float)spawnPerSecond;
         while (spawnCounter > 1.0f)
         {
             spawnCounter -= 1.0f;

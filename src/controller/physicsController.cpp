@@ -226,11 +226,11 @@ PhysicsDescriptor *PhysicsController::createSystem(Vector3 gravity, int sizeOfAl
     // malloc / free.
 
     auto tempAllocator = new TempAllocatorImpl(sizeOfAllocator);
-    auto jobSystemThreadPool = new JobSystemThreadPool(cMaxPhysicsJobs, cMaxPhysicsBarriers, thread::hardware_concurrency() - 1);
+    auto jobSystemThreadPool = new JobSystemThreadPool(256, 256, thread::hardware_concurrency() - 1);
 
     // This is the max amount of rigid bodies that you can add to the physics system. If you try to add more you'll get an error.
     // Note: This value is low because this is a simple test. For a real project use something in the order of 65536.
-    const uint cMaxBodies = 1024;
+    const uint cMaxBodies = 10240;
 
     // This determines how many mutexes to allocate to protect rigid bodies from concurrent access. Set it to 0 for the default settings.
     const uint cNumBodyMutexes = 0;
@@ -239,12 +239,12 @@ PhysicsDescriptor *PhysicsController::createSystem(Vector3 gravity, int sizeOfAl
     // body pairs based on their bounding boxes and will insert them into a queue for the narrowphase). If you make this buffer
     // too small the queue will fill up and the broad phase jobs will start to do narrow phase work. This is slightly less efficient.
     // Note: This value is low because this is a simple test. For a real project use something in the order of 65536.
-    const uint cMaxBodyPairs = 1024;
+    const uint cMaxBodyPairs = 10240;
 
     // This is the maximum size of the contact constraint buffer. If more contacts (collisions between bodies) are detected than this
     // number then these contacts will be ignored and bodies will start interpenetrating / fall through the world.
     // Note: This value is low because this is a simple test. For a real project use something in the order of 10240.
-    const uint cMaxContactConstraints = 1024;
+    const uint cMaxContactConstraints = 10240;
 
     BPLayerInterfaceImpl *broadPhaseLayerInterface = new BPLayerInterfaceImpl();
 

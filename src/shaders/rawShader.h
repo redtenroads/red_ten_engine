@@ -11,6 +11,7 @@ public:
     EXPORT RawShader(const char *vertex, const char *fragment);
 
     EXPORT bool build();
+    EXPORT bool use();
     EXPORT bool use(Matrix4 mViewProjection, Matrix4 mModel);
 
     EXPORT void setOpacity(float value);

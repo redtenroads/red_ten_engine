@@ -16,18 +16,20 @@ ComponentSprite::ComponentSprite() : Component()
 
 bool ComponentSprite::onRenderPrepare(Matrix4 &vpMatrix, Transformation *tf, bool isShadowStage)
 {
-    if (texture && shader)
-    {
-        Matrix4 mOut = *tf->getModelMatrix() * *transform.getModelMatrix() * mAnchor;
+    Matrix4 mOut = *tf->getModelMatrix() * *transform.getModelMatrix() * mAnchor;
 
+    if (shader)
+    {
         shader->use(vpMatrix, mOut);
         shader->setOpacity(opacity);
-
-        texture->bind();
-        CommonShaders::spriteMesh->use();
-        return true;
     }
-    return false;
+
+    if (texture)
+    {
+        texture->bind();
+    }
+    CommonShaders::spriteMesh->use();
+    return true;
 }
 
 int ComponentSprite::getVertexAmount()

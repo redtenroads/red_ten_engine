@@ -18,10 +18,16 @@ bool RawShader::build()
     {
         unsigned int vertexShader = 0, fragmentShader = 0;
         if (!compile(GL_VERTEX_SHADER, vertexCode, &vertexShader))
+        {
+            logger->logff("Unable to compile vertex shader:\n%s\n", vertexCode);
             return false;
+        }
 
         if (!compile(GL_FRAGMENT_SHADER, fragmentCode, &fragmentShader))
+        {
+            logger->logff("Unable to compile fragment shader:\n%s\n", fragmentCode);
             return false;
+        }
 
         programm = glCreateProgram();
         if (programm != -1)
@@ -41,9 +47,26 @@ bool RawShader::build()
             bIsReady = true;
             return true;
         }
+        logger->logff("Unable to create program:\nVertex shader:\n%s\nFragment shader:\n%s\n", vertexCode, fragmentCode);
         return false;
     }
     return false;
+}
+
+bool RawShader::use()
+{
+    if (!bIsReady)
+        build();
+    if (!bIsReady)
+        return false;
+
+    if (currentShader != this)
+    {
+        currentShader = this;
+        glUseProgram(programm);
+    }
+
+    return true;
 }
 
 bool RawShader::use(Matrix4 mViewProjection, Matrix4 mModel)
