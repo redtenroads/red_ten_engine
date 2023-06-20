@@ -102,6 +102,7 @@ void ComponentLight::renderLightPhase(Matrix4 &vpMatrix, unsigned int shadowMapT
         lightShader->setLightColor(color);
 
         CommonShaders::screenMesh->use();
+        glBlendFunc(GL_ONE, GL_ONE);
         glDrawArrays(GL_QUADS, 0, 4);
     }
 
@@ -115,6 +116,7 @@ void ComponentLight::renderLightPhase(Matrix4 &vpMatrix, unsigned int shadowMapT
         lightShader->setLightColor(color);
 
         CommonShaders::screenMesh->use();
+        glBlendFunc(GL_ONE, GL_ONE);
         glDrawArrays(GL_QUADS, 0, 4);
     }
 }

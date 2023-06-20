@@ -4,6 +4,8 @@
 #include "component/componentFramedSprite.h"
 #include "common/commonShaders.h"
 #include "math/glm/gtc/type_ptr.hpp"
+#include "opengl/glew.h"
+#include "opengl/wglew.h"
 #include <math.h>
 
 ComponentFramedSprite::ComponentFramedSprite() : Component()
@@ -11,7 +13,7 @@ ComponentFramedSprite::ComponentFramedSprite() : Component()
     mAnchor = Matrix4(1.0f);
     setAnchor(0.5f, 0.5f);
     shader = CommonShaders::spriteFrameShader;
-    bUseBlendingPhase = true;
+    colorMode = ComponentColorMode::Alpha;
 }
 
 bool ComponentFramedSprite::onRenderPrepare(Matrix4 &vpMatrix, Transformation *tf, bool isShadowStage)
@@ -28,6 +30,7 @@ bool ComponentFramedSprite::onRenderPrepare(Matrix4 &vpMatrix, Transformation *t
 
         texture->bind();
         CommonShaders::spriteMesh->use();
+        prepareColorMode();
         return true;
     }
     return false;

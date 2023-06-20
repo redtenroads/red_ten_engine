@@ -208,7 +208,6 @@ void LayerActors::render(View *view)
     glDisable(GL_DEPTH_TEST);
     glDisable(GL_CULL_FACE);
     glEnable(GL_BLEND);
-    glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
     if (blends.size() > 0)
     {
@@ -221,6 +220,7 @@ void LayerActors::render(View *view)
     // Final phase
     view->useFrameBuffer();
     glEnable(GL_BLEND);
+    glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
     glActiveTexture(GL_TEXTURE0);
     glBindTexture(GL_TEXTURE_2D, renderer->getLightningTexture());
@@ -309,6 +309,7 @@ RayCollision LayerActors::castSingleRayCollision(Vector3 v1, Vector3 v2, int cha
                 lock.ReleaseLock();
                 return collision;
             }
+            lock.ReleaseLock();
         }
     }
     return RayCollision({Vector3(0), nullptr, false});

@@ -60,6 +60,19 @@ bool Component::onRenderPrepare(Matrix4 &vpMatrix, Transformation *tf, bool isSh
     return false;
 }
 
+void Component::prepareColorMode()
+{
+    switch (colorMode)
+    {
+    case ComponentColorMode::Lit:
+        return glBlendFunc(GL_ZERO, GL_ONE);
+    case ComponentColorMode::Alpha:
+        return glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+    case ComponentColorMode::Addition:
+        return glBlendFunc(GL_ONE, GL_ONE);
+    }
+}
+
 int Component::getVertexAmount()
 {
     return 0;

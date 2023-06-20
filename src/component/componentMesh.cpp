@@ -4,6 +4,8 @@
 #include "component/componentMesh.h"
 #include "math/glm/gtc/type_ptr.hpp"
 #include "common/commonShaders.h"
+#include "opengl/glew.h"
+#include "opengl/wglew.h"
 #include <math.h>
 
 ComponentMesh::ComponentMesh() : Component()
@@ -18,6 +20,10 @@ bool ComponentMesh::onRenderPrepare(Matrix4 &vpMatrix, Transformation *tf, bool 
         Matrix4 mModelTransform = *tf->getModelMatrix() * *transform.getModelMatrix();
         shader->use(vpMatrix, mModelTransform);
         mesh->use();
+        if (isShadowStage)
+            glBlendFunc(GL_ZERO, GL_ONE);
+        else
+            prepareColorMode();
         return true;
     }
     return false;

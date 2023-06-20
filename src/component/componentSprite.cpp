@@ -11,7 +11,7 @@ ComponentSprite::ComponentSprite() : Component()
     mAnchor = Matrix4(1.0f);
     setAnchor(0.5f, 0.5f);
     shader = CommonShaders::spriteShader;
-    bUseBlendingPhase = true;
+    colorMode = ComponentColorMode::Alpha;
 }
 
 bool ComponentSprite::onRenderPrepare(Matrix4 &vpMatrix, Transformation *tf, bool isShadowStage)
@@ -28,7 +28,10 @@ bool ComponentSprite::onRenderPrepare(Matrix4 &vpMatrix, Transformation *tf, boo
     {
         texture->bind();
     }
+
     CommonShaders::spriteMesh->use();
+    prepareColorMode();
+
     return true;
 }
 

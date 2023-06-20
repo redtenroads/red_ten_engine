@@ -54,7 +54,6 @@ Actor::~Actor()
         body->SetUserData(0);
         physicsSystem->GetBodyInterface().RemoveBody(body->GetID());
         physicsSystem->GetBodyInterface().DestroyBody(body->GetID());
-        delete body;
     }
 }
 

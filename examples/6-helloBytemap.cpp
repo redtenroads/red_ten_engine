@@ -13,6 +13,7 @@ public:
         registerClassName("Star");
         sprite = createComponent<ComponentSprite>();
         sprite->setTexture(starTexture);
+        sprite->colorMode = ComponentColorMode::Addition;
     }
     void onProcess(float delta)
     {

@@ -14,6 +14,13 @@
 #include "common/renderer.h"
 #include <list>
 
+enum class ComponentColorMode
+{
+    Lit = 0,
+    Alpha = 1,
+    Addition = 2,
+};
+
 class Component : public Destroyable
 {
 public:
@@ -21,13 +28,14 @@ public:
     EXPORT virtual ~Component();
     EXPORT void prepare(Entity *owner);
     EXPORT virtual void process(float delta);
-    
+
     EXPORT void render(Matrix4 &vpMatrix, Transformation *tf);
     EXPORT void shadowRender(Matrix4 &vpMatrix, Transformation *tf);
     EXPORT virtual void renderLightPhase(Matrix4 &vpMatrix, unsigned int shadowMapTexture);
     EXPORT virtual Matrix4 preparePreShadowPhase(Vector3 cameraPosition);
-    
+
     EXPORT virtual bool onRenderPrepare(Matrix4 &vpMatrix, Transformation *tf, bool isShadowStage);
+    EXPORT void prepareColorMode();
     EXPORT virtual int getVertexAmount();
 
     EXPORT PhysicsEntitySphere *addPhysics2dCircle(float radius);
@@ -38,12 +46,12 @@ public:
     EXPORT PhysicsEntityBox *addPhysics2dBox(float width, float height, float px, float py, float pz);
     EXPORT PhysicsEntityBox *addPhysics3dBox(float width, float height, float depth);
     EXPORT PhysicsEntityBox *addPhysics3dBox(float width, float height, float depth, float px, float py, float pz);
-    
+
     EXPORT PhysicsEntityGeometry *addPhysicsGeometry(Geometry *geometry);
 
     EXPORT virtual Matrix4 getLocalspaceMatrix();
 
-    EXPORT inline bool isUsingBlendingPhase() { return bUseBlendingPhase; }
+    EXPORT inline bool isUsingBlendingPhase() { return colorMode != ComponentColorMode::Lit; }
     EXPORT inline bool isUsingLightPhase() { return bUseLightPhase; }
     EXPORT inline bool isUsingShadowPhase() { return bUseShadowPhase; }
 
@@ -53,8 +61,8 @@ public:
     std::list<PhysicsEntity *> physicsEntities;
     Transformation transform;
 
+    ComponentColorMode colorMode = ComponentColorMode::Lit;
 protected:
-    bool bUseBlendingPhase = false;
     bool bUseLightPhase = false;
     bool bUseShadowPhase = false;
     bool bIsVisible = true;

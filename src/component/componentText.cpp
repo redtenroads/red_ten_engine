@@ -13,7 +13,7 @@ ComponentText::ComponentText()
 {
     mAnchor = Matrix4(1.0f);
     setAnchor(0.5f, 0.5f);
-    bUseBlendingPhase = true;
+    colorMode = ComponentColorMode::Alpha;
 }
 
 EXPORT ComponentText::~ComponentText()
@@ -40,12 +40,13 @@ bool ComponentText::onRenderPrepare(Matrix4 &vpMatrix, Transformation *tf, bool 
 
         glBindTexture(GL_TEXTURE_2D, textureID);
         CommonShaders::spriteMesh->use();
+        prepareColorMode();
         return true;
     }
     return false;
 }
 
-int  ComponentText::getVertexAmount()
+int ComponentText::getVertexAmount()
 {
     return 4;
 }
